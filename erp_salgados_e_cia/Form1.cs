@@ -16,5 +16,10 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
         }
+
+        private void bteste_Click(object sender, EventArgs e)
+        {
+            pbteste.Value = 100;
+        }
     }
 }
