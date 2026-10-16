@@ -32,8 +32,6 @@
             this.lteste = new System.Windows.Forms.Label();
             this.bteste = new System.Windows.Forms.Button();
             this.pbteste = new System.Windows.Forms.ProgressBar();
-            this.btn_apagar = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // teste
@@ -58,7 +56,7 @@
             // bteste
             // 
             this.bteste.Location = new System.Drawing.Point(34, 67);
-            this.bteste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bteste.Margin = new System.Windows.Forms.Padding(2);
             this.bteste.Name = "bteste";
             this.bteste.Size = new System.Drawing.Size(129, 29);
             this.bteste.TabIndex = 2;
@@ -69,36 +67,16 @@
             // pbteste
             // 
             this.pbteste.Location = new System.Drawing.Point(34, 109);
-            this.pbteste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pbteste.Margin = new System.Windows.Forms.Padding(2);
             this.pbteste.Name = "pbteste";
             this.pbteste.Size = new System.Drawing.Size(129, 19);
             this.pbteste.TabIndex = 3;
-            // 
-            // btn_apagar
-            // 
-            this.btn_apagar.Location = new System.Drawing.Point(537, 73);
-            this.btn_apagar.Name = "btn_apagar";
-            this.btn_apagar.Size = new System.Drawing.Size(163, 192);
-            this.btn_apagar.TabIndex = 4;
-            this.btn_apagar.Text = "Apagar esse carinha depois";
-            this.btn_apagar.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(430, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(289, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Texto do Arthur após ter colocado o negocio na pasta certa";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btn_apagar);
             this.Controls.Add(this.pbteste);
             this.Controls.Add(this.bteste);
             this.Controls.Add(this.lteste);
@@ -116,7 +94,5 @@
         private System.Windows.Forms.Label lteste;
         private System.Windows.Forms.Button bteste;
         private System.Windows.Forms.ProgressBar pbteste;
-        private System.Windows.Forms.Button btn_apagar;
-        private System.Windows.Forms.Label label1;
     }
 }
