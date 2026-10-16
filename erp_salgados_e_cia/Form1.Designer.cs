@@ -28,61 +28,116 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.teste = new System.Windows.Forms.Button();
-            this.lteste = new System.Windows.Forms.Label();
-            this.bteste = new System.Windows.Forms.Button();
-            this.pbteste = new System.Windows.Forms.ProgressBar();
+            this.lproduto = new System.Windows.Forms.Label();
+            this.tbnomeproduto = new System.Windows.Forms.TextBox();
+            this.bsalvar = new System.Windows.Forms.Button();
+            this.lpreco = new System.Windows.Forms.Label();
+            this.tbpreco = new System.Windows.Forms.TextBox();
+            this.lcategoria = new System.Windows.Forms.Label();
+            this.tbcategoria = new System.Windows.Forms.TextBox();
+            this.dgvprodutos = new System.Windows.Forms.DataGridView();
+            this.bexcluir = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.SuspendLayout();
             // 
-            // teste
+            // lproduto
             // 
-            this.teste.Location = new System.Drawing.Point(244, 157);
-            this.teste.Name = "teste";
-            this.teste.Size = new System.Drawing.Size(174, 133);
-            this.teste.TabIndex = 0;
-            this.teste.Text = "Teste de Integridade";
-            this.teste.UseVisualStyleBackColor = true;
+            this.lproduto.AutoSize = true;
+            this.lproduto.Location = new System.Drawing.Point(33, 41);
+            this.lproduto.Name = "lproduto";
+            this.lproduto.Size = new System.Drawing.Size(47, 16);
+            this.lproduto.TabIndex = 0;
+            this.lproduto.Text = "Nome:";
             // 
-            // lteste
+            // tbnomeproduto
             // 
-            this.lteste.AutoSize = true;
-            this.lteste.Location = new System.Drawing.Point(32, 51);
-            this.lteste.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lteste.Name = "lteste";
-            this.lteste.Size = new System.Drawing.Size(101, 13);
-            this.lteste.TabIndex = 1;
-            this.lteste.Text = "para testar o github:";
+            this.tbnomeproduto.Location = new System.Drawing.Point(86, 38);
+            this.tbnomeproduto.Name = "tbnomeproduto";
+            this.tbnomeproduto.Size = new System.Drawing.Size(109, 22);
+            this.tbnomeproduto.TabIndex = 1;
             // 
-            // bteste
+            // bsalvar
             // 
-            this.bteste.Location = new System.Drawing.Point(34, 67);
-            this.bteste.Margin = new System.Windows.Forms.Padding(2);
-            this.bteste.Name = "bteste";
-            this.bteste.Size = new System.Drawing.Size(129, 29);
-            this.bteste.TabIndex = 2;
-            this.bteste.Text = "Testando o push";
-            this.bteste.UseVisualStyleBackColor = true;
-            this.bteste.Click += new System.EventHandler(this.bteste_Click);
+            this.bsalvar.Location = new System.Drawing.Point(647, 38);
+            this.bsalvar.Name = "bsalvar";
+            this.bsalvar.Size = new System.Drawing.Size(75, 23);
+            this.bsalvar.TabIndex = 2;
+            this.bsalvar.Text = "Salvar";
+            this.bsalvar.UseVisualStyleBackColor = true;
+            this.bsalvar.Click += new System.EventHandler(this.button1_Click);
             // 
-            // pbteste
+            // lpreco
             // 
-            this.pbteste.Location = new System.Drawing.Point(34, 109);
-            this.pbteste.Margin = new System.Windows.Forms.Padding(2);
-            this.pbteste.Name = "pbteste";
-            this.pbteste.Size = new System.Drawing.Size(129, 19);
-            this.pbteste.TabIndex = 3;
+            this.lpreco.AutoSize = true;
+            this.lpreco.Location = new System.Drawing.Point(217, 41);
+            this.lpreco.Name = "lpreco";
+            this.lpreco.Size = new System.Drawing.Size(46, 16);
+            this.lpreco.TabIndex = 3;
+            this.lpreco.Text = "Preço:";
+            // 
+            // tbpreco
+            // 
+            this.tbpreco.Location = new System.Drawing.Point(269, 38);
+            this.tbpreco.Name = "tbpreco";
+            this.tbpreco.Size = new System.Drawing.Size(109, 22);
+            this.tbpreco.TabIndex = 4;
+            // 
+            // lcategoria
+            // 
+            this.lcategoria.AutoSize = true;
+            this.lcategoria.Location = new System.Drawing.Point(408, 41);
+            this.lcategoria.Name = "lcategoria";
+            this.lcategoria.Size = new System.Drawing.Size(69, 16);
+            this.lcategoria.TabIndex = 5;
+            this.lcategoria.Text = "Categoria:";
+            // 
+            // tbcategoria
+            // 
+            this.tbcategoria.Location = new System.Drawing.Point(483, 38);
+            this.tbcategoria.Name = "tbcategoria";
+            this.tbcategoria.Size = new System.Drawing.Size(109, 22);
+            this.tbcategoria.TabIndex = 6;
+            // 
+            // dgvprodutos
+            // 
+            this.dgvprodutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvprodutos.Location = new System.Drawing.Point(36, 102);
+            this.dgvprodutos.Name = "dgvprodutos";
+            this.dgvprodutos.RowHeadersWidth = 51;
+            this.dgvprodutos.RowTemplate.Height = 24;
+            this.dgvprodutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvprodutos.Size = new System.Drawing.Size(894, 382);
+            this.dgvprodutos.TabIndex = 7;
+            this.dgvprodutos.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvprodutos_CellValidating);
+            // 
+            // bexcluir
+            // 
+            this.bexcluir.Location = new System.Drawing.Point(765, 37);
+            this.bexcluir.Name = "bexcluir";
+            this.bexcluir.Size = new System.Drawing.Size(75, 23);
+            this.bexcluir.TabIndex = 8;
+            this.bexcluir.Text = "Excluir";
+            this.bexcluir.UseVisualStyleBackColor = true;
+            this.bexcluir.Click += new System.EventHandler(this.bexcluir_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.pbteste);
-            this.Controls.Add(this.bteste);
-            this.Controls.Add(this.lteste);
-            this.Controls.Add(this.teste);
+            this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.Controls.Add(this.bexcluir);
+            this.Controls.Add(this.dgvprodutos);
+            this.Controls.Add(this.tbcategoria);
+            this.Controls.Add(this.lcategoria);
+            this.Controls.Add(this.tbpreco);
+            this.Controls.Add(this.lpreco);
+            this.Controls.Add(this.bsalvar);
+            this.Controls.Add(this.tbnomeproduto);
+            this.Controls.Add(this.lproduto);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -90,9 +145,14 @@
 
         #endregion
 
-        private System.Windows.Forms.Button teste;
-        private System.Windows.Forms.Label lteste;
-        private System.Windows.Forms.Button bteste;
-        private System.Windows.Forms.ProgressBar pbteste;
+        private System.Windows.Forms.Label lproduto;
+        private System.Windows.Forms.TextBox tbnomeproduto;
+        private System.Windows.Forms.Button bsalvar;
+        private System.Windows.Forms.Label lpreco;
+        private System.Windows.Forms.TextBox tbpreco;
+        private System.Windows.Forms.Label lcategoria;
+        private System.Windows.Forms.TextBox tbcategoria;
+        private System.Windows.Forms.DataGridView dgvprodutos;
+        private System.Windows.Forms.Button bexcluir;
     }
 }
