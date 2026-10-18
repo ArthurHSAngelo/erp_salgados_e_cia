@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
-
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace erp_salgados_e_cia
 {
-    public partial class Form1 : Form
+    public partial class ucprodutos : UserControl
     {
         private List<Produto> produtos = new List<Produto>();
         private void AtualizarTabela()
@@ -18,21 +23,28 @@ namespace erp_salgados_e_cia
                 dgvprodutos.Columns["Nome"].HeaderText = "Nome";
                 dgvprodutos.Columns["Preco"].HeaderText = "Preço";
                 dgvprodutos.Columns["Categoria"].HeaderText = "Categoria";
+                dgvprodutos.Columns["UnidadeMedida"].HeaderText = "Unidade de medida";
+                dgvprodutos.Columns["EstoqueMinimo"].HeaderText = "Estoque mínimo";
 
                 dgvprodutos.Columns["Nome"].DisplayIndex = 0;
                 dgvprodutos.Columns["Preco"].DisplayIndex = 1;
                 dgvprodutos.Columns["Categoria"].DisplayIndex = 2;
+                dgvprodutos.Columns["UnidadeMedida"].DisplayIndex = 3;
+                dgvprodutos.Columns["EstoqueMinimo"].DisplayIndex = 4;
 
                 dgvprodutos.Columns["Preco"].DefaultCellStyle.Format = "N2";
+                dgvprodutos.Columns["EstoqueMinimo"].DefaultCellStyle.Format = "N2";
             }
         }
-        public Form1()
+        public ucprodutos()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void bsalvar_Click(object sender, EventArgs e)
         {
+
+
             decimal preco;
 
             if (string.IsNullOrWhiteSpace(tbnomeproduto.Text))
@@ -61,7 +73,7 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(tbcategoria.Text))
+            if (cbcategoria.SelectedIndex == -1)
             {
                 MessageBox.Show(
                     "Informe a categoria do produto.",
@@ -70,16 +82,32 @@ namespace erp_salgados_e_cia
                     MessageBoxIcon.Warning
                 );
 
-                tbcategoria.Focus();
+                cbcategoria.Focus();
+                return;
+            }
+
+            if (cbunidademedida.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Informe a unidade de medida.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                cbunidademedida.Focus();
                 return;
             }
 
             Produto produto = new Produto
             {
                 Nome = tbnomeproduto.Text,
-                Categoria = tbcategoria.Text,
-                Preco = preco
+                Categoria = cbcategoria.Text,
+                Preco = preco,
+                EstoqueMinimo = nudestoqueminimo.Value,
+                UnidadeMedida = cbunidademedida.Text
             };
+
 
             produtos.Add(produto);
 
@@ -89,19 +117,22 @@ namespace erp_salgados_e_cia
                  "Produto salvo com sucesso!\n\n" +
                  "Nome: " + produto.Nome + "\n" +
                  "Preço: R$ " + produto.Preco.ToString("N2") + "\n" +
-                 "Categoria: " + produto.Categoria,
+                 "Categoria: " + produto.Categoria + "\n",
                  "Sucesso",
                  MessageBoxButtons.OK,
                  MessageBoxIcon.Information
              );
 
             tbnomeproduto.Clear();
-            tbcategoria.Clear();
+            cbcategoria.SelectedIndex = -1;
             tbpreco.Clear();
+            tbnomeproduto.Focus();
+            nudestoqueminimo.Value = 1;
+            cbunidademedida.SelectedIndex = -1;
 
             tbnomeproduto.Focus();
 
-        
+
         }
 
         private void bexcluir_Click(object sender, EventArgs e)
@@ -147,9 +178,7 @@ namespace erp_salgados_e_cia
             }
         }
 
-        private void dgvprodutos_CellValidating(
-        object sender,
-        DataGridViewCellValidatingEventArgs e)
+        private void dgvprodutos_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             string coluna =
                 dgvprodutos.Columns[e.ColumnIndex].Name;
@@ -206,5 +235,6 @@ namespace erp_salgados_e_cia
                 }
             }
         }
+
     }
 }
