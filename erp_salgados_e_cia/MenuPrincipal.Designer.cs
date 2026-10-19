@@ -33,6 +33,7 @@
             this.bunidades = new System.Windows.Forms.Button();
             this.pnltelas = new System.Windows.Forms.Panel();
             this.pnlmenu = new System.Windows.Forms.Panel();
+            this.bmovimentoestoque = new System.Windows.Forms.Button();
             this.pnlmenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,6 +78,7 @@
             // pnlmenu
             // 
             this.pnlmenu.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.pnlmenu.Controls.Add(this.bmovimentoestoque);
             this.pnlmenu.Controls.Add(this.bprodutos);
             this.pnlmenu.Controls.Add(this.bfornecedores);
             this.pnlmenu.Controls.Add(this.bunidades);
@@ -85,6 +87,16 @@
             this.pnlmenu.Name = "pnlmenu";
             this.pnlmenu.Size = new System.Drawing.Size(170, 1119);
             this.pnlmenu.TabIndex = 4;
+            // 
+            // bmovimentoestoque
+            // 
+            this.bmovimentoestoque.Location = new System.Drawing.Point(9, 182);
+            this.bmovimentoestoque.Name = "bmovimentoestoque";
+            this.bmovimentoestoque.Size = new System.Drawing.Size(113, 49);
+            this.bmovimentoestoque.TabIndex = 3;
+            this.bmovimentoestoque.Text = "Entrada de estoque";
+            this.bmovimentoestoque.UseVisualStyleBackColor = true;
+            this.bmovimentoestoque.Click += new System.EventHandler(this.bmovimentoestoque_Click);
             // 
             // MenuPrincipal
             // 
@@ -109,5 +121,6 @@
         private System.Windows.Forms.Button bunidades;
         private System.Windows.Forms.Panel pnltelas;
         private System.Windows.Forms.Panel pnlmenu;
+        private System.Windows.Forms.Button bmovimentoestoque;
     }
 }

@@ -15,7 +15,8 @@ namespace erp_salgados_e_cia
         private ucprodutos telaprodutos;
         private ucfornecedores telafornecedores;
         private ucunidades telaunidades;
-    
+        private ucmovimentoestoque telamovimentoestoque;
+
         private void AbrirTela(UserControl tela)
         {
             pnltelas.Controls.Clear();
@@ -59,6 +60,16 @@ namespace erp_salgados_e_cia
             }
 
             AbrirTela(telaunidades);
+        }
+
+        private void bmovimentoestoque_Click(object sender, EventArgs e)
+        {
+            if (telamovimentoestoque == null)
+            {
+                telamovimentoestoque = new ucmovimentoestoque();
+            }
+
+            AbrirTela(telamovimentoestoque);
         }
     }
 }

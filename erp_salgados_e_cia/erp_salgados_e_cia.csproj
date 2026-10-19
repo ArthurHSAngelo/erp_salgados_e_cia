@@ -45,30 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CadastroUnidades.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CadastroUnidades.Designer.cs">
-      <DependentUpon>CadastroUnidades.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EntradaEstoque.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EntradaEstoque.Designer.cs">
-      <DependentUpon>EntradaEstoque.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CadastroProdutos.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CadastroProdutos.Designer.cs">
-      <DependentUpon>CadastroProdutos.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CadastroFornecedores.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CadastroFornecedores.Designer.cs">
-      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
-    </Compile>
     <Compile Include="Fornecedor.cs" />
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
@@ -76,9 +52,16 @@
     <Compile Include="MenuPrincipal.Designer.cs">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>
     </Compile>
+    <Compile Include="movimentoestoque.cs" />
     <Compile Include="Produto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ucmovimentoestoque..cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucmovimentoestoque..Designer.cs">
+      <DependentUpon>ucmovimentoestoque..cs</DependentUpon>
+    </Compile>
     <Compile Include="ucfornecedores.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -103,20 +86,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CadastroUnidades.resx">
-      <DependentUpon>CadastroUnidades.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EntradaEstoque.resx">
-      <DependentUpon>EntradaEstoque.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CadastroProdutos.resx">
-      <DependentUpon>CadastroProdutos.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CadastroFornecedores.resx">
-      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MenuPrincipal.resx">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucmovimentoestoque..resx">
+      <DependentUpon>ucmovimentoestoque..cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucfornecedores.resx">
       <DependentUpon>ucfornecedores.cs</DependentUpon>
