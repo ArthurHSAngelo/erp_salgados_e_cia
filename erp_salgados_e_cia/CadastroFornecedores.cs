@@ -13,7 +13,7 @@ namespace erp_salgados_e_cia
     public partial class CadastroFornecedores : Form
     {
         private List<Fornecedor> fornecedores =
-    new List<Fornecedor>();
+            new List<Fornecedor>();
         private void AtualizarTabela()
         {
             dgvfornecedores.DataSource = null;

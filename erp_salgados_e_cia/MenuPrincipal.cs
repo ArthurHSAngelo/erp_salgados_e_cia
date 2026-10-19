@@ -12,13 +12,12 @@ namespace erp_salgados_e_cia
 {
     public partial class MenuPrincipal : Form
     {
+        private ucprodutos telaprodutos;
+        private ucfornecedores telafornecedores;
+        private ucunidades telaunidades;
+    
         private void AbrirTela(UserControl tela)
         {
-            foreach (Control controle in pnltelas.Controls)
-            {
-                controle.Dispose();
-            }
-
             pnltelas.Controls.Clear();
 
             tela.Dock = DockStyle.Fill;
@@ -34,23 +33,32 @@ namespace erp_salgados_e_cia
 
         private void bprodutos_Click(object sender, EventArgs e)
         {
-            AbrirTela(new ucprodutos());
+            if (telaprodutos == null)
+            {
+                telaprodutos = new ucprodutos();
+            }
+
+            AbrirTela(telaprodutos);
         }
 
         private void bfornecedores_Click(object sender, EventArgs e)
         {
-            CadastroFornecedores tela =
-                new CadastroFornecedores();
+            if (telafornecedores == null)
+            {
+                telafornecedores = new ucfornecedores();
+            }
 
-            tela.Show();
+            AbrirTela(telafornecedores);
         }
 
         private void bunidades_Click(object sender, EventArgs e)
         {
-            CadastroUnidades tela =
-                new CadastroUnidades();
+            if (telaunidades == null)
+            {
+                telaunidades = new ucunidades();
+            }
 
-            tela.Show();
+            AbrirTela(telaunidades);
         }
     }
 }
