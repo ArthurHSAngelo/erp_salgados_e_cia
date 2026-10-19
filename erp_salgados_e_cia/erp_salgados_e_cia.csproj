@@ -45,28 +45,69 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrmHelloWorld.cs">
+    <Compile Include="CadastroUnidades.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CadastroUnidades.Designer.cs">
+      <DependentUpon>CadastroUnidades.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EntradaEstoque.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EntradaEstoque.Designer.cs">
+      <DependentUpon>EntradaEstoque.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CadastroProdutos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CadastroProdutos.Designer.cs">
+      <DependentUpon>CadastroProdutos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CadastroFornecedores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CadastroFornecedores.Designer.cs">
+      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Fornecedor.cs" />
+    <Compile Include="MenuPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuPrincipal.Designer.cs">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Produto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ucprodutos.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucprodutos.Designer.cs">
+      <DependentUpon>ucprodutos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Unidade.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\erp_salgados_e_cia.Data\erp_salgados_e_cia.Data.csproj">
-      <Project>{0F09E13B-7DD2-4D95-B795-1D0588956FD3}</Project>
-      <Name>erp_salgados_e_cia.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\erp_salgados_e_cia.Domain\erp_salgados_e_cia.Domain.csproj">
-      <Project>{109C1E7C-748A-4E50-A184-A9895205761D}</Project>
-      <Name>erp_salgados_e_cia.Domain</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="FrmHelloWorld.resx">
-      <DependentUpon>FrmHelloWorld.cs</DependentUpon>
+    <EmbeddedResource Include="CadastroUnidades.resx">
+      <DependentUpon>CadastroUnidades.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EntradaEstoque.resx">
+      <DependentUpon>EntradaEstoque.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CadastroProdutos.resx">
+      <DependentUpon>CadastroProdutos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CadastroFornecedores.resx">
+      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuPrincipal.resx">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucprodutos.resx">
+      <DependentUpon>ucprodutos.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

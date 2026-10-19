@@ -10,7 +10,7 @@ namespace erp_salgados_e_cia
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmHelloWorld());
+            Application.Run(new MenuPrincipal());
         }
     }
 }
