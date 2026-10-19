@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="botaoarredondado1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="bapainel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAP
-        ZAAAD2QBhYXCnwAAAUxJREFUSEvtkzErhmEUhq+sGGSRYlGyG1BMbHYLf4CZUV/EoJQBP8Af8Af8AFmY
+        YgAAD2IBBYaGBAAAAUxJREFUSEvtkzErhmEUhq+sGGSRYlGyG1BMbHYLf4CZUV/EoJQBP8Af8Af8AFmY
         FLPBZpOB0KXz1vM9PS/f+zHhrrtO55z7Pj3vOS/8JfQC60HjCoNAC9gKziW1jjEKXAFvwUtgJGqzSV4e
         ZtovMQ3cZybS3NR3BywDTyF8BlaDxuasadh4QA+wC7yG6AGYBxaDxubyV3U0oA84TQQ3wDiwAbwEXbQ5
         a40G5Ms8A4aAk4KROWv2dDRgJlvmUVzKecG8ojV7jpOcHh5GG1ayZa4Bk8BdwTSnPfaqSZfvgXxgJ2l2

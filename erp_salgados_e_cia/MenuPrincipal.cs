@@ -13,6 +13,32 @@ namespace erp_salgados_e_cia
 {
     public partial class MenuPrincipal : Form
     {
+        private void SelecionarBotao(Button botaoSelecionado)
+        {
+            Color corMenu = Color.FromArgb(255, 145, 0);
+
+            Button[] botoes =
+            {
+        bapainel,
+        bavendas,
+        bacaixa,
+        baestoque,
+        bacadastros,
+        barelatorios,
+        bausuarios
+    };
+
+            foreach (Button botao in botoes)
+            {
+                botao.BackColor = corMenu;
+                botao.ForeColor = Color.White;
+            }
+
+            botaoSelecionado.BackColor = Color.White;
+            botaoSelecionado.ForeColor = corMenu;
+
+            botaoSelecionado.Invalidate();
+        }
         private void ArredondarBotao(Button botao, int raio)
         {
             botao.FlatStyle = FlatStyle.Flat;
@@ -62,13 +88,15 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
-            ArredondarBotao(bpainel, 20);
-            ArredondarBotao(bvendas, 20);
-            ArredondarBotao(bcaixa, 20);
-            ArredondarBotao(bestoque, 20);
-            ArredondarBotao(bcadastros, 20);
-            ArredondarBotao(brelatorios, 20);
-            ArredondarBotao(busuarios, 20);
+            ArredondarBotao(bapainel, 20);
+            ArredondarBotao(bavendas, 20);
+            ArredondarBotao(bacaixa, 20);
+            ArredondarBotao(baestoque, 20);
+            ArredondarBotao(bacadastros, 20);
+            ArredondarBotao(barelatorios, 20);
+            ArredondarBotao(bausuarios, 20);
+
+            SelecionarBotao(bapainel);
         }
 
         private void bprodutos_Click(object sender, EventArgs e)
@@ -111,6 +139,42 @@ namespace erp_salgados_e_cia
             telamovimentoestoque.AtualizarCombos();
 
             AbrirTela(telamovimentoestoque);
+        }
+
+        private void botaoarredondado2_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bavendas);
+
+        }
+
+        private void bapainel_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bapainel);
+        }
+
+        private void bacaixa_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bacaixa);
+        }
+
+        private void baestoque_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(baestoque);
+        }
+
+        private void bacadastros_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bacadastros);
+        }
+
+        private void barelatorios_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(barelatorios);
+        }
+
+        private void bausuarios_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bausuarios);
         }
     }
 }

@@ -162,7 +162,7 @@ namespace erp_salgados_e_cia
                     areaImagem
                 );
 
-                margemEsquerda += tamanhoIcone + 12;
+                margemEsquerda += tamanhoIcone + 16;
             }
 
             Rectangle areaTexto = new Rectangle(
