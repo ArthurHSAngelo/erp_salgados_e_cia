@@ -12,7 +12,8 @@ namespace erp_salgados_e_cia
 {
     public partial class ucprodutos : UserControl
     {
-        private List<Produto> produtos = new List<Produto>();
+        private List<Produto> produtos =
+            dadossistema.produtos;
         private void AtualizarTabela()
         {
             dgvprodutos.DataSource = null;

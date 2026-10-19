@@ -13,7 +13,7 @@ namespace erp_salgados_e_cia
     public partial class ucfornecedores : UserControl
     {
         private List<Fornecedor> fornecedores =
-            new List<Fornecedor>();
+        dadossistema.fornecedores;
         private void AtualizarTabela()
         {
             dgvfornecedores.DataSource = null;

@@ -1,11 +1,14 @@
-﻿namespace erp_salgados_e_cia
+﻿public class Produto
 {
-    public class Produto
-    {
-        public string Nome { get; set; }
-        public string Categoria { get; set; }
-        public decimal Preco { get; set; }
-        public decimal EstoqueMinimo { get; set; }
-        public string UnidadeMedida { get; set; }
-    }
+    public string Nome { get; set; }
+
+    public string Categoria { get; set; }
+
+    public decimal Preco { get; set; }
+
+    public decimal EstoqueMinimo { get; set; }
+
+    public decimal EstoqueAtual { get; set; }
+
+    public string UnidadeMedida { get; set; }
 }

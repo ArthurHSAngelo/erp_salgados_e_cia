@@ -7,11 +7,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace erp_salgados_e_cia
 {
     public partial class MenuPrincipal : Form
     {
+        private void ArredondarBotao(Button botao, int raio)
+        {
+            GraphicsPath caminho = new GraphicsPath();
+
+            caminho.AddArc(0, 0, raio, raio, 180, 90);
+            caminho.AddArc(botao.Width - raio, 0, raio, raio, 270, 90);
+            caminho.AddArc(
+                botao.Width - raio,
+                botao.Height - raio,
+                raio,
+                raio,
+                0,
+                90
+            );
+            caminho.AddArc(
+                0,
+                botao.Height - raio,
+                raio,
+                raio,
+                90,
+                90
+            );
+
+            caminho.CloseFigure();
+            botao.Region = new Region(caminho);
+        }
         private ucprodutos telaprodutos;
         private ucfornecedores telafornecedores;
         private ucunidades telaunidades;
@@ -30,6 +57,14 @@ namespace erp_salgados_e_cia
         public MenuPrincipal()
         {
             InitializeComponent();
+
+            ArredondarBotao(bpainel, 20);
+            ArredondarBotao(bvendas, 20);
+            ArredondarBotao(bcaixa, 20);
+            ArredondarBotao(bestoque, 20);
+            ArredondarBotao(bcadastros, 20);
+            ArredondarBotao(brelatorios, 20);
+            ArredondarBotao(busuarios, 20);
         }
 
         private void bprodutos_Click(object sender, EventArgs e)
@@ -68,6 +103,8 @@ namespace erp_salgados_e_cia
             {
                 telamovimentoestoque = new ucmovimentoestoque();
             }
+
+            telamovimentoestoque.AtualizarCombos();
 
             AbrirTela(telamovimentoestoque);
         }

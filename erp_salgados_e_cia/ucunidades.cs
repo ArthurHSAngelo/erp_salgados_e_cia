@@ -13,7 +13,7 @@ namespace erp_salgados_e_cia
     public partial class ucunidades : UserControl
     {
         private List<Unidade> unidades =
-            new List<Unidade>();
+            dadossistema.unidades;
 
         private void AtualizarTabela()
         {

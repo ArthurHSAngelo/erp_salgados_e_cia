@@ -44,31 +44,29 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
-            cbproduto.Items.AddRange(
-    new object[]
-    {
-        "Coxinha",
-        "Risole",
-        "Bolinha de queijo"
-    }
-);
-
-            cbfornecedor.Items.AddRange(
-                new object[]
-                {
-        "Fornecedor principal",
-        "Distribuidora de alimentos"
-                }
-            );
+            AtualizarCombos();
 
             cbresponsavel.Items.AddRange(
                 new object[]
                 {
-        "Administrador",
-        "Gerente",
-        "Atendente"
+                    "Administrador",
+                    "Gerente",
+                    "Atendente"
                 }
             );
+        }
+
+        public void AtualizarCombos()
+        {
+            cbproduto.DataSource = null;
+            cbproduto.DataSource = dadossistema.produtos;
+            cbproduto.DisplayMember = "Nome";
+            cbproduto.SelectedIndex = -1;
+
+            cbfornecedor.DataSource = null;
+            cbfornecedor.DataSource = dadossistema.fornecedores;
+            cbfornecedor.DisplayMember = "Nome";
+            cbfornecedor.SelectedIndex = -1;
         }
 
         private void bregistrar_Click(object sender, EventArgs e)
@@ -143,9 +141,12 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            Produto produtoSelecionado =
+                cbproduto.SelectedItem as Produto;
+
             movimentoestoque movimento = new movimentoestoque
             {
-                Produto = cbproduto.Text,
+                Produto = produtoSelecionado.Nome,
                 Quantidade = nudquantidade.Value,
                 CustoUnitario = custoUnitario,
                 Fornecedor = cbfornecedor.Text,
@@ -155,6 +156,8 @@ namespace erp_salgados_e_cia
             };
 
             movimentacoes.Add(movimento);
+
+            produtoSelecionado.EstoqueAtual += nudquantidade.Value;
 
             AtualizarTabela();
 
