@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuPrincipal));
             this.bprodutos = new System.Windows.Forms.Button();
             this.bfornecedores = new System.Windows.Forms.Button();
             this.bunidades = new System.Windows.Forms.Button();
@@ -42,6 +43,7 @@
             this.busuarios = new System.Windows.Forms.Button();
             this.brelatorios = new System.Windows.Forms.Button();
             this.ltitulo = new System.Windows.Forms.Label();
+            this.botaoarredondado1 = new erp_salgados_e_cia.botaoarredondado();
             this.pnlmenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +88,7 @@
             // pnlmenu
             // 
             this.pnlmenu.BackColor = System.Drawing.Color.DarkOrange;
+            this.pnlmenu.Controls.Add(this.botaoarredondado1);
             this.pnlmenu.Controls.Add(this.ltitulo);
             this.pnlmenu.Controls.Add(this.brelatorios);
             this.pnlmenu.Controls.Add(this.busuarios);
@@ -175,7 +178,7 @@
             this.bpainel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bpainel.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bpainel.ForeColor = System.Drawing.Color.DarkOrange;
-            this.bpainel.Location = new System.Drawing.Point(10, 85);
+            this.bpainel.Location = new System.Drawing.Point(16, 477);
             this.bpainel.Name = "bpainel";
             this.bpainel.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.bpainel.Size = new System.Drawing.Size(190, 45);
@@ -231,12 +234,35 @@
             this.ltitulo.AutoSize = true;
             this.ltitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ltitulo.ForeColor = System.Drawing.Color.White;
-            this.ltitulo.Location = new System.Drawing.Point(10, 30);
+            this.ltitulo.Location = new System.Drawing.Point(20, 30);
             this.ltitulo.Name = "ltitulo";
             this.ltitulo.Size = new System.Drawing.Size(196, 25);
             this.ltitulo.TabIndex = 0;
             this.ltitulo.Text = "ERP Salgados & Cia";
             this.ltitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // botaoarredondado1
+            // 
+            this.botaoarredondado1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.botaoarredondado1.BackColor = System.Drawing.Color.White;
+            this.botaoarredondado1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.botaoarredondado1.FlatAppearance.BorderSize = 0;
+            this.botaoarredondado1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.botaoarredondado1.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.botaoarredondado1.ForeColor = System.Drawing.Color.DarkOrange;
+            this.botaoarredondado1.Image = ((System.Drawing.Image)(resources.GetObject("botaoarredondado1.Image")));
+            this.botaoarredondado1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botaoarredondado1.Location = new System.Drawing.Point(20, 85);
+            this.botaoarredondado1.Name = "botaoarredondado1";
+            this.botaoarredondado1.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.botaoarredondado1.raio = 25;
+            this.botaoarredondado1.Size = new System.Drawing.Size(250, 45);
+            this.botaoarredondado1.TabIndex = 11;
+            this.botaoarredondado1.Text = "Painel";
+            this.botaoarredondado1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.botaoarredondado1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.botaoarredondado1.UseVisualStyleBackColor = false;
             // 
             // MenuPrincipal
             // 
@@ -271,5 +297,6 @@
         private System.Windows.Forms.Button brelatorios;
         private System.Windows.Forms.Button busuarios;
         private System.Windows.Forms.Label ltitulo;
+        private botaoarredondado botaoarredondado1;
     }
 }

@@ -15,6 +15,10 @@ namespace erp_salgados_e_cia
     {
         private void ArredondarBotao(Button botao, int raio)
         {
+            botao.FlatStyle = FlatStyle.Flat;
+            botao.FlatAppearance.BorderSize = 0;
+            botao.UseVisualStyleBackColor = false;
+
             GraphicsPath caminho = new GraphicsPath();
 
             caminho.AddArc(0, 0, raio, raio, 180, 90);
