@@ -15,29 +15,75 @@ namespace erp_salgados_e_cia
     {
         private void SelecionarBotao(Button botaoSelecionado)
         {
-            Color corMenu = Color.FromArgb(255, 145, 0);
+            Color corMenu = Color.DarkOrange;
 
             Button[] botoes =
             {
-        bapainel,
-        bavendas,
-        bacaixa,
-        baestoque,
-        bacadastros,
-        barelatorios,
-        bausuarios
+                bapainel,
+                bavendas,
+                bacaixa,
+                baestoque,
+                bacadastros,
+                barelatorios,
+                bausuarios
     };
 
             foreach (Button botao in botoes)
             {
                 botao.BackColor = corMenu;
                 botao.ForeColor = Color.White;
+
+                if (botao is botaoarredondado botaoArredondado)
+                {
+                    botaoArredondado.CorHover = Color.FromArgb(255, 165, 0);
+                }
             }
 
             botaoSelecionado.BackColor = Color.White;
             botaoSelecionado.ForeColor = corMenu;
 
+            if (botaoSelecionado is botaoarredondado botaoAtivo)
+            {
+                botaoAtivo.CorHover = Color.FromArgb(245, 245, 245);
+            }
+
             botaoSelecionado.Invalidate();
+
+            bapainel.Image =
+                botaoSelecionado == bapainel
+                ? Properties.Resources.painel_laranja
+                : Properties.Resources.painel_branco1;
+
+            bavendas.Image =
+                botaoSelecionado == bavendas
+                ? Properties.Resources.vendas_laranja
+                : Properties.Resources.vendas_branco;
+
+            bacaixa.Image =
+                botaoSelecionado == bacaixa
+                ? Properties.Resources.caixa_laranja
+                : Properties.Resources.caixa_branco;
+
+            baestoque.Image =
+                botaoSelecionado == baestoque
+                ? Properties.Resources.estoque_laranja
+                : Properties.Resources.estoque_branco;
+
+            bacadastros.Image =
+                botaoSelecionado == bacadastros
+                ? Properties.Resources.cadastros_laranja
+                : Properties.Resources.cadastros_branco;
+
+            barelatorios.Image =
+                botaoSelecionado == barelatorios
+                ? Properties.Resources.relatorios_laranja
+                : Properties.Resources.relatorios_branco;
+
+            bausuarios.Image =
+                botaoSelecionado == bausuarios
+                ? Properties.Resources.usuarios_laranja
+                : Properties.Resources.usuarios_branco;
+
         }
         private void ArredondarBotao(Button botao, int raio)
         {
@@ -87,6 +133,14 @@ namespace erp_salgados_e_cia
         public MenuPrincipal()
         {
             InitializeComponent();
+
+            bapainel.CorHover = Color.FromArgb(255, 165, 0);
+            bavendas.CorHover = Color.FromArgb(255, 165, 0);
+            bacaixa.CorHover = Color.FromArgb(255, 165, 0);
+            baestoque.CorHover = Color.FromArgb(255, 165, 0);
+            bacadastros.CorHover = Color.FromArgb(255, 165, 0);
+            barelatorios.CorHover = Color.FromArgb(255, 165, 0);
+            bausuarios.CorHover = Color.FromArgb(255, 165, 0);
 
             ArredondarBotao(bapainel, 20);
             ArredondarBotao(bavendas, 20);

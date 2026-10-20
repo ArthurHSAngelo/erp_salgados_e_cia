@@ -9,6 +9,9 @@ namespace erp_salgados_e_cia
     {
         public int raio { get; set; } = 20;
 
+        private bool mouseSobre = false;
+
+        public Color CorHover { get; set; } = Color.Empty;
         public botaoarredondado()
         {
             FlatStyle = FlatStyle.Flat;
@@ -138,7 +141,16 @@ namespace erp_salgados_e_cia
 
             caminho.CloseFigure();
 
-            using (SolidBrush pincel = new SolidBrush(BackColor))
+            Color corFundo = BackColor;
+
+            if (mouseSobre)
+            {
+                corFundo = CorHover == Color.Empty
+                    ? ControlPaint.Light(BackColor, 0.15f)
+                    : CorHover;
+            }
+
+            using (SolidBrush pincel = new SolidBrush(corFundo))
             {
                 e.Graphics.FillPath(pincel, caminho);
             }
@@ -183,9 +195,21 @@ namespace erp_salgados_e_cia
             );
         }
 
-        protected override void OnResize(EventArgs e)
+        protected override void OnMouseEnter(EventArgs e)
         {
-            base.OnResize(e);
+            base.OnMouseEnter(e);
+
+            mouseSobre = true;
+            Cursor = Cursors.Hand;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            mouseSobre = false;
+            Cursor = Cursors.Default;
             Invalidate();
         }
     }

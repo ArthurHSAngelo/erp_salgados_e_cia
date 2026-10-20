@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuPrincipal));
             this.bprodutos = new System.Windows.Forms.Button();
             this.bfornecedores = new System.Windows.Forms.Button();
             this.bunidades = new System.Windows.Forms.Button();
@@ -253,7 +252,6 @@
             this.bapainel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bapainel.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bapainel.ForeColor = System.Drawing.Color.DarkOrange;
-            this.bapainel.Image = ((System.Drawing.Image)(resources.GetObject("bapainel.Image")));
             this.bapainel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bapainel.Location = new System.Drawing.Point(20, 85);
             this.bapainel.Name = "bapainel";
