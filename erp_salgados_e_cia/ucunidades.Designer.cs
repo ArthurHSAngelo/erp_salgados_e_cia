@@ -28,69 +28,73 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.bexcluirunidade = new System.Windows.Forms.Button();
+            this.bexcluiru = new System.Windows.Forms.Button();
             this.dgvunidades = new System.Windows.Forms.DataGridView();
-            this.bsalvarunidade = new System.Windows.Forms.Button();
+            this.bsalvaru = new System.Windows.Forms.Button();
             this.tbnumerou = new System.Windows.Forms.TextBox();
             this.tbenderecou = new System.Windows.Forms.TextBox();
             this.tbnomeu = new System.Windows.Forms.TextBox();
             this.lnumerou = new System.Windows.Forms.Label();
             this.lenderecou = new System.Windows.Forms.Label();
             this.lnomeu = new System.Windows.Forms.Label();
+            this.beditaru = new System.Windows.Forms.Button();
+            this.tbcnpju = new System.Windows.Forms.TextBox();
+            this.lcnpju = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).BeginInit();
             this.SuspendLayout();
             // 
-            // bexcluirunidade
+            // bexcluiru
             // 
-            this.bexcluirunidade.Location = new System.Drawing.Point(211, 170);
-            this.bexcluirunidade.Name = "bexcluirunidade";
-            this.bexcluirunidade.Size = new System.Drawing.Size(75, 23);
-            this.bexcluirunidade.TabIndex = 17;
-            this.bexcluirunidade.Text = "Excluir";
-            this.bexcluirunidade.UseVisualStyleBackColor = true;
-            this.bexcluirunidade.Click += new System.EventHandler(this.bexcluirunidade_Click);
+            this.bexcluiru.Location = new System.Drawing.Point(977, 61);
+            this.bexcluiru.Name = "bexcluiru";
+            this.bexcluiru.Size = new System.Drawing.Size(75, 23);
+            this.bexcluiru.TabIndex = 17;
+            this.bexcluiru.Text = "Excluir";
+            this.bexcluiru.UseVisualStyleBackColor = true;
+            this.bexcluiru.Click += new System.EventHandler(this.bexcluiru_Click);
             // 
             // dgvunidades
             // 
             this.dgvunidades.AllowUserToAddRows = false;
+            this.dgvunidades.AllowUserToDeleteRows = false;
             this.dgvunidades.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvunidades.Location = new System.Drawing.Point(391, 208);
+            this.dgvunidades.Location = new System.Drawing.Point(97, 121);
             this.dgvunidades.MultiSelect = false;
             this.dgvunidades.Name = "dgvunidades";
+            this.dgvunidades.ReadOnly = true;
             this.dgvunidades.RowHeadersWidth = 51;
             this.dgvunidades.RowTemplate.Height = 24;
             this.dgvunidades.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvunidades.Size = new System.Drawing.Size(240, 150);
+            this.dgvunidades.Size = new System.Drawing.Size(534, 431);
             this.dgvunidades.TabIndex = 16;
-            this.dgvunidades.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvunidades_CellValidating);
             // 
-            // bsalvarunidade
+            // bsalvaru
             // 
-            this.bsalvarunidade.Location = new System.Drawing.Point(97, 170);
-            this.bsalvarunidade.Name = "bsalvarunidade";
-            this.bsalvarunidade.Size = new System.Drawing.Size(75, 23);
-            this.bsalvarunidade.TabIndex = 15;
-            this.bsalvarunidade.Text = "Salvar";
-            this.bsalvarunidade.UseVisualStyleBackColor = true;
-            this.bsalvarunidade.Click += new System.EventHandler(this.bsalvarunidade_Click);
+            this.bsalvaru.Location = new System.Drawing.Point(863, 61);
+            this.bsalvaru.Name = "bsalvaru";
+            this.bsalvaru.Size = new System.Drawing.Size(75, 23);
+            this.bsalvaru.TabIndex = 15;
+            this.bsalvaru.Text = "Salvar";
+            this.bsalvaru.UseVisualStyleBackColor = true;
+            this.bsalvaru.Click += new System.EventHandler(this.bsalvaru_Click);
             // 
             // tbnumerou
             // 
-            this.tbnumerou.Location = new System.Drawing.Point(177, 120);
+            this.tbnumerou.Location = new System.Drawing.Point(531, 27);
             this.tbnumerou.Name = "tbnumerou";
             this.tbnumerou.Size = new System.Drawing.Size(100, 22);
             this.tbnumerou.TabIndex = 14;
             // 
             // tbenderecou
             // 
-            this.tbenderecou.Location = new System.Drawing.Point(177, 80);
+            this.tbenderecou.Location = new System.Drawing.Point(744, 27);
             this.tbenderecou.Name = "tbenderecou";
             this.tbenderecou.Size = new System.Drawing.Size(100, 22);
             this.tbenderecou.TabIndex = 13;
             // 
             // tbnomeu
             // 
-            this.tbnomeu.Location = new System.Drawing.Point(177, 44);
+            this.tbnomeu.Location = new System.Drawing.Point(97, 27);
             this.tbnomeu.Name = "tbnomeu";
             this.tbnomeu.Size = new System.Drawing.Size(100, 22);
             this.tbnomeu.TabIndex = 12;
@@ -98,7 +102,7 @@
             // lnumerou
             // 
             this.lnumerou.AutoSize = true;
-            this.lnumerou.Location = new System.Drawing.Point(94, 120);
+            this.lnumerou.Location = new System.Drawing.Point(448, 27);
             this.lnumerou.Name = "lnumerou";
             this.lnumerou.Size = new System.Drawing.Size(58, 16);
             this.lnumerou.TabIndex = 11;
@@ -107,7 +111,7 @@
             // lenderecou
             // 
             this.lenderecou.AutoSize = true;
-            this.lenderecou.Location = new System.Drawing.Point(94, 80);
+            this.lenderecou.Location = new System.Drawing.Point(661, 27);
             this.lenderecou.Name = "lenderecou";
             this.lenderecou.Size = new System.Drawing.Size(69, 16);
             this.lenderecou.TabIndex = 10;
@@ -116,19 +120,48 @@
             // lnomeu
             // 
             this.lnomeu.AutoSize = true;
-            this.lnomeu.Location = new System.Drawing.Point(94, 44);
+            this.lnomeu.Location = new System.Drawing.Point(44, 30);
             this.lnomeu.Name = "lnomeu";
             this.lnomeu.Size = new System.Drawing.Size(47, 16);
             this.lnomeu.TabIndex = 9;
             this.lnomeu.Text = "Nome:";
             // 
+            // beditaru
+            // 
+            this.beditaru.Location = new System.Drawing.Point(863, 99);
+            this.beditaru.Name = "beditaru";
+            this.beditaru.Size = new System.Drawing.Size(75, 23);
+            this.beditaru.TabIndex = 18;
+            this.beditaru.Text = "Editar";
+            this.beditaru.UseVisualStyleBackColor = true;
+            this.beditaru.Click += new System.EventHandler(this.beditaru_Click);
+            // 
+            // tbcnpju
+            // 
+            this.tbcnpju.Location = new System.Drawing.Point(312, 30);
+            this.tbcnpju.Name = "tbcnpju";
+            this.tbcnpju.Size = new System.Drawing.Size(100, 22);
+            this.tbcnpju.TabIndex = 20;
+            // 
+            // lcnpju
+            // 
+            this.lcnpju.AutoSize = true;
+            this.lcnpju.Location = new System.Drawing.Point(229, 30);
+            this.lcnpju.Name = "lcnpju";
+            this.lcnpju.Size = new System.Drawing.Size(45, 16);
+            this.lcnpju.TabIndex = 19;
+            this.lcnpju.Text = "CNPJ:";
+            // 
             // ucunidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.bexcluirunidade);
+            this.Controls.Add(this.tbcnpju);
+            this.Controls.Add(this.lcnpju);
+            this.Controls.Add(this.beditaru);
+            this.Controls.Add(this.bexcluiru);
             this.Controls.Add(this.dgvunidades);
-            this.Controls.Add(this.bsalvarunidade);
+            this.Controls.Add(this.bsalvaru);
             this.Controls.Add(this.tbnumerou);
             this.Controls.Add(this.tbenderecou);
             this.Controls.Add(this.tbnomeu);
@@ -145,14 +178,17 @@
 
         #endregion
 
-        private System.Windows.Forms.Button bexcluirunidade;
+        private System.Windows.Forms.Button bexcluiru;
         private System.Windows.Forms.DataGridView dgvunidades;
-        private System.Windows.Forms.Button bsalvarunidade;
+        private System.Windows.Forms.Button bsalvaru;
         private System.Windows.Forms.TextBox tbnumerou;
         private System.Windows.Forms.TextBox tbenderecou;
         private System.Windows.Forms.TextBox tbnomeu;
         private System.Windows.Forms.Label lnumerou;
         private System.Windows.Forms.Label lenderecou;
         private System.Windows.Forms.Label lnomeu;
+        private System.Windows.Forms.Button beditaru;
+        private System.Windows.Forms.TextBox tbcnpju;
+        private System.Windows.Forms.Label lcnpju;
     }
 }

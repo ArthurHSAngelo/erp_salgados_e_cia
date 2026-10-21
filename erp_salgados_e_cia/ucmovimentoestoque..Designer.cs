@@ -159,8 +159,10 @@
             // dgvmovimentacoes
             // 
             this.dgvmovimentacoes.AllowUserToAddRows = false;
+            this.dgvmovimentacoes.AllowUserToDeleteRows = false;
             this.dgvmovimentacoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvmovimentacoes.Location = new System.Drawing.Point(650, 81);
+            this.dgvmovimentacoes.MultiSelect = false;
             this.dgvmovimentacoes.Name = "dgvmovimentacoes";
             this.dgvmovimentacoes.ReadOnly = true;
             this.dgvmovimentacoes.RowHeadersWidth = 51;

@@ -12,6 +12,8 @@ namespace erp_salgados_e_cia
 {
     public partial class ucunidades : UserControl
     {
+        private bool modoEdicao = false;
+        private int indiceUnidadeEditando = -1;
         private List<Unidade> unidades =
             dadossistema.unidades;
 
@@ -19,13 +21,31 @@ namespace erp_salgados_e_cia
         {
             dgvunidades.DataSource = null;
             dgvunidades.DataSource = unidades;
+
+            if (dgvunidades.Columns.Count > 0)
+            {
+                dgvunidades.Columns["Nome"].HeaderText = "Nome";
+                dgvunidades.Columns["Cnpj"].HeaderText = "CNPJ";
+                dgvunidades.Columns["Endereco"].HeaderText = "Endereço";
+                dgvunidades.Columns["Numero"].HeaderText = "Número";
+            }
         }
         public ucunidades()
         {
             InitializeComponent();
         }
 
-        private void bsalvarunidade_Click(object sender, EventArgs e)
+        private void LimparCampos()
+        {
+            tbnomeu.Clear();
+            tbcnpju.Clear();
+            tbenderecou.Clear();
+            tbnumerou.Clear();
+
+            tbnomeu.Focus();
+        }
+
+        private void bsalvaru_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(tbnomeu.Text))
             {
@@ -37,6 +57,19 @@ namespace erp_salgados_e_cia
                 );
 
                 tbnomeu.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbcnpju.Text))
+            {
+                MessageBox.Show(
+                    "Informe o CNPJ da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
                 return;
             }
 
@@ -66,35 +99,55 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            Unidade unidade = new Unidade
+            if (modoEdicao)
             {
-                Nome = tbnomeu.Text.Trim(),
-                Endereco = tbenderecou.Text.Trim(),
-                Numero = tbnumerou.Text.Trim()
-            };
+                Unidade unidadeAtual =
+                    unidades[indiceUnidadeEditando];
 
-            unidades.Add(unidade);
+                unidadeAtual.Nome = tbnomeu.Text.Trim();
+                unidadeAtual.Cnpj = tbcnpju.Text.Trim();
+                unidadeAtual.Endereco = tbenderecou.Text.Trim();
+                unidadeAtual.Numero = tbnumerou.Text.Trim();
+
+                MessageBox.Show(
+                    "Unidade atualizada com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                Unidade unidade = new Unidade
+                {
+                    Nome = tbnomeu.Text.Trim(),
+                    Cnpj = tbcnpju.Text.Trim(),
+                    Endereco = tbenderecou.Text.Trim(),
+                    Numero = tbnumerou.Text.Trim()
+                };
+
+                unidades.Add(unidade);
+
+                MessageBox.Show(
+                    "Unidade salva com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
 
             AtualizarTabela();
 
-            MessageBox.Show(
-                "Unidade salva com sucesso!\n\n" +
-                "Nome: " + unidade.Nome + "\n" +
-                "Endereço: " + unidade.Endereco + "\n" +
-                "Número: " + unidade.Numero,
-                "Sucesso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
 
-            tbnomeu.Clear();
-            tbenderecou.Clear();
-            tbnumerou.Clear();
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
 
-            tbnomeu.Focus();
+            LimparCampos();
         }
 
-        private void bexcluirunidade_Click(object sender, EventArgs e)
+        private void bexcluiru_Click(object sender, EventArgs e)
         {
             if (dgvunidades.SelectedRows.Count == 0)
             {
@@ -117,13 +170,12 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            DialogResult resposta =
-                MessageBox.Show(
-                    "Deseja excluir a unidade selecionada?",
-                    "Confirmar exclusão",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+            DialogResult resposta = MessageBox.Show(
+                "Deseja excluir a unidade selecionada?",
+                "Confirmar exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
 
             if (resposta != DialogResult.Yes)
             {
@@ -134,6 +186,14 @@ namespace erp_salgados_e_cia
 
             AtualizarTabela();
 
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
+
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
+
+            LimparCampos();
+
             MessageBox.Show(
                 "Unidade excluída com sucesso.",
                 "Sucesso",
@@ -142,56 +202,48 @@ namespace erp_salgados_e_cia
             );
         }
 
-        private void dgvunidades_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void beditaru_Click(object sender, EventArgs e)
         {
-            string coluna =
-       dgvunidades.Columns[e.ColumnIndex].Name;
-
-            string valor =
-                e.FormattedValue == null
-                ? ""
-                : e.FormattedValue.ToString().Trim();
-
-            if (coluna == "Nome" &&
-                string.IsNullOrWhiteSpace(valor))
+            if (dgvunidades.SelectedRows.Count == 0)
             {
                 MessageBox.Show(
-                    "O nome da unidade não pode ficar vazio.",
+                    "Selecione uma unidade para editar.",
                     "Atenção",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
 
-                e.Cancel = true;
                 return;
             }
 
-            if (coluna == "Endereco" &&
-                string.IsNullOrWhiteSpace(valor))
-            {
-                MessageBox.Show(
-                    "O endereço da unidade não pode ficar vazio.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+            Unidade unidadeSelecionada =
+                dgvunidades.SelectedRows[0]
+                .DataBoundItem as Unidade;
 
-                e.Cancel = true;
+            if (unidadeSelecionada == null)
+            {
                 return;
             }
 
-            if (coluna == "Numero" &&
-                string.IsNullOrWhiteSpace(valor))
-            {
-                MessageBox.Show(
-                    "O número da unidade não pode ficar vazio.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+            indiceUnidadeEditando =
+                unidades.IndexOf(unidadeSelecionada);
 
-                e.Cancel = true;
+            if (indiceUnidadeEditando == -1)
+            {
+                return;
             }
+
+            tbnomeu.Text = unidadeSelecionada.Nome;
+            tbenderecou.Text = unidadeSelecionada.Endereco;
+            tbnumerou.Text = unidadeSelecionada.Numero;
+            tbcnpju.Text = unidadeSelecionada.Cnpj;
+
+            modoEdicao = true;
+
+            bsalvaru.Text = "Atualizar unidade";
+            beditaru.Enabled = false;
+
+            tbnomeu.Focus();
         }
     }
 }

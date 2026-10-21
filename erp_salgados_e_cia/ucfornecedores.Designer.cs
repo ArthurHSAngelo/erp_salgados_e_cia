@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.bexcluirfornecedor = new System.Windows.Forms.Button();
+            this.bexcluirf = new System.Windows.Forms.Button();
             this.tbtelefonef = new System.Windows.Forms.TextBox();
             this.ltelefone = new System.Windows.Forms.Label();
             this.dgvfornecedores = new System.Windows.Forms.DataGridView();
@@ -37,18 +37,19 @@
             this.tbnomef = new System.Windows.Forms.TextBox();
             this.lcnpjfornecedor = new System.Windows.Forms.Label();
             this.lnomefornecedor = new System.Windows.Forms.Label();
+            this.beditarf = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvfornecedores)).BeginInit();
             this.SuspendLayout();
             // 
-            // bexcluirfornecedor
+            // bexcluirf
             // 
-            this.bexcluirfornecedor.Location = new System.Drawing.Point(575, 142);
-            this.bexcluirfornecedor.Name = "bexcluirfornecedor";
-            this.bexcluirfornecedor.Size = new System.Drawing.Size(75, 23);
-            this.bexcluirfornecedor.TabIndex = 17;
-            this.bexcluirfornecedor.Text = "Excluir";
-            this.bexcluirfornecedor.UseVisualStyleBackColor = true;
-            this.bexcluirfornecedor.Click += new System.EventHandler(this.bexcluirfornecedor_Click);
+            this.bexcluirf.Location = new System.Drawing.Point(575, 142);
+            this.bexcluirf.Name = "bexcluirf";
+            this.bexcluirf.Size = new System.Drawing.Size(75, 23);
+            this.bexcluirf.TabIndex = 17;
+            this.bexcluirf.Text = "Excluir";
+            this.bexcluirf.UseVisualStyleBackColor = true;
+            this.bexcluirf.Click += new System.EventHandler(this.bexcluirf_Click);
             // 
             // tbtelefonef
             // 
@@ -69,16 +70,17 @@
             // dgvfornecedores
             // 
             this.dgvfornecedores.AllowUserToAddRows = false;
+            this.dgvfornecedores.AllowUserToDeleteRows = false;
             this.dgvfornecedores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvfornecedores.Location = new System.Drawing.Point(110, 188);
             this.dgvfornecedores.MultiSelect = false;
             this.dgvfornecedores.Name = "dgvfornecedores";
+            this.dgvfornecedores.ReadOnly = true;
             this.dgvfornecedores.RowHeadersWidth = 51;
             this.dgvfornecedores.RowTemplate.Height = 24;
             this.dgvfornecedores.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvfornecedores.Size = new System.Drawing.Size(540, 191);
             this.dgvfornecedores.TabIndex = 14;
-            this.dgvfornecedores.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvfornecedores_CellValidating);
             // 
             // bsalvarfornecedor
             // 
@@ -122,11 +124,22 @@
             this.lnomefornecedor.TabIndex = 9;
             this.lnomefornecedor.Text = "Nome do Fornecedor:";
             // 
+            // beditarf
+            // 
+            this.beditarf.Location = new System.Drawing.Point(431, 112);
+            this.beditarf.Name = "beditarf";
+            this.beditarf.Size = new System.Drawing.Size(75, 23);
+            this.beditarf.TabIndex = 18;
+            this.beditarf.Text = "Editar";
+            this.beditarf.UseVisualStyleBackColor = true;
+            this.beditarf.Click += new System.EventHandler(this.beditarf_Click);
+            // 
             // ucfornecedores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.bexcluirfornecedor);
+            this.Controls.Add(this.beditarf);
+            this.Controls.Add(this.bexcluirf);
             this.Controls.Add(this.tbtelefonef);
             this.Controls.Add(this.ltelefone);
             this.Controls.Add(this.dgvfornecedores);
@@ -145,7 +158,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button bexcluirfornecedor;
+        private System.Windows.Forms.Button bexcluirf;
         private System.Windows.Forms.TextBox tbtelefonef;
         private System.Windows.Forms.Label ltelefone;
         private System.Windows.Forms.DataGridView dgvfornecedores;
@@ -154,5 +167,6 @@
         private System.Windows.Forms.TextBox tbnomef;
         private System.Windows.Forms.Label lcnpjfornecedor;
         private System.Windows.Forms.Label lnomefornecedor;
+        private System.Windows.Forms.Button beditarf;
     }
 }

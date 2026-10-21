@@ -12,6 +12,9 @@ namespace erp_salgados_e_cia
 {
     public partial class ucfornecedores : UserControl
     {
+        private bool modoEdicao = false;
+        private int indiceFornecedorEditando = -1;
+
         private List<Fornecedor> fornecedores =
         dadossistema.fornecedores;
         private void AtualizarTabela()
@@ -22,6 +25,15 @@ namespace erp_salgados_e_cia
         public ucfornecedores()
         {
             InitializeComponent();
+        }
+
+        private void LimparCampos()
+        {
+            tbnomef.Clear();
+            tbcnpjf.Clear();
+            tbtelefonef.Clear();
+
+            tbnomef.Focus();
         }
 
         private void bsalvarfornecedor_Click(object sender, EventArgs e)
@@ -59,7 +71,15 @@ namespace erp_salgados_e_cia
                         .ToArray()
                 );
 
-            bool cnpjExiste = fornecedores.Exists(f =>
+            Fornecedor fornecedorAtual = null;
+
+            if (modoEdicao && indiceFornecedorEditando >= 0)
+            {
+                fornecedorAtual = fornecedores[indiceFornecedorEditando];
+            }
+
+            bool cnpjExiste = fornecedores.Any(f =>
+                f != fornecedorAtual &&
                 new string(
                     f.Cnpj
                         .Where(char.IsDigit)
@@ -80,35 +100,50 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            Fornecedor fornecedor = new Fornecedor
+            if (modoEdicao)
             {
-                Nome = tbnomef.Text.Trim(),
-                Cnpj = tbcnpjf.Text.Trim(),
-                Telefone = tbtelefonef.Text.Trim()
-            };
+                fornecedorAtual.Nome = tbnomef.Text.Trim();
+                fornecedorAtual.Cnpj = tbcnpjf.Text.Trim();
+                fornecedorAtual.Telefone = tbtelefonef.Text.Trim();
 
-            fornecedores.Add(fornecedor);
+                MessageBox.Show(
+                    "Fornecedor atualizado com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                Fornecedor fornecedor = new Fornecedor
+                {
+                    Nome = tbnomef.Text.Trim(),
+                    Cnpj = tbcnpjf.Text.Trim(),
+                    Telefone = tbtelefonef.Text.Trim()
+                };
+
+                fornecedores.Add(fornecedor);
+
+                MessageBox.Show(
+                    "Fornecedor salvo com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
 
             AtualizarTabela();
 
-            MessageBox.Show(
-                "Fornecedor salvo com sucesso!\n\n" +
-                "Nome: " + fornecedor.Nome + "\n" +
-                "CNPJ: " + fornecedor.Cnpj + "\n" +
-                "Telefone: " + fornecedor.Telefone,
-                "Sucesso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+            modoEdicao = false;
+            indiceFornecedorEditando = -1;
 
-            tbnomef.Clear();
-            tbcnpjf.Clear();
-            tbtelefonef.Clear();
+            bsalvarfornecedor.Text = "Salvar fornecedor";
+            beditarf.Enabled = true;
 
-            tbnomef.Focus();
+            LimparCampos();
         }
 
-        private void bexcluirfornecedor_Click(object sender, EventArgs e)
+        private void bexcluirf_Click(object sender, EventArgs e)
         {
             if (dgvfornecedores.SelectedRows.Count == 0)
             {
@@ -131,13 +166,12 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            DialogResult resposta =
-                MessageBox.Show(
-                    "Deseja excluir o fornecedor selecionado?",
-                    "Confirmar exclusão",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+            DialogResult resposta = MessageBox.Show(
+                "Deseja excluir o fornecedor selecionado?",
+                "Confirmar exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
 
             if (resposta != DialogResult.Yes)
             {
@@ -154,99 +188,49 @@ namespace erp_salgados_e_cia
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
-
-
         }
 
-        private void dgvfornecedores_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void beditarf_Click(object sender, EventArgs e)
         {
+            if (dgvfornecedores.SelectedRows.Count == 0)
             {
-                string coluna =
-                    dgvfornecedores.Columns[e.ColumnIndex].Name;
+                MessageBox.Show(
+                    "Selecione um fornecedor para editar.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-                string valor =
-                    e.FormattedValue == null
-                    ? ""
-                    : e.FormattedValue.ToString().Trim();
-
-                if (coluna == "Nome" &&
-                    string.IsNullOrWhiteSpace(valor))
-                {
-                    MessageBox.Show(
-                        "O nome do fornecedor não pode ficar vazio.",
-                        "Atenção",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-
-                    e.Cancel = true;
-                    return;
-                }
-
-                if (coluna == "Cnpj" &&
-                    string.IsNullOrWhiteSpace(valor))
-                {
-                    MessageBox.Show(
-                        "O CNPJ do fornecedor não pode ficar vazio.",
-                        "Atenção",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-
-                    e.Cancel = true;
-                    return;
-                }
-
-                if (coluna == "Cnpj")
-                {
-                    string cnpjEditado =
-                        new string(
-                            valor
-                                .Where(char.IsDigit)
-                                .ToArray()
-                        );
-
-                    for (int linha = 0;
-                         linha < dgvfornecedores.Rows.Count;
-                         linha++)
-                    {
-                        if (linha == e.RowIndex)
-                        {
-                            continue;
-                        }
-
-                        object valorOutraLinha =
-                            dgvfornecedores.Rows[linha]
-                            .Cells["Cnpj"]
-                            .Value;
-
-                        string outroCnpj =
-                            valorOutraLinha == null
-                            ? ""
-                            : valorOutraLinha.ToString();
-
-                        outroCnpj =
-                            new string(
-                                outroCnpj
-                                    .Where(char.IsDigit)
-                                    .ToArray()
-                            );
-
-                        if (cnpjEditado == outroCnpj)
-                        {
-                            MessageBox.Show(
-                                "Esse CNPJ já está cadastrado.",
-                                "Atenção",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning
-                            );
-
-                            e.Cancel = true;
-                            return;
-                        }
-                    }
-                }
+                return;
             }
+
+            Fornecedor fornecedorSelecionado =
+                dgvfornecedores.SelectedRows[0]
+                .DataBoundItem as Fornecedor;
+
+            if (fornecedorSelecionado == null)
+            {
+                return;
+            }
+
+            indiceFornecedorEditando =
+                fornecedores.IndexOf(fornecedorSelecionado);
+
+            if (indiceFornecedorEditando == -1)
+            {
+                return;
+            }
+
+            tbnomef.Text = fornecedorSelecionado.Nome;
+            tbcnpjf.Text = fornecedorSelecionado.Cnpj;
+            tbtelefonef.Text = fornecedorSelecionado.Telefone;
+
+            modoEdicao = true;
+
+            bsalvarfornecedor.Text = "Atualizar fornecedor";
+            beditarf.Enabled = false;
+
+            tbnomef.Focus();
         }
     }
 }

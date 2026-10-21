@@ -41,6 +41,7 @@
             this.bsalvar = new System.Windows.Forms.Button();
             this.tbnomeproduto = new System.Windows.Forms.TextBox();
             this.lproduto = new System.Windows.Forms.Label();
+            this.beditar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudestoqueminimo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.SuspendLayout();
@@ -119,7 +120,7 @@
             // 
             // bexcluir
             // 
-            this.bexcluir.Location = new System.Drawing.Point(173, 152);
+            this.bexcluir.Location = new System.Drawing.Point(347, 152);
             this.bexcluir.Name = "bexcluir";
             this.bexcluir.Size = new System.Drawing.Size(75, 23);
             this.bexcluir.TabIndex = 21;
@@ -130,10 +131,13 @@
             // dgvprodutos
             // 
             this.dgvprodutos.AllowUserToAddRows = false;
+            this.dgvprodutos.AllowUserToDeleteRows = false;
             this.dgvprodutos.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dgvprodutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvprodutos.Location = new System.Drawing.Point(127, 190);
+            this.dgvprodutos.MultiSelect = false;
             this.dgvprodutos.Name = "dgvprodutos";
+            this.dgvprodutos.ReadOnly = true;
             this.dgvprodutos.RowHeadersWidth = 51;
             this.dgvprodutos.RowTemplate.Height = 24;
             this.dgvprodutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -169,7 +173,7 @@
             // bsalvar
             // 
             this.bsalvar.BackColor = System.Drawing.Color.White;
-            this.bsalvar.Location = new System.Drawing.Point(372, 152);
+            this.bsalvar.Location = new System.Drawing.Point(185, 152);
             this.bsalvar.Name = "bsalvar";
             this.bsalvar.Size = new System.Drawing.Size(75, 23);
             this.bsalvar.TabIndex = 16;
@@ -193,10 +197,22 @@
             this.lproduto.TabIndex = 14;
             this.lproduto.Text = "Nome:";
             // 
+            // beditar
+            // 
+            this.beditar.BackColor = System.Drawing.Color.White;
+            this.beditar.Location = new System.Drawing.Point(266, 152);
+            this.beditar.Name = "beditar";
+            this.beditar.Size = new System.Drawing.Size(75, 23);
+            this.beditar.TabIndex = 27;
+            this.beditar.Text = "Editar";
+            this.beditar.UseVisualStyleBackColor = false;
+            this.beditar.Click += new System.EventHandler(this.beditar_Click);
+            // 
             // ucprodutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.beditar);
             this.Controls.Add(this.lunidadedemedida);
             this.Controls.Add(this.cbunidademedida);
             this.Controls.Add(this.nudestoqueminimo);
@@ -234,5 +250,6 @@
         private System.Windows.Forms.Button bsalvar;
         private System.Windows.Forms.TextBox tbnomeproduto;
         private System.Windows.Forms.Label lproduto;
+        private System.Windows.Forms.Button beditar;
     }
 }

@@ -13,6 +13,15 @@ namespace erp_salgados_e_cia
 {
     public partial class MenuPrincipal : Form
     {
+
+        private void FecharSubMenus()
+        {
+            panelCadastros.Visible = false;
+            panelestoque.Visible = false;
+
+            bacadastros.Text = "Cadastros ▼";
+            baestoque.Text = "Estoque ▼";
+        }
         private void SelecionarBotao(Button botaoSelecionado)
         {
             Color corMenu = Color.DarkOrange;
@@ -155,6 +164,8 @@ namespace erp_salgados_e_cia
 
         private void bprodutos_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             if (telaprodutos == null)
             {
                 telaprodutos = new ucprodutos();
@@ -165,6 +176,8 @@ namespace erp_salgados_e_cia
 
         private void bfornecedores_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             if (telafornecedores == null)
             {
                 telafornecedores = new ucfornecedores();
@@ -175,6 +188,8 @@ namespace erp_salgados_e_cia
 
         private void bunidades_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             if (telaunidades == null)
             {
                 telaunidades = new ucunidades();
@@ -185,6 +200,8 @@ namespace erp_salgados_e_cia
 
         private void bmovimentoestoque_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             if (telamovimentoestoque == null)
             {
                 telamovimentoestoque = new ucmovimentoestoque();
@@ -197,37 +214,69 @@ namespace erp_salgados_e_cia
 
         private void botaoarredondado2_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             SelecionarBotao(bavendas);
 
         }
 
         private void bapainel_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             SelecionarBotao(bapainel);
         }
 
         private void bacaixa_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             SelecionarBotao(bacaixa);
         }
 
         private void baestoque_Click(object sender, EventArgs e)
         {
             SelecionarBotao(baestoque);
+
+            bool abrir = !panelestoque.Visible;
+
+            FecharSubMenus();
+
+            panelestoque.Visible = abrir;
+
+            if (abrir)
+            {
+                baestoque.Text = "Estoque ▲";
+            }
         }
 
         private void bacadastros_Click(object sender, EventArgs e)
         {
             SelecionarBotao(bacadastros);
+
+            bool abrir = !panelCadastros.Visible;
+
+            FecharSubMenus();
+
+            panelCadastros.Visible = abrir;
+
+            if (abrir)
+            {
+                bacadastros.Text = "Cadastros ▲";
+            }
         }
 
         private void barelatorios_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             SelecionarBotao(barelatorios);
         }
 
         private void bausuarios_Click(object sender, EventArgs e)
         {
+            FecharSubMenus();
+
             SelecionarBotao(bausuarios);
         }
     }
