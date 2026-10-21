@@ -117,4 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cadastros_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cadastros_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cadastros_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cadastros_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="caixa_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\caixa_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="caixa_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\caixa_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="estoque_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\estoque_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="estoque_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\estoque_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="painel_branco1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\painel_branco1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="painel_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\painel_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="relatorios_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\relatorios_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="relatorios_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\relatorios_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="usuarios_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\usuarios_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="usuarios_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\usuarios_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="vendas_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\vendas_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="vendas_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\vendas_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -12,7 +12,10 @@ namespace erp_salgados_e_cia
 {
     public partial class ucprodutos : UserControl
     {
-        private List<Produto> produtos = new List<Produto>();
+        private bool modoEdicao = false;
+        private int indiceProdutoEditando = -1;
+        private List<Produto> produtos =
+            dadossistema.produtos;
         private void AtualizarTabela()
         {
             dgvprodutos.DataSource = null;
@@ -41,10 +44,21 @@ namespace erp_salgados_e_cia
             InitializeComponent();
         }
 
+        private void LimparCampos()
+        {
+            tbnomeproduto.Clear();
+            tbpreco.Clear();
+
+            cbcategoria.SelectedIndex = -1;
+            cbunidademedida.SelectedIndex = -1;
+
+            nudestoqueminimo.Value = 1;
+
+            tbnomeproduto.Focus();
+        }
+
         private void bsalvar_Click(object sender, EventArgs e)
         {
-
-
             decimal preco;
 
             if (string.IsNullOrWhiteSpace(tbnomeproduto.Text))
@@ -99,40 +113,53 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            Produto produto = new Produto
+            if (modoEdicao)
             {
-                Nome = tbnomeproduto.Text,
-                Categoria = cbcategoria.Text,
-                Preco = preco,
-                EstoqueMinimo = nudestoqueminimo.Value,
-                UnidadeMedida = cbunidademedida.Text
-            };
+                Produto produto = produtos[indiceProdutoEditando];
 
+                produto.Nome = tbnomeproduto.Text;
+                produto.Preco = preco;
+                produto.Categoria = cbcategoria.Text;
+                produto.UnidadeMedida = cbunidademedida.Text;
+                produto.EstoqueMinimo = nudestoqueminimo.Value;
 
-            produtos.Add(produto);
+                MessageBox.Show(
+                    "Produto atualizado com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                Produto produto = new Produto
+                {
+                    Nome = tbnomeproduto.Text,
+                    Preco = preco,
+                    Categoria = cbcategoria.Text,
+                    UnidadeMedida = cbunidademedida.Text,
+                    EstoqueMinimo = nudestoqueminimo.Value
+                };
+
+                produtos.Add(produto);
+
+                MessageBox.Show(
+                    "Produto cadastrado com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
 
             AtualizarTabela();
 
-            MessageBox.Show(
-                 "Produto salvo com sucesso!\n\n" +
-                 "Nome: " + produto.Nome + "\n" +
-                 "Preço: R$ " + produto.Preco.ToString("N2") + "\n" +
-                 "Categoria: " + produto.Categoria + "\n",
-                 "Sucesso",
-                 MessageBoxButtons.OK,
-                 MessageBoxIcon.Information
-             );
+            modoEdicao = false;
+            indiceProdutoEditando = -1;
 
-            tbnomeproduto.Clear();
-            cbcategoria.SelectedIndex = -1;
-            tbpreco.Clear();
-            tbnomeproduto.Focus();
-            nudestoqueminimo.Value = 1;
-            cbunidademedida.SelectedIndex = -1;
+            bsalvar.Text = "Salvar";
+            beditar.Enabled = true;
 
-            tbnomeproduto.Focus();
-
-
+            LimparCampos();
         }
 
         private void bexcluir_Click(object sender, EventArgs e)
@@ -236,5 +263,47 @@ namespace erp_salgados_e_cia
             }
         }
 
+        private void beditar_Click(object sender, EventArgs e)
+        {
+            if (dgvprodutos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Selecione um produto para editar.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            Produto produtoSelecionado =
+                dgvprodutos.SelectedRows[0].DataBoundItem as Produto;
+
+            if (produtoSelecionado == null)
+            {
+                return;
+            }
+
+            indiceProdutoEditando = produtos.IndexOf(produtoSelecionado);
+
+            if (indiceProdutoEditando == -1)
+            {
+                return;
+            }
+
+            tbnomeproduto.Text = produtoSelecionado.Nome;
+            tbpreco.Text = produtoSelecionado.Preco.ToString("N2");
+            cbcategoria.Text = produtoSelecionado.Categoria;
+            cbunidademedida.Text = produtoSelecionado.UnidadeMedida;
+            nudestoqueminimo.Value = produtoSelecionado.EstoqueMinimo;
+
+            modoEdicao = true;
+
+            bsalvar.Text = "Atualizar";
+            beditar.Enabled = false;
+
+            tbnomeproduto.Focus();
+        }
     }
 }
