@@ -33,6 +33,7 @@ namespace erp_salgados_e_cia
         public ucunidades()
         {
             InitializeComponent();
+            AtualizarTabela();
         }
 
         private void LimparCampos()

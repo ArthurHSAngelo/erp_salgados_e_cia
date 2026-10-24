@@ -42,6 +42,7 @@ namespace erp_salgados_e_cia
         public ucprodutos()
         {
             InitializeComponent();
+            AtualizarTabela();
         }
 
         private void LimparCampos()

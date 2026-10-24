@@ -25,6 +25,7 @@ namespace erp_salgados_e_cia
         public ucfornecedores()
         {
             InitializeComponent();
+            AtualizarTabela();
         }
 
         private void LimparCampos()
