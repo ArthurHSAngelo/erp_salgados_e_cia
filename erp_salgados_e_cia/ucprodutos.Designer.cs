@@ -42,6 +42,8 @@
             this.tbnomeproduto = new System.Windows.Forms.TextBox();
             this.lproduto = new System.Windows.Forms.Label();
             this.beditar = new System.Windows.Forms.Button();
+            this.cbativo = new System.Windows.Forms.CheckBox();
+            this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudestoqueminimo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.SuspendLayout();
@@ -143,7 +145,6 @@
             this.dgvprodutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvprodutos.Size = new System.Drawing.Size(894, 382);
             this.dgvprodutos.TabIndex = 20;
-            this.dgvprodutos.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvprodutos_CellValidating);
             // 
             // lcategoria
             // 
@@ -208,10 +209,33 @@
             this.beditar.UseVisualStyleBackColor = false;
             this.beditar.Click += new System.EventHandler(this.beditar_Click);
             // 
+            // cbativo
+            // 
+            this.cbativo.AutoSize = true;
+            this.cbativo.Checked = true;
+            this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbativo.Location = new System.Drawing.Point(1115, 47);
+            this.cbativo.Name = "cbativo";
+            this.cbativo.Size = new System.Drawing.Size(59, 20);
+            this.cbativo.TabIndex = 28;
+            this.cbativo.Text = "Ativo";
+            this.cbativo.UseVisualStyleBackColor = true;
+            this.cbativo.Visible = false;
+            // 
+            // cbfiltrostatus
+            // 
+            this.cbfiltrostatus.FormattingEnabled = true;
+            this.cbfiltrostatus.Location = new System.Drawing.Point(617, 152);
+            this.cbfiltrostatus.Name = "cbfiltrostatus";
+            this.cbfiltrostatus.Size = new System.Drawing.Size(121, 24);
+            this.cbfiltrostatus.TabIndex = 29;
+            // 
             // ucprodutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbfiltrostatus);
+            this.Controls.Add(this.cbativo);
             this.Controls.Add(this.beditar);
             this.Controls.Add(this.lunidadedemedida);
             this.Controls.Add(this.cbunidademedida);
@@ -251,5 +275,7 @@
         private System.Windows.Forms.TextBox tbnomeproduto;
         private System.Windows.Forms.Label lproduto;
         private System.Windows.Forms.Button beditar;
+        private System.Windows.Forms.CheckBox cbativo;
+        private System.Windows.Forms.ComboBox cbfiltrostatus;
     }
 }

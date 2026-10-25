@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
 {
@@ -15,16 +16,18 @@ namespace erp_salgados_e_cia
         private bool modoEdicao = false;
         private int indiceFornecedorEditando = -1;
 
-        private List<Fornecedor> fornecedores =
-        dadossistema.fornecedores;
+        private BindingList<Fornecedor> fornecedores =
+            dadossistema.fornecedores;
         private void AtualizarTabela()
         {
-            dgvfornecedores.DataSource = null;
-            dgvfornecedores.DataSource = fornecedores;
+
         }
         public ucfornecedores()
         {
             InitializeComponent();
+
+            dgvfornecedores.DataSource = fornecedores;
+
             AtualizarTabela();
         }
 
@@ -33,6 +36,8 @@ namespace erp_salgados_e_cia
             tbnomef.Clear();
             tbcnpjf.Clear();
             tbtelefonef.Clear();
+            cbativo.Checked = true;
+            cbativo.Visible = false;
 
             tbnomef.Focus();
         }
@@ -103,9 +108,30 @@ namespace erp_salgados_e_cia
 
             if (modoEdicao)
             {
+                if (!cbativo.Checked &&
+                     fornecedorAtual.Status == StatusCadastro.Ativo)
+                {
+                    DialogResult resposta = MessageBox.Show(
+                        "Deseja realmente inativar este fornecedor?",
+                        "Confirmar inativação",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+                    if (resposta != DialogResult.Yes)
+                    {
+                        cbativo.Checked = true;
+                        return;
+                    }
+                }
+
                 fornecedorAtual.Nome = tbnomef.Text.Trim();
                 fornecedorAtual.Cnpj = tbcnpjf.Text.Trim();
                 fornecedorAtual.Telefone = tbtelefonef.Text.Trim();
+
+                fornecedorAtual.Status =
+                    cbativo.Checked
+                    ? StatusCadastro.Ativo
+                    : StatusCadastro.Inativo;
 
                 MessageBox.Show(
                     "Fornecedor atualizado com sucesso.",
@@ -118,6 +144,7 @@ namespace erp_salgados_e_cia
             {
                 Fornecedor fornecedor = new Fornecedor
                 {
+                    Status = StatusCadastro.Ativo,
                     Nome = tbnomef.Text.Trim(),
                     Cnpj = tbcnpjf.Text.Trim(),
                     Telefone = tbtelefonef.Text.Trim()
@@ -134,6 +161,7 @@ namespace erp_salgados_e_cia
             }
 
             AtualizarTabela();
+            dgvfornecedores.Refresh();
 
             modoEdicao = false;
             indiceFornecedorEditando = -1;
@@ -222,9 +250,19 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            tbnomef.Text = fornecedorSelecionado.Nome;
-            tbcnpjf.Text = fornecedorSelecionado.Cnpj;
-            tbtelefonef.Text = fornecedorSelecionado.Telefone;
+            tbnomef.Text =
+                fornecedorSelecionado.Nome;
+
+            tbcnpjf.Text =
+                fornecedorSelecionado.Cnpj;
+
+            tbtelefonef.Text =
+                fornecedorSelecionado.Telefone;
+
+            cbativo.Checked =
+                fornecedorSelecionado.Status == StatusCadastro.Ativo;
+
+            cbativo.Visible = true;
 
             modoEdicao = true;
 

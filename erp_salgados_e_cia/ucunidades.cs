@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
 {
@@ -14,13 +15,11 @@ namespace erp_salgados_e_cia
     {
         private bool modoEdicao = false;
         private int indiceUnidadeEditando = -1;
-        private List<Unidade> unidades =
+        private BindingList<Unidade> unidades =
             dadossistema.unidades;
 
         private void AtualizarTabela()
         {
-            dgvunidades.DataSource = null;
-            dgvunidades.DataSource = unidades;
 
             if (dgvunidades.Columns.Count > 0)
             {
@@ -33,6 +32,9 @@ namespace erp_salgados_e_cia
         public ucunidades()
         {
             InitializeComponent();
+
+            dgvunidades.DataSource = unidades;
+
             AtualizarTabela();
         }
 
@@ -42,6 +44,8 @@ namespace erp_salgados_e_cia
             tbcnpju.Clear();
             tbenderecou.Clear();
             tbnumerou.Clear();
+            cbativo.Checked = true;
+            cbativo.Visible = false;
 
             tbnomeu.Focus();
         }
@@ -105,10 +109,32 @@ namespace erp_salgados_e_cia
                 Unidade unidadeAtual =
                     unidades[indiceUnidadeEditando];
 
+                if (!cbativo.Checked &&
+                    unidadeAtual.Status == StatusCadastro.Ativo)
+                {
+                    DialogResult resposta = MessageBox.Show(
+                        "Deseja realmente inativar esta unidade?",
+                        "Confirmar inativação",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (resposta != DialogResult.Yes)
+                    {
+                        cbativo.Checked = true;
+                        return;
+                    }
+                }
+
                 unidadeAtual.Nome = tbnomeu.Text.Trim();
                 unidadeAtual.Cnpj = tbcnpju.Text.Trim();
                 unidadeAtual.Endereco = tbenderecou.Text.Trim();
                 unidadeAtual.Numero = tbnumerou.Text.Trim();
+
+                unidadeAtual.Status =
+                    cbativo.Checked
+                    ? StatusCadastro.Ativo
+                    : StatusCadastro.Inativo;
 
                 MessageBox.Show(
                     "Unidade atualizada com sucesso.",
@@ -121,6 +147,7 @@ namespace erp_salgados_e_cia
             {
                 Unidade unidade = new Unidade
                 {
+                    Status = StatusCadastro.Ativo,
                     Nome = tbnomeu.Text.Trim(),
                     Cnpj = tbcnpju.Text.Trim(),
                     Endereco = tbenderecou.Text.Trim(),
@@ -186,6 +213,7 @@ namespace erp_salgados_e_cia
             unidades.Remove(unidadeSelecionada);
 
             AtualizarTabela();
+            dgvunidades.Refresh();
 
             modoEdicao = false;
             indiceUnidadeEditando = -1;
@@ -234,10 +262,22 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            tbnomeu.Text = unidadeSelecionada.Nome;
-            tbenderecou.Text = unidadeSelecionada.Endereco;
-            tbnumerou.Text = unidadeSelecionada.Numero;
-            tbcnpju.Text = unidadeSelecionada.Cnpj;
+            tbnomeu.Text =
+                unidadeSelecionada.Nome;
+
+            tbenderecou.Text =
+                unidadeSelecionada.Endereco;
+
+            tbnumerou.Text =
+                unidadeSelecionada.Numero;
+
+            tbcnpju.Text =
+                unidadeSelecionada.Cnpj;
+
+            cbativo.Checked =
+                unidadeSelecionada.Status == StatusCadastro.Ativo;
+
+            cbativo.Visible = true;
 
             modoEdicao = true;
 

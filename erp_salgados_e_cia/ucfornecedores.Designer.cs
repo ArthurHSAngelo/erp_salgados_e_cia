@@ -38,6 +38,7 @@
             this.lcnpjfornecedor = new System.Windows.Forms.Label();
             this.lnomefornecedor = new System.Windows.Forms.Label();
             this.beditarf = new System.Windows.Forms.Button();
+            this.cbativo = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvfornecedores)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,10 +135,24 @@
             this.beditarf.UseVisualStyleBackColor = true;
             this.beditarf.Click += new System.EventHandler(this.beditarf_Click);
             // 
+            // cbativo
+            // 
+            this.cbativo.AutoSize = true;
+            this.cbativo.Checked = true;
+            this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbativo.Location = new System.Drawing.Point(605, 63);
+            this.cbativo.Name = "cbativo";
+            this.cbativo.Size = new System.Drawing.Size(59, 20);
+            this.cbativo.TabIndex = 19;
+            this.cbativo.Text = "Ativo";
+            this.cbativo.UseVisualStyleBackColor = true;
+            this.cbativo.Visible = false;
+            // 
             // ucfornecedores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbativo);
             this.Controls.Add(this.beditarf);
             this.Controls.Add(this.bexcluirf);
             this.Controls.Add(this.tbtelefonef);
@@ -168,5 +183,6 @@
         private System.Windows.Forms.Label lcnpjfornecedor;
         private System.Windows.Forms.Label lnomefornecedor;
         private System.Windows.Forms.Button beditarf;
+        private System.Windows.Forms.CheckBox cbativo;
     }
 }

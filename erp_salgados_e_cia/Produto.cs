@@ -1,4 +1,6 @@
-﻿public class Produto
+﻿using static erp_salgados_e_cia.dadossistema;
+
+public class Produto
 {
     public string Nome { get; set; }
 
@@ -11,4 +13,5 @@
     public decimal EstoqueAtual { get; set; }
 
     public string UnidadeMedida { get; set; }
+    public StatusCadastro Status { get; set; }
 }

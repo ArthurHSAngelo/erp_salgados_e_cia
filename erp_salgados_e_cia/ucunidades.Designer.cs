@@ -40,6 +40,7 @@
             this.beditaru = new System.Windows.Forms.Button();
             this.tbcnpju = new System.Windows.Forms.TextBox();
             this.lcnpju = new System.Windows.Forms.Label();
+            this.cbativo = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).BeginInit();
             this.SuspendLayout();
             // 
@@ -152,10 +153,24 @@
             this.lcnpju.TabIndex = 19;
             this.lcnpju.Text = "CNPJ:";
             // 
+            // cbativo
+            // 
+            this.cbativo.AutoSize = true;
+            this.cbativo.Checked = true;
+            this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbativo.Location = new System.Drawing.Point(928, 28);
+            this.cbativo.Name = "cbativo";
+            this.cbativo.Size = new System.Drawing.Size(59, 20);
+            this.cbativo.TabIndex = 21;
+            this.cbativo.Text = "Ativo";
+            this.cbativo.UseVisualStyleBackColor = true;
+            this.cbativo.Visible = false;
+            // 
             // ucunidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbativo);
             this.Controls.Add(this.tbcnpju);
             this.Controls.Add(this.lcnpju);
             this.Controls.Add(this.beditaru);
@@ -190,5 +205,6 @@
         private System.Windows.Forms.Button beditaru;
         private System.Windows.Forms.TextBox tbcnpju;
         private System.Windows.Forms.Label lcnpju;
+        private System.Windows.Forms.CheckBox cbativo;
     }
 }
