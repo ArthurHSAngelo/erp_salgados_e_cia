@@ -18,16 +18,66 @@ namespace erp_salgados_e_cia
 
         private BindingList<Fornecedor> fornecedores =
             dadossistema.fornecedores;
+        private BindingSource fonteFornecedores =
+            new BindingSource();
         private void AtualizarTabela()
         {
+            string filtro =
+                cbfiltrostatus.SelectedItem == null
+                ? "Ativos"
+                : cbfiltrostatus.SelectedItem.ToString();
 
+            IEnumerable<Fornecedor> fornecedoresFiltrados =
+                fornecedores;
+
+            if (filtro == "Ativos")
+            {
+                fornecedoresFiltrados =
+                    fornecedores.Where(f =>
+                        f.Status == StatusCadastro.Ativo);
+            }
+            else if (filtro == "Inativos")
+            {
+                fornecedoresFiltrados =
+                    fornecedores.Where(f =>
+                        f.Status == StatusCadastro.Inativo);
+            }
+
+            fonteFornecedores.DataSource =
+                fornecedoresFiltrados.ToList();
         }
         public ucfornecedores()
         {
             InitializeComponent();
 
-            dgvfornecedores.DataSource = fornecedores;
+            cbfiltrostatus.Items.AddRange(
+                new object[]
+                {
+            "Ativos",
+            "Inativos",
+            "Todos"
+                }
+            );
 
+            cbfiltrostatus.SelectedIndexChanged +=
+                cbfiltrostatus_SelectedIndexChanged;
+
+            fonteFornecedores.DataSource =
+                fornecedores;
+
+            dgvfornecedores.DataSource =
+                fonteFornecedores;
+
+            cbfiltrostatus.SelectedIndex =
+                0;
+
+            AtualizarTabela();
+        }
+
+        private void cbfiltrostatus_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
             AtualizarTabela();
         }
 
@@ -210,6 +260,7 @@ namespace erp_salgados_e_cia
             fornecedores.Remove(fornecedorSelecionado);
 
             AtualizarTabela();
+            dgvfornecedores.Refresh();
 
             MessageBox.Show(
                 "Fornecedor excluído com sucesso.",

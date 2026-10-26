@@ -251,7 +251,7 @@
             this.Controls.Add(this.tbnomeproduto);
             this.Controls.Add(this.lproduto);
             this.Name = "ucprodutos";
-            this.Size = new System.Drawing.Size(2320, 1156);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.nudestoqueminimo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).EndInit();
             this.ResumeLayout(false);

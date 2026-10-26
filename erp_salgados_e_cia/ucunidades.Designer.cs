@@ -41,6 +41,7 @@
             this.tbcnpju = new System.Windows.Forms.TextBox();
             this.lcnpju = new System.Windows.Forms.Label();
             this.cbativo = new System.Windows.Forms.CheckBox();
+            this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,14 +82,14 @@
             // 
             // tbnumerou
             // 
-            this.tbnumerou.Location = new System.Drawing.Point(531, 27);
+            this.tbnumerou.Location = new System.Drawing.Point(724, 24);
             this.tbnumerou.Name = "tbnumerou";
             this.tbnumerou.Size = new System.Drawing.Size(100, 22);
             this.tbnumerou.TabIndex = 14;
             // 
             // tbenderecou
             // 
-            this.tbenderecou.Location = new System.Drawing.Point(744, 27);
+            this.tbenderecou.Location = new System.Drawing.Point(521, 30);
             this.tbenderecou.Name = "tbenderecou";
             this.tbenderecou.Size = new System.Drawing.Size(100, 22);
             this.tbenderecou.TabIndex = 13;
@@ -103,7 +104,7 @@
             // lnumerou
             // 
             this.lnumerou.AutoSize = true;
-            this.lnumerou.Location = new System.Drawing.Point(448, 27);
+            this.lnumerou.Location = new System.Drawing.Point(641, 24);
             this.lnumerou.Name = "lnumerou";
             this.lnumerou.Size = new System.Drawing.Size(58, 16);
             this.lnumerou.TabIndex = 11;
@@ -112,7 +113,7 @@
             // lenderecou
             // 
             this.lenderecou.AutoSize = true;
-            this.lenderecou.Location = new System.Drawing.Point(661, 27);
+            this.lenderecou.Location = new System.Drawing.Point(438, 30);
             this.lenderecou.Name = "lenderecou";
             this.lenderecou.Size = new System.Drawing.Size(69, 16);
             this.lenderecou.TabIndex = 10;
@@ -166,10 +167,19 @@
             this.cbativo.UseVisualStyleBackColor = true;
             this.cbativo.Visible = false;
             // 
+            // cbfiltrostatus
+            // 
+            this.cbfiltrostatus.FormattingEnabled = true;
+            this.cbfiltrostatus.Location = new System.Drawing.Point(982, 214);
+            this.cbfiltrostatus.Name = "cbfiltrostatus";
+            this.cbfiltrostatus.Size = new System.Drawing.Size(121, 24);
+            this.cbfiltrostatus.TabIndex = 22;
+            // 
             // ucunidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.cbativo);
             this.Controls.Add(this.tbcnpju);
             this.Controls.Add(this.lcnpju);
@@ -184,7 +194,7 @@
             this.Controls.Add(this.lenderecou);
             this.Controls.Add(this.lnomeu);
             this.Name = "ucunidades";
-            this.Size = new System.Drawing.Size(2397, 1195);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -206,5 +216,6 @@
         private System.Windows.Forms.TextBox tbcnpju;
         private System.Windows.Forms.Label lcnpju;
         private System.Windows.Forms.CheckBox cbativo;
+        private System.Windows.Forms.ComboBox cbfiltrostatus;
     }
 }

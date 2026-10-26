@@ -1,5 +1,4 @@
-﻿using erp_salgados_e_cia;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +20,7 @@ namespace erp_salgados_e_cia
         private BindingSource fonteProdutos =
             new BindingSource();
 
-           private void AtualizarTabela()
+        private void AtualizarTabela()
         {
             string filtro =
                 cbfiltrostatus.SelectedItem == null
@@ -291,7 +290,9 @@ namespace erp_salgados_e_cia
             if (produtoSelecionado != null)
             {
                 produtos.Remove(produtoSelecionado);
+
                 AtualizarTabela();
+                dgvprodutos.Refresh();
 
                 MessageBox.Show(
                     "Produto excluído com sucesso.",

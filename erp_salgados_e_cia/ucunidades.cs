@@ -17,23 +17,58 @@ namespace erp_salgados_e_cia
         private int indiceUnidadeEditando = -1;
         private BindingList<Unidade> unidades =
             dadossistema.unidades;
-
+        private BindingSource fonteUnidades 
+            = new BindingSource();
         private void AtualizarTabela()
         {
+            string filtro =
+                cbfiltrostatus.SelectedItem == null
+                ? "Ativos"
+                : cbfiltrostatus.SelectedItem.ToString();
 
-            if (dgvunidades.Columns.Count > 0)
+            IEnumerable<Unidade> unidadesFiltradas = unidades;
+
+            if (filtro == "Ativos")
             {
-                dgvunidades.Columns["Nome"].HeaderText = "Nome";
-                dgvunidades.Columns["Cnpj"].HeaderText = "CNPJ";
-                dgvunidades.Columns["Endereco"].HeaderText = "Endereço";
-                dgvunidades.Columns["Numero"].HeaderText = "Número";
+                unidadesFiltradas = unidades.Where(u =>
+                    u.Status == StatusCadastro.Ativo);
             }
+            else if (filtro == "Inativos")
+            {
+                unidadesFiltradas = unidades.Where(u =>
+                    u.Status == StatusCadastro.Inativo);
+            }
+
+            fonteUnidades.DataSource =
+                unidadesFiltradas.ToList();
+        }
+
+        private void cbfiltrostatus_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            AtualizarTabela();
         }
         public ucunidades()
         {
             InitializeComponent();
 
-            dgvunidades.DataSource = unidades;
+            cbfiltrostatus.Items.AddRange(
+                new object[]
+                {
+                    "Ativos",
+                    "Inativos",
+                    "Todos"
+                }
+            );
+
+            cbfiltrostatus.SelectedIndexChanged +=
+                cbfiltrostatus_SelectedIndexChanged;
+
+            fonteUnidades.DataSource = unidades;
+            dgvunidades.DataSource = fonteUnidades;
+
+            cbfiltrostatus.SelectedIndex = 0;
 
             AtualizarTabela();
         }
@@ -165,6 +200,7 @@ namespace erp_salgados_e_cia
             }
 
             AtualizarTabela();
+            dgvunidades.Refresh();
 
             modoEdicao = false;
             indiceUnidadeEditando = -1;

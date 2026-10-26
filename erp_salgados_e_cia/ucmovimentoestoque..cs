@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
 {
@@ -14,6 +15,12 @@ namespace erp_salgados_e_cia
     {
         private List<movimentoestoque> movimentacoes =
             new List<movimentoestoque>();
+
+        private BindingList<movimentoestoque> itensEntrada =
+             new BindingList<movimentoestoque>();
+
+        private BindingSource fonteItensEntrada =
+            new BindingSource();
 
         private void AtualizarTabela()
         {
@@ -44,14 +51,20 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
+            fonteItensEntrada.DataSource =
+                itensEntrada;
+
+            dgvitensentrada.DataSource =
+                fonteItensEntrada;
+
             AtualizarCombos();
 
             cbresponsavel.Items.AddRange(
                 new object[]
                 {
-                    "Administrador",
-                    "Gerente",
-                    "Atendente"
+            "Administrador",
+            "Gerente",
+            "Atendente"
                 }
             );
         }
@@ -59,12 +72,20 @@ namespace erp_salgados_e_cia
         public void AtualizarCombos()
         {
             cbproduto.DataSource = null;
-            cbproduto.DataSource = dadossistema.produtos;
+            cbproduto.DataSource =
+                dadossistema.produtos
+                .Where(p => p.Status == StatusCadastro.Ativo)
+                .ToList();
+
             cbproduto.DisplayMember = "Nome";
             cbproduto.SelectedIndex = -1;
 
             cbfornecedor.DataSource = null;
-            cbfornecedor.DataSource = dadossistema.fornecedores;
+            cbfornecedor.DataSource =
+                dadossistema.fornecedores
+                .Where(f => f.Status == StatusCadastro.Ativo)
+                .ToList();
+
             cbfornecedor.DisplayMember = "Nome";
             cbfornecedor.SelectedIndex = -1;
         }
@@ -144,7 +165,12 @@ namespace erp_salgados_e_cia
             Produto produtoSelecionado =
                 cbproduto.SelectedItem as Produto;
 
-            movimentoestoque movimento = new movimentoestoque
+            if (produtoSelecionado == null)
+            {
+                return;
+            }
+
+            movimentoestoque item = new movimentoestoque
             {
                 Produto = produtoSelecionado.Nome,
                 Quantidade = nudquantidade.Value,
@@ -155,14 +181,109 @@ namespace erp_salgados_e_cia
                 DataEntrada = DateTime.Now
             };
 
-            movimentacoes.Add(movimento);
+            itensEntrada.Add(item);
+            cbfornecedor.Enabled = false;
+            cbresponsavel.Enabled = false;
 
-            produtoSelecionado.EstoqueAtual += nudquantidade.Value;
+            fonteItensEntrada.ResetBindings(false);
+
+            MessageBox.Show(
+                "Item adicionado à entrada.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+
+            cbproduto.SelectedIndex = -1;
+            nudquantidade.Value = 1;
+            tbcustouni.Clear();
+
+            cbproduto.Focus();
+        }
+
+        private void bremoveritem_Click(object sender, EventArgs e)
+        {
+            if (dgvitensentrada.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Selecione um item para remover.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            movimentoestoque itemSelecionado =
+                dgvitensentrada.SelectedRows[0]
+                .DataBoundItem as movimentoestoque;
+
+            if (itemSelecionado == null)
+            {
+                return;
+            }
+
+            itensEntrada.Remove(itemSelecionado);
+            if (itensEntrada.Count == 0)
+            {
+                cbfornecedor.Enabled = true;
+                cbresponsavel.Enabled = true;
+            }
+
+            fonteItensEntrada.ResetBindings(false);
+        }
+
+        private void bfinalizarentrada_Click(object sender, EventArgs e)
+        {
+            if (itensEntrada.Count == 0)
+            {
+                MessageBox.Show(
+                    "Adicione pelo menos um item à entrada.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            DialogResult resposta = MessageBox.Show(
+                "Deseja finalizar esta entrada de estoque?",
+                "Confirmar entrada",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            foreach (movimentoestoque item in itensEntrada.ToList())
+            {
+                movimentacoes.Add(item);
+
+                Produto produto =
+                    dadossistema.produtos.FirstOrDefault(p =>
+                        p.Nome == item.Produto);
+
+                if (produto != null)
+                {
+                    produto.EstoqueAtual += item.Quantidade;
+                }
+            }
+
+            itensEntrada.Clear();
+            cbfornecedor.Enabled = true;
+            cbresponsavel.Enabled = true;
+
+            fonteItensEntrada.ResetBindings(false);
 
             AtualizarTabela();
 
             MessageBox.Show(
-                "Entrada de estoque registrada com sucesso.",
+                "Entrada de estoque finalizada com sucesso.",
                 "Sucesso",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
@@ -173,6 +294,7 @@ namespace erp_salgados_e_cia
             tbcustouni.Clear();
             cbfornecedor.SelectedIndex = -1;
             cbresponsavel.SelectedIndex = -1;
+
             cbproduto.Focus();
         }
     }

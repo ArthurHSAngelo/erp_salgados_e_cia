@@ -39,6 +39,7 @@
             this.lnomefornecedor = new System.Windows.Forms.Label();
             this.beditarf = new System.Windows.Forms.Button();
             this.cbativo = new System.Windows.Forms.CheckBox();
+            this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvfornecedores)).BeginInit();
             this.SuspendLayout();
             // 
@@ -148,10 +149,19 @@
             this.cbativo.UseVisualStyleBackColor = true;
             this.cbativo.Visible = false;
             // 
+            // cbfiltrostatus
+            // 
+            this.cbfiltrostatus.FormattingEnabled = true;
+            this.cbfiltrostatus.Location = new System.Drawing.Point(755, 141);
+            this.cbfiltrostatus.Name = "cbfiltrostatus";
+            this.cbfiltrostatus.Size = new System.Drawing.Size(121, 24);
+            this.cbfiltrostatus.TabIndex = 20;
+            // 
             // ucfornecedores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.cbativo);
             this.Controls.Add(this.beditarf);
             this.Controls.Add(this.bexcluirf);
@@ -164,7 +174,7 @@
             this.Controls.Add(this.lcnpjfornecedor);
             this.Controls.Add(this.lnomefornecedor);
             this.Name = "ucfornecedores";
-            this.Size = new System.Drawing.Size(2391, 1163);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.dgvfornecedores)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -184,5 +194,6 @@
         private System.Windows.Forms.Label lnomefornecedor;
         private System.Windows.Forms.Button beditarf;
         private System.Windows.Forms.CheckBox cbativo;
+        private System.Windows.Forms.ComboBox cbfiltrostatus;
     }
 }
