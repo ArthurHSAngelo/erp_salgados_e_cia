@@ -89,6 +89,12 @@
     <Compile Include="ucunidades.Designer.cs">
       <DependentUpon>ucunidades.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucvendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucvendas.Designer.cs">
+      <DependentUpon>ucvendas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Unidade.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucunidades.resx">
       <DependentUpon>ucunidades.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucvendas.resx">
+      <DependentUpon>ucvendas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

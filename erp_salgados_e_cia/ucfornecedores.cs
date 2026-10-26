@@ -245,6 +245,19 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            if (dadossistema.FornecedorPossuiVinculos(
+                    fornecedorSelecionado))
+            {
+                MessageBox.Show(
+                    "Exclusão bloqueada: este fornecedor possui movimentações.",
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             DialogResult resposta = MessageBox.Show(
                 "Deseja excluir o fornecedor selecionado?",
                 "Confirmar exclusão",

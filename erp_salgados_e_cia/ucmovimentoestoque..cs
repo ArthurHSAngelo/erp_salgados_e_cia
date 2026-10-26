@@ -13,8 +13,8 @@ namespace erp_salgados_e_cia
 {
     public partial class ucmovimentoestoque : UserControl
     {
-        private List<movimentoestoque> movimentacoes =
-            new List<movimentoestoque>();
+        private BindingList<movimentoestoque> movimentacoes =
+            dadossistema.movimentacoes;
 
         private BindingList<movimentoestoque> itensEntrada =
              new BindingList<movimentoestoque>();

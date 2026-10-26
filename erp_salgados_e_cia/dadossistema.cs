@@ -1,10 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace erp_salgados_e_cia
 {
     public static class dadossistema
     {
+        public static bool ProdutoPossuiVinculos(Produto produto)
+        {
+            return produto != null &&
+                   movimentacoes.Any(m =>
+                       m.Produto == produto.Nome);
+        }
+
+        public static bool FornecedorPossuiVinculos(
+            Fornecedor fornecedor)
+        {
+            return fornecedor != null &&
+                   movimentacoes.Any(m =>
+                       m.Fornecedor == fornecedor.Nome);
+        }
+
+        public static bool UnidadePossuiVinculos(
+            Unidade unidade)
+        {
+            return unidade != null &&
+                   movimentacoes.Any(m =>
+                       m.Unidade == unidade.Nome);
+        }
+
+        public static BindingList<movimentoestoque> movimentacoes =
+            new BindingList<movimentoestoque>();
         public static BindingList<Produto> produtos =
             new BindingList<Produto>();
 
@@ -63,6 +89,14 @@ namespace erp_salgados_e_cia
                 Nome = "Fornecedor Bom Sabor",
                 Cnpj = "98.765.432/0001-10",
                 Telefone = "(11) 99999-8888"
+            });
+            unidades.Add(new Unidade
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "Lanchonete Centro",
+                Cnpj = "11.222.333/0001-44",
+                Endereco = "Rua Principal",
+                Numero = "100"
             });
         }
 

@@ -272,6 +272,28 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            Produto produtoSelecionado =
+                dgvprodutos.SelectedRows[0]
+                .DataBoundItem as Produto;
+
+            if (produtoSelecionado == null)
+            {
+                return;
+            }
+
+            if (dadossistema.ProdutoPossuiVinculos(
+                    produtoSelecionado))
+            {
+                MessageBox.Show(
+                    "Exclusão bloqueada: este produto possui movimentações.",
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             DialogResult resposta = MessageBox.Show(
                 "Deseja realmente excluir o produto selecionado?",
                 "Confirmar exclusão",
@@ -283,9 +305,6 @@ namespace erp_salgados_e_cia
             {
                 return;
             }
-
-            Produto produtoSelecionado =
-                dgvprodutos.SelectedRows[0].DataBoundItem as Produto;
 
             if (produtoSelecionado != null)
             {

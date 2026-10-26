@@ -234,6 +234,19 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            if (dadossistema.UnidadePossuiVinculos(
+                     unidadeSelecionada))
+            {
+                MessageBox.Show(
+                    "Exclusão bloqueada: esta unidade possui movimentações.",
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             DialogResult resposta = MessageBox.Show(
                 "Deseja excluir a unidade selecionada?",
                 "Confirmar exclusão",
