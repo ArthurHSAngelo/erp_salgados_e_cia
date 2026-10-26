@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace erp_salgados_e_cia
 {
-    public partial class EntradaEstoque : Form
+    public partial class ucvendas : UserControl
     {
-        public EntradaEstoque()
+        public ucvendas()
         {
             InitializeComponent();
         }
