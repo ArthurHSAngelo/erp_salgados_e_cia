@@ -18,9 +18,11 @@ namespace erp_salgados_e_cia
         {
             panelCadastros.Visible = false;
             panelestoque.Visible = false;
+            pvendas.Visible = false;
 
             bacadastros.Text = "Cadastros ▼";
             baestoque.Text = "Estoque ▼";
+            bavendas.Text = "Vendas ▼";
         }
         private void SelecionarBotao(Button botaoSelecionado)
         {
@@ -129,6 +131,7 @@ namespace erp_salgados_e_cia
         private ucunidades telaunidades;
         private ucmovimentoestoque telamovimentoestoque;
         private ucvendas telavendas;
+        private uchistoricovendas telahistoricovendas;
 
         private void AbrirTela(UserControl tela)
         {
@@ -213,20 +216,20 @@ namespace erp_salgados_e_cia
             AbrirTela(telamovimentoestoque);
         }
 
-        private void botaoarredondado2_Click(
-     object sender,
-     EventArgs e)
+        private void bavendas_Click(object sender, EventArgs e)
         {
-            FecharSubMenus();
-
             SelecionarBotao(bavendas);
 
-            if (telavendas == null)
-            {
-                telavendas = new ucvendas();
-            }
+            bool abrir = !pvendas.Visible;
 
-            AbrirTela(telavendas);
+            FecharSubMenus();
+
+            pvendas.Visible = abrir;
+
+            if (abrir)
+            {
+                bavendas.Text = "Vendas ▲";
+            }
         }
 
         private void bapainel_Click(object sender, EventArgs e)
@@ -287,6 +290,18 @@ namespace erp_salgados_e_cia
             FecharSubMenus();
 
             SelecionarBotao(bausuarios);
+        }
+
+        private void bhistoricovendas_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telahistoricovendas == null)
+            {
+                telahistoricovendas = new uchistoricovendas();
+            }
+
+            AbrirTela(telahistoricovendas);
         }
     }
 }

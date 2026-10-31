@@ -66,6 +66,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="uchistoricovendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uchistoricovendas.Designer.cs">
+      <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucmovimentoestoque..cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,6 +115,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uchistoricovendas.resx">
+      <DependentUpon>uchistoricovendas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucmovimentoestoque..resx">
       <DependentUpon>ucmovimentoestoque..cs</DependentUpon>

@@ -203,6 +203,20 @@ namespace erp_salgados_e_cia
 
         private void bfinalizarvenda_Click(object sender, EventArgs e)
         {
+            decimal totalVenda =
+                 itensVenda.Sum(item => item.Total);
+
+            decimal valorRecebido = 0;
+
+            decimal troco = 0;
+
+            decimal.TryParse(
+                tbvalorrecebido.Text,
+                out valorRecebido
+            );
+
+            troco = valorRecebido - totalVenda;
+
             if (itensVenda.Count == 0)
             {
                 MessageBox.Show(
@@ -228,14 +242,11 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            decimal totalVenda =
-                itensVenda.Sum(item => item.Total);
-
             if (cbformapagamento.Text == "Dinheiro")
             {
                 if (!decimal.TryParse(
                         tbvalorrecebido.Text,
-                        out decimal valorRecebido)
+                        out valorRecebido)
                     || valorRecebido < totalVenda)
                 {
                     MessageBox.Show(
@@ -294,17 +305,6 @@ namespace erp_salgados_e_cia
                 produto.EstoqueAtual -=
                     grupo.Sum(item => item.Quantidade);
             }
-
-            decimal totalVenda =
-                itensVenda.Sum(item => item.Total);
-
-            decimal.TryParse(
-                tbvalorrecebido.Text,
-                out decimal valorRecebido
-            );
-
-            decimal troco =
-                valorRecebido - totalVenda;
 
             Venda venda = new Venda
             {
