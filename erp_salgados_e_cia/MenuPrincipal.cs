@@ -128,6 +128,7 @@ namespace erp_salgados_e_cia
         private ucfornecedores telafornecedores;
         private ucunidades telaunidades;
         private ucmovimentoestoque telamovimentoestoque;
+        private ucvendas telavendas;
 
         private void AbrirTela(UserControl tela)
         {
@@ -212,12 +213,20 @@ namespace erp_salgados_e_cia
             AbrirTela(telamovimentoestoque);
         }
 
-        private void botaoarredondado2_Click(object sender, EventArgs e)
+        private void botaoarredondado2_Click(
+     object sender,
+     EventArgs e)
         {
             FecharSubMenus();
 
             SelecionarBotao(bavendas);
 
+            if (telavendas == null)
+            {
+                telavendas = new ucvendas();
+            }
+
+            AbrirTela(telavendas);
         }
 
         private void bapainel_Click(object sender, EventArgs e)

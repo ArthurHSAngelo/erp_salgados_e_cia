@@ -31,6 +31,8 @@ namespace erp_salgados_e_cia
 
         public static BindingList<movimentoestoque> movimentacoes =
             new BindingList<movimentoestoque>();
+        public static BindingList<Venda> vendas =
+            new BindingList<Venda>();
         public static BindingList<Produto> produtos =
             new BindingList<Produto>();
 

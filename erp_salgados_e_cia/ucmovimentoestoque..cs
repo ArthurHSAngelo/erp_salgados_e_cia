@@ -187,13 +187,6 @@ namespace erp_salgados_e_cia
 
             fonteItensEntrada.ResetBindings(false);
 
-            MessageBox.Show(
-                "Item adicionado à entrada.",
-                "Sucesso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-
             cbproduto.SelectedIndex = -1;
             nudquantidade.Value = 1;
             tbcustouni.Clear();
