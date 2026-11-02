@@ -18,12 +18,6 @@ namespace erp_salgados_e_cia
         private BindingSource fonteItensVenda =
             new BindingSource();
 
-        private BindingList<PagamentoVenda> pagamentosVenda =
-            new BindingList<PagamentoVenda>();
-
-        private BindingSource fontePagamentosVenda =
-            new BindingSource();
-
         private void AtualizarTotalVenda()
         {
             decimal totalVenda =
@@ -31,32 +25,62 @@ namespace erp_salgados_e_cia
 
             ltotalvenda.Text =
                 $"Total da venda: R$ {totalVenda:N2}";
-
-            AtualizarResumoPagamento();
         }
 
-        private void AtualizarResumoPagamento()
+        public void AtualizarCombos()
         {
-            decimal totalVenda =
-                itensVenda.Sum(item => item.Total);
+            Produto produtoAnterior =
+                cbproduto.SelectedItem as Produto;
 
-            decimal totalPago =
-                pagamentosVenda.Sum(pagamento => pagamento.Valor);
+            List<Produto> produtosAtivos =
+                dadossistema.produtos
+                .Where(p =>
+                    p.Status == dadossistema.StatusCadastro.Ativo)
+                .ToList();
 
-            decimal falta =
-                Math.Max(0m, totalVenda - totalPago);
+            cbproduto.DataSource = produtosAtivos;
+            cbproduto.DisplayMember = "Nome";
 
-            decimal troco =
-                Math.Max(0m, totalPago - totalVenda);
+            cbproduto.SelectedIndex =
+                produtoAnterior == null
+                ? -1
+                : produtosAtivos.FindIndex(p =>
+                    p.Nome == produtoAnterior.Nome);
 
-            lpago.Text =
-                $"Pago: R$ {totalPago:N2}";
+            Cliente clienteAnterior =
+                cbcliente.SelectedItem as Cliente;
 
-            lfalta.Text =
-                $"Falta: R$ {falta:N2}";
+            int idAnterior =
+                clienteAnterior == null
+                ? 0
+                : clienteAnterior.IdCliente;
 
-            ltroco.Text =
-                $"Troco: R$ {troco:N2}";
+            List<Cliente> opcoesCliente =
+                new List<Cliente>();
+
+            opcoesCliente.Add(
+                new Cliente
+                {
+                    IdCliente = 0,
+                    Nome = "Sem cliente"
+                }
+            );
+
+            opcoesCliente.AddRange(
+                dadossistema.clientes
+                .Where(c =>
+                    c.Status == dadossistema.StatusCadastro.Ativo)
+            );
+
+            cbcliente.DataSource = opcoesCliente;
+            cbcliente.DisplayMember = "Descricao";
+
+            cbcliente.SelectedIndex =
+                Math.Max(
+                    0,
+                    opcoesCliente.FindIndex(c =>
+                        c.IdCliente == idAnterior)
+                );
         }
 
         public ucvendas()
@@ -66,28 +90,9 @@ namespace erp_salgados_e_cia
             fonteItensVenda.DataSource = itensVenda;
             dgvitensvenda.DataSource = fonteItensVenda;
 
-            fontePagamentosVenda.DataSource = pagamentosVenda;
-            dgvpagamentosvenda.DataSource = fontePagamentosVenda;
-
-            if (dgvpagamentosvenda.Columns.Count > 0)
-            {
-                dgvpagamentosvenda.Columns["FormaPagamento"].HeaderText =
-                    "Forma de pagamento";
-
-                dgvpagamentosvenda.Columns["Valor"]
-                    .DefaultCellStyle.Format = "N2";
-            }
-
             AtualizarTotalVenda();
 
-            cbproduto.DataSource =
-                dadossistema.produtos
-                .Where(p =>
-                    p.Status == dadossistema.StatusCadastro.Ativo)
-                .ToList();
-
-            cbproduto.DisplayMember = "Nome";
-            cbproduto.SelectedIndex = -1;
+            AtualizarCombos();
         }
 
         private void badicionaritem_Click(object sender, EventArgs e)
@@ -152,15 +157,26 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            ItemVenda item = new ItemVenda
+            ItemVenda itemNaLista =
+                itensVenda
+                .FirstOrDefault(itemExistente =>
+                    itemExistente.Produto == produtoSelecionado.Nome);
 
+            if (itemNaLista != null)
             {
-                Produto = produtoSelecionado.Nome,
-                Quantidade = nudquantidade.Value,
-                PrecoUnitario = produtoSelecionado.Preco
-            };
-
-            itensVenda.Add(item);
+                itemNaLista.Quantidade += nudquantidade.Value;
+            }
+            else
+            {
+                itensVenda.Add(
+                    new ItemVenda
+                    {
+                        Produto = produtoSelecionado.Nome,
+                        Quantidade = nudquantidade.Value,
+                        PrecoUnitario = produtoSelecionado.Preco
+                    }
+                );
+            }
 
             fonteItensVenda.ResetBindings(false);
             AtualizarTotalVenda();
@@ -170,197 +186,8 @@ namespace erp_salgados_e_cia
             cbproduto.Focus();
         }
 
-        private void cbformapagamento_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbformapagamento.SelectedIndex == -1)
-            {
-                tbvalorrecebido.Clear();
-                return;
-            }
-
-            decimal totalVenda =
-                itensVenda.Sum(item => item.Total);
-
-            decimal totalPago =
-                pagamentosVenda.Sum(pagamento => pagamento.Valor);
-
-            decimal falta =
-                totalVenda - totalPago;
-
-            tbvalorrecebido.Text =
-                falta > 0
-                ? falta.ToString("F2")
-                : "";
-        }
-
-        private void tbvalorrecebido_TextChanged(object sender, EventArgs e)
-        {
-            AtualizarResumoPagamento();
-        }
-
-        private void badicionarpagamento_Click(object sender, EventArgs e)
-        {
-            if (itensVenda.Count == 0)
-            {
-                MessageBox.Show(
-                    "Adicione pelo menos um item.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            if (cbformapagamento.SelectedIndex == -1)
-            {
-                MessageBox.Show(
-                    "Selecione a forma de pagamento.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                cbformapagamento.Focus();
-                return;
-            }
-
-            string formaPagamento =
-                cbformapagamento.Text;
-
-            if (formaPagamento == "Notinha")
-            {
-                MessageBox.Show(
-                    "Notinha disponível em breve.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            if (!decimal.TryParse(
-                    tbvalorrecebido.Text,
-                    out decimal valorPagamento)
-                || valorPagamento <= 0)
-            {
-                MessageBox.Show(
-                    "Informe um valor válido.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                tbvalorrecebido.Focus();
-                return;
-            }
-
-            decimal totalVenda =
-                itensVenda.Sum(item => item.Total);
-
-            decimal totalPago =
-                pagamentosVenda.Sum(pagamento => pagamento.Valor);
-
-            decimal falta =
-                totalVenda - totalPago;
-
-            if (falta <= 0)
-            {
-                MessageBox.Show(
-                    "Esta venda já está totalmente paga.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            if (formaPagamento != "Dinheiro" &&
-                valorPagamento > falta)
-            {
-                MessageBox.Show(
-                    $"O valor em {formaPagamento} não pode ser maior que o que falta pagar (R$ {falta:N2}).",
-                    "Pagamento não permitido",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                tbvalorrecebido.Focus();
-                return;
-            }
-
-            PagamentoVenda pagamentoExistente =
-                pagamentosVenda
-                .FirstOrDefault(pagamento =>
-                    pagamento.FormaPagamento == formaPagamento);
-
-            if (pagamentoExistente != null)
-            {
-                pagamentoExistente.Valor += valorPagamento;
-            }
-            else
-            {
-                pagamentosVenda.Add(
-                    new PagamentoVenda
-                    {
-                        FormaPagamento = formaPagamento,
-                        Valor = valorPagamento
-                    }
-                );
-            }
-
-            fontePagamentosVenda.ResetBindings(false);
-            AtualizarResumoPagamento();
-
-            cbformapagamento.SelectedIndex = -1;
-            cbformapagamento.Focus();
-        }
-
-        private void bremoverpagamento_Click(object sender, EventArgs e)
-        {
-            if (dgvpagamentosvenda.SelectedRows.Count == 0)
-            {
-                MessageBox.Show(
-                    "Selecione um pagamento para remover.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            PagamentoVenda pagamentoSelecionado =
-                dgvpagamentosvenda.SelectedRows[0]
-                .DataBoundItem as PagamentoVenda;
-
-            if (pagamentoSelecionado == null)
-            {
-                return;
-            }
-
-            pagamentosVenda.Remove(pagamentoSelecionado);
-
-            fontePagamentosVenda.ResetBindings(false);
-            AtualizarResumoPagamento();
-        }
-
         private void bremoveritem_Click(object sender, EventArgs e)
         {
-            if (pagamentosVenda.Count > 0)
-            {
-                MessageBox.Show(
-                    "Remova os pagamentos antes de remover itens.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
             if (dgvitensvenda.SelectedRows.Count == 0)
             {
                 MessageBox.Show(
@@ -395,58 +222,10 @@ namespace erp_salgados_e_cia
             decimal totalVenda =
                 itensVenda.Sum(item => item.Total);
 
-            decimal totalPago =
-                pagamentosVenda.Sum(pagamento => pagamento.Valor);
-
-            decimal totalDinheiro =
-                pagamentosVenda
-                .Where(pagamento => pagamento.FormaPagamento == "Dinheiro")
-                .Sum(pagamento => pagamento.Valor);
-
-            decimal troco =
-                Math.Max(0m, totalPago - totalVenda);
-
             if (itensVenda.Count == 0)
             {
                 MessageBox.Show(
                     "Adicione pelo menos um item.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            if (pagamentosVenda.Count == 0)
-            {
-                MessageBox.Show(
-                    "Adicione pelo menos um pagamento.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                cbformapagamento.Focus();
-                return;
-            }
-
-            if (totalPago < totalVenda)
-            {
-                MessageBox.Show(
-                    $"Ainda faltam R$ {totalVenda - totalPago:N2} para cobrir o total da venda.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
-                return;
-            }
-
-            if (troco > totalDinheiro)
-            {
-                MessageBox.Show(
-                    "O troco não pode ser maior que o valor pago em dinheiro.",
                     "Atenção",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
@@ -478,17 +257,23 @@ namespace erp_salgados_e_cia
                 }
             }
 
-            DialogResult resposta = MessageBox.Show(
-                "Deseja finalizar esta venda?",
-                "Confirmar venda",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
+            BindingList<PagamentoVenda> pagamentosCobrados;
 
-            if (resposta != DialogResult.Yes)
+            using (frmcobranca cobranca = new frmcobranca(totalVenda))
             {
-                return;
+                if (cobranca.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                pagamentosCobrados = cobranca.Pagamentos;
             }
+
+            decimal totalPago =
+                pagamentosCobrados.Sum(pagamento => pagamento.Valor);
+
+            decimal troco =
+                Math.Max(0m, totalPago - totalVenda);
 
             foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
             {
@@ -500,6 +285,15 @@ namespace erp_salgados_e_cia
                     grupo.Sum(item => item.Quantidade);
             }
 
+            Cliente clienteSelecionado =
+                cbcliente.SelectedItem as Cliente;
+
+            int? idClienteVenda =
+                clienteSelecionado == null ||
+                clienteSelecionado.IdCliente == 0
+                ? (int?)null
+                : clienteSelecionado.IdCliente;
+
             Venda venda = new Venda
             {
                 NumeroMesa = (int)nudnumeromesa.Value,
@@ -507,13 +301,14 @@ namespace erp_salgados_e_cia
                 DataHora = DateTime.Now,
                 FormaPagamento = string.Join(
                     " + ",
-                    pagamentosVenda.Select(pagamento =>
+                    pagamentosCobrados.Select(pagamento =>
                         $"{pagamento.FormaPagamento} R$ {pagamento.Valor:N2}")
                 ),
                 ValorTotal = totalVenda,
                 ValorRecebido = totalPago,
                 Troco = troco,
                 Status = "Concluída",
+                IdCliente = idClienteVenda,
                 Itens = new BindingList<ItemVenda>(
                     itensVenda
                     .Select(item => new ItemVenda
@@ -525,7 +320,7 @@ namespace erp_salgados_e_cia
                     .ToList()
                 ),
                 Pagamentos = new BindingList<PagamentoVenda>(
-                    pagamentosVenda
+                    pagamentosCobrados
                     .Select(pagamento => new PagamentoVenda
                     {
                         FormaPagamento = pagamento.FormaPagamento,
@@ -538,18 +333,15 @@ namespace erp_salgados_e_cia
             dadossistema.vendas.Add(venda);
 
             itensVenda.Clear();
-            pagamentosVenda.Clear();
 
             fonteItensVenda.ResetBindings(false);
-            fontePagamentosVenda.ResetBindings(false);
 
             AtualizarTotalVenda();
 
             cbproduto.SelectedIndex = -1;
             nudquantidade.Value = 1;
-            cbformapagamento.SelectedIndex = -1;
-            tbvalorrecebido.Clear();
             nudnumeromesa.Value = 1;
+            cbcliente.SelectedIndex = 0;
 
             MessageBox.Show(
                 "Venda finalizada com sucesso.",

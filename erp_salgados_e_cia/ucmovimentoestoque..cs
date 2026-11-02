@@ -275,13 +275,6 @@ namespace erp_salgados_e_cia
 
             AtualizarTabela();
 
-            MessageBox.Show(
-                "Entrada de estoque finalizada com sucesso.",
-                "Sucesso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-
             cbproduto.SelectedIndex = -1;
             nudquantidade.Value = 1;
             tbcustouni.Clear();

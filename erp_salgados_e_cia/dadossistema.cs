@@ -9,8 +9,11 @@ namespace erp_salgados_e_cia
         public static bool ProdutoPossuiVinculos(Produto produto)
         {
             return produto != null &&
-                   movimentacoes.Any(m =>
-                       m.Produto == produto.Nome);
+                   (movimentacoes.Any(m =>
+                       m.Produto == produto.Nome) ||
+                    vendas.Any(v =>
+                       v.Itens.Any(item =>
+                           item.Produto == produto.Nome)));
         }
 
         public static bool FornecedorPossuiVinculos(

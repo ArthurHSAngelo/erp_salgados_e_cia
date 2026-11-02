@@ -49,6 +49,9 @@ namespace erp_salgados_e_cia
                 dgvhistoricovendas.Columns["Status"].HeaderText =
                     "Status";
 
+                dgvhistoricovendas.Columns["IdCliente"].HeaderText =
+                    "Cliente";
+
                 dgvhistoricovendas.Columns["Produtos"].HeaderText =
                     "Produtos";
 
@@ -82,12 +85,47 @@ namespace erp_salgados_e_cia
             }
         }
 
+        private void dgvhistoricovendas_CellFormatting(
+            object sender,
+            DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 ||
+                dgvhistoricovendas.Columns[e.ColumnIndex].Name != "IdCliente")
+            {
+                return;
+            }
+
+            Venda vendaLinha =
+                dgvhistoricovendas.Rows[e.RowIndex]
+                .DataBoundItem as Venda;
+
+            if (vendaLinha == null)
+            {
+                return;
+            }
+
+            Cliente clienteVenda =
+                dadossistema.clientes
+                .FirstOrDefault(c =>
+                    c.IdCliente == vendaLinha.IdCliente);
+
+            e.Value =
+                clienteVenda == null
+                ? ""
+                : clienteVenda.Descricao;
+
+            e.FormattingApplied = true;
+        }
+
         public uchistoricovendas()
         {
             InitializeComponent();
 
             fonteVendas.DataSource = vendas;
             dgvhistoricovendas.DataSource = fonteVendas;
+
+            dgvhistoricovendas.CellFormatting +=
+                dgvhistoricovendas_CellFormatting;
 
             AtualizarTabela();
         }

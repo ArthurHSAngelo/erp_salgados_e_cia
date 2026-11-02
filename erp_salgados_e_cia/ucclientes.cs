@@ -64,6 +64,8 @@ namespace erp_salgados_e_cia
 
                 dgvclientes.Columns["CpfCnpj"].HeaderText =
                     "CPF/CNPJ";
+
+                dgvclientes.Columns["Descricao"].Visible = false;
             }
         }
 

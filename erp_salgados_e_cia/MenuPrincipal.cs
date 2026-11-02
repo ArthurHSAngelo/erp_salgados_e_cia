@@ -238,6 +238,8 @@ namespace erp_salgados_e_cia
                 telavendas = new ucvendas();
             }
 
+            telavendas.AtualizarCombos();
+
             AbrirTela(telavendas);
 
             bool abrir = !pvendas.Visible;

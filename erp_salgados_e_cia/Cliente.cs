@@ -13,5 +13,15 @@ namespace erp_salgados_e_cia
         public string Telefone { get; set; }
 
         public StatusCadastro Status { get; set; }
+
+        public string Descricao
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(CpfCnpj)
+                    ? Nome
+                    : $"{Nome} ({CpfCnpj})";
+            }
+        }
     }
 }
