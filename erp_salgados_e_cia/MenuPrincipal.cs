@@ -129,6 +129,7 @@ namespace erp_salgados_e_cia
         private ucprodutos telaprodutos;
         private ucfornecedores telafornecedores;
         private ucunidades telaunidades;
+        private ucclientes telaclientes;
         private ucmovimentoestoque telamovimentoestoque;
         private ucvendas telavendas;
         private uchistoricovendas telahistoricovendas;
@@ -200,6 +201,18 @@ namespace erp_salgados_e_cia
             }
 
             AbrirTela(telaunidades);
+        }
+
+        private void bclientes_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telaclientes == null)
+            {
+                telaclientes = new ucclientes();
+            }
+
+            AbrirTela(telaclientes);
         }
 
         private void bmovimentoestoque_Click(object sender, EventArgs e)

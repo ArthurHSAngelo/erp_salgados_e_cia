@@ -22,7 +22,7 @@ namespace erp_salgados_e_cia
 
         public string Status { get; set; }
 
-        public string Cliente { get; set; }
+        public int? IdCliente { get; set; }
 
         public BindingList<ItemVenda> Itens { get; set; } =
             new BindingList<ItemVenda>();

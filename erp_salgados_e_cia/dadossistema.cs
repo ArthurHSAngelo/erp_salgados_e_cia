@@ -34,7 +34,14 @@ namespace erp_salgados_e_cia
         {
             return cliente != null &&
                    vendas.Any(v =>
-                       v.Cliente == cliente.Nome);
+                       v.IdCliente == cliente.IdCliente);
+        }
+
+        public static int ProximoIdCliente()
+        {
+            return clientes.Any()
+                ? clientes.Max(c => c.IdCliente) + 1
+                : 1;
         }
 
         public static BindingList<movimentoestoque> movimentacoes =
@@ -114,13 +121,16 @@ namespace erp_salgados_e_cia
 
             clientes.Add(new Cliente
             {
+                IdCliente = 1,
                 Status = StatusCadastro.Ativo,
                 Nome = "Maria Souza",
+                CpfCnpj = "123.456.789-09",
                 Telefone = "(11) 98888-1111"
             });
 
             clientes.Add(new Cliente
             {
+                IdCliente = 2,
                 Status = StatusCadastro.Ativo,
                 Nome = "João Pereira",
                 Telefone = "(11) 97777-2222"
