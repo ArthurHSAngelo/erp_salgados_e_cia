@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -50,12 +50,19 @@
     </Compile>
     <Compile Include="dadossistema.cs" />
     <Compile Include="Cliente.cs" />
+    <Compile Include="Comanda.cs" />
     <Compile Include="Fornecedor.cs" />
     <Compile Include="frmcobranca.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmcobranca.Designer.cs">
       <DependentUpon>frmcobranca.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmmesas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmmesas.Designer.cs">
+      <DependentUpon>frmmesas.cs</DependentUpon>
     </Compile>
     <Compile Include="itemvenda.cs" />
     <Compile Include="MenuPrincipal.cs">
@@ -124,6 +131,9 @@
   <ItemGroup>
     <EmbeddedResource Include="frmcobranca.resx">
       <DependentUpon>frmcobranca.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmmesas.resx">
+      <DependentUpon>frmmesas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MenuPrincipal.resx">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>

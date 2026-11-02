@@ -18,13 +18,101 @@ namespace erp_salgados_e_cia
         private BindingSource fonteItensVenda =
             new BindingSource();
 
+        private BindingList<ItemVenda> itensComandaVazia =
+            new BindingList<ItemVenda>();
+
+        private BindingSource fonteItensComanda =
+            new BindingSource();
+
+        private bool visaoTinhaComanda;
+
         private void AtualizarTotalVenda()
         {
             decimal totalVenda =
                 itensVenda.Sum(item => item.Total);
 
             ltotalvenda.Text =
-                $"Total da venda: R$ {totalVenda:N2}";
+                $"Total do pedido: R$ {totalVenda:N2}";
+        }
+
+        private void AtualizarVisaoComanda()
+        {
+            int numeroMesa =
+                (int)nudnumeromesa.Value;
+
+            Comanda comanda =
+                numeroMesa == 0
+                ? null
+                : dadossistema.ComandaDaMesa(numeroMesa);
+
+            bool temComanda =
+                comanda != null;
+
+            lcomandamesa.Text =
+                numeroMesa == 0
+                ? "Balcão"
+                : $"Comanda - Mesa {numeroMesa}";
+
+            bfinalizarvenda.Text =
+                numeroMesa == 0
+                ? "Cobrar"
+                : "Enviar pedido";
+
+            fonteItensComanda.DataSource =
+                temComanda
+                ? comanda.Itens
+                : itensComandaVazia;
+
+            fonteItensComanda.ResetBindings(false);
+
+            lsemcomanda.Text =
+                numeroMesa == 0
+                ? "Balcão: venda direta, sem comanda"
+                : "Mesa sem comanda aberta";
+
+            lsemcomanda.Visible = !temComanda;
+            dgvitenscomanda.Visible = temComanda;
+
+            ltotalcomanda.Visible = temComanda;
+            lpagocomanda.Visible = temComanda;
+            lfaltacomanda.Visible = temComanda;
+            bcobrar.Visible = temComanda;
+            bcancelarcomanda.Visible = temComanda;
+
+            if (temComanda)
+            {
+                ltotalcomanda.Text =
+                    $"Total: R$ {comanda.Total:N2}";
+
+                lpagocomanda.Text =
+                    $"Pago: R$ {comanda.TotalPago:N2}";
+
+                lfaltacomanda.Text =
+                    $"Falta: R$ {comanda.Falta:N2}";
+
+                List<Cliente> opcoesCliente =
+                    cbcliente.DataSource as List<Cliente>;
+
+                if (opcoesCliente != null)
+                {
+                    int idComanda =
+                        comanda.IdCliente ?? 0;
+
+                    cbcliente.SelectedIndex =
+                        Math.Max(
+                            0,
+                            opcoesCliente.FindIndex(c =>
+                                c.IdCliente == idComanda)
+                        );
+                }
+            }
+            else if (visaoTinhaComanda &&
+                     cbcliente.Items.Count > 0)
+            {
+                cbcliente.SelectedIndex = 0;
+            }
+
+            visaoTinhaComanda = temComanda;
         }
 
         public void AtualizarCombos()
@@ -81,6 +169,8 @@ namespace erp_salgados_e_cia
                     opcoesCliente.FindIndex(c =>
                         c.IdCliente == idAnterior)
                 );
+
+            AtualizarVisaoComanda();
         }
 
         public ucvendas()
@@ -89,6 +179,9 @@ namespace erp_salgados_e_cia
 
             fonteItensVenda.DataSource = itensVenda;
             dgvitensvenda.DataSource = fonteItensVenda;
+
+            fonteItensComanda.DataSource = itensComandaVazia;
+            dgvitenscomanda.DataSource = fonteItensComanda;
 
             AtualizarTotalVenda();
 
@@ -217,11 +310,341 @@ namespace erp_salgados_e_cia
 
         }
 
-        private void bfinalizarvenda_Click(object sender, EventArgs e)
+        private void bmesasabertas_Click(object sender, EventArgs e)
+        {
+            using (frmmesas janela = new frmmesas())
+            {
+                if (janela.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                nudnumeromesa.Value = janela.MesaSelecionada;
+            }
+
+            AtualizarVisaoComanda();
+        }
+
+        private void nudnumeromesa_ValueChanged(object sender, EventArgs e)
+        {
+            AtualizarVisaoComanda();
+        }
+
+        private void cbcliente_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            Comanda comanda =
+                dadossistema.ComandaDaMesa((int)nudnumeromesa.Value);
+
+            if (comanda == null)
+            {
+                return;
+            }
+
+            Cliente clienteSelecionado =
+                cbcliente.SelectedItem as Cliente;
+
+            comanda.IdCliente =
+                clienteSelecionado == null ||
+                clienteSelecionado.IdCliente == 0
+                ? (int?)null
+                : clienteSelecionado.IdCliente;
+        }
+
+        private void LimparPedido()
+        {
+            itensVenda.Clear();
+
+            fonteItensVenda.ResetBindings(false);
+
+            AtualizarTotalVenda();
+
+            cbproduto.SelectedIndex = -1;
+            nudquantidade.Value = 1;
+        }
+
+        private void BaixarEstoquePedido()
+        {
+            foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
+            {
+                Produto produto =
+                    dadossistema.produtos
+                    .First(p => p.Nome == grupo.Key);
+
+                produto.EstoqueAtual -=
+                    grupo.Sum(item => item.Quantidade);
+            }
+        }
+
+        private void EnviarPedidoParaComanda(int numeroMesa, int? idCliente)
+        {
+            Comanda comanda =
+                dadossistema.ComandaDaMesa(numeroMesa);
+
+            if (comanda == null)
+            {
+                comanda = new Comanda
+                {
+                    NumeroMesa = numeroMesa,
+                    IdCliente = idCliente
+                };
+
+                dadossistema.comandas.Add(comanda);
+            }
+
+            foreach (ItemVenda item in itensVenda)
+            {
+                ItemVenda itemNaComanda =
+                    comanda.Itens
+                    .FirstOrDefault(itemExistente =>
+                        itemExistente.Produto == item.Produto &&
+                        itemExistente.PrecoUnitario == item.PrecoUnitario);
+
+                if (itemNaComanda != null)
+                {
+                    itemNaComanda.Quantidade += item.Quantidade;
+                }
+                else
+                {
+                    comanda.Itens.Add(
+                        new ItemVenda
+                        {
+                            Produto = item.Produto,
+                            Quantidade = item.Quantidade,
+                            PrecoUnitario = item.PrecoUnitario
+                        }
+                    );
+                }
+            }
+
+            BaixarEstoquePedido();
+
+            LimparPedido();
+
+            AtualizarVisaoComanda();
+        }
+
+        private Venda CriarVenda(
+            int numeroMesa,
+            decimal totalVenda,
+            int? idCliente,
+            IEnumerable<ItemVenda> itens,
+            IEnumerable<PagamentoVenda> pagamentos)
+        {
+            decimal totalPago =
+                pagamentos.Sum(pagamento => pagamento.Valor);
+
+            return new Venda
+            {
+                NumeroMesa = numeroMesa,
+                IdVenda = dadossistema.vendas.Count + 1,
+                DataHora = DateTime.Now,
+                FormaPagamento = string.Join(
+                    " + ",
+                    pagamentos.Select(pagamento =>
+                        $"{pagamento.FormaPagamento} R$ {pagamento.Valor:N2}")
+                ),
+                ValorTotal = totalVenda,
+                ValorRecebido = totalPago,
+                Troco = Math.Max(0m, totalPago - totalVenda),
+                Status = "Concluída",
+                IdCliente = idCliente,
+                Itens = new BindingList<ItemVenda>(
+                    itens
+                    .Select(item => new ItemVenda
+                    {
+                        Produto = item.Produto,
+                        Quantidade = item.Quantidade,
+                        PrecoUnitario = item.PrecoUnitario
+                    })
+                    .ToList()
+                ),
+                Pagamentos = new BindingList<PagamentoVenda>(
+                    pagamentos
+                    .Select(pagamento => new PagamentoVenda
+                    {
+                        FormaPagamento = pagamento.FormaPagamento,
+                        Valor = pagamento.Valor
+                    })
+                    .ToList()
+                )
+            };
+        }
+
+        private void CobrarPedidoNoBalcao(int? idCliente)
         {
             decimal totalVenda =
                 itensVenda.Sum(item => item.Total);
 
+            BindingList<PagamentoVenda> pagamentosCobrados;
+
+            using (frmcobranca cobranca = new frmcobranca(totalVenda))
+            {
+                if (cobranca.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                pagamentosCobrados = cobranca.Pagamentos;
+            }
+
+            BaixarEstoquePedido();
+
+            dadossistema.vendas.Add(
+                CriarVenda(
+                    0,
+                    totalVenda,
+                    idCliente,
+                    itensVenda,
+                    pagamentosCobrados
+                )
+            );
+
+            LimparPedido();
+
+            cbcliente.SelectedIndex = 0;
+
+            MessageBox.Show(
+                "Venda finalizada com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void bcobrar_Click(object sender, EventArgs e)
+        {
+            int numeroMesa =
+                (int)nudnumeromesa.Value;
+
+            Comanda comanda =
+                dadossistema.ComandaDaMesa(numeroMesa);
+
+            if (comanda == null)
+            {
+                return;
+            }
+
+            BindingList<PagamentoVenda> pagamentosNovos;
+            bool pagamentoParcial;
+
+            using (frmcobranca cobranca = new frmcobranca(
+                comanda.Total,
+                comanda.TotalPago,
+                true))
+            {
+                if (cobranca.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                pagamentosNovos = cobranca.Pagamentos;
+                pagamentoParcial = cobranca.PagamentoParcial;
+            }
+
+            foreach (PagamentoVenda pagamentoNovo in pagamentosNovos)
+            {
+                PagamentoVenda pagamentoExistente =
+                    comanda.Pagamentos
+                    .FirstOrDefault(pagamento =>
+                        pagamento.FormaPagamento ==
+                        pagamentoNovo.FormaPagamento);
+
+                if (pagamentoExistente != null)
+                {
+                    pagamentoExistente.Valor += pagamentoNovo.Valor;
+                }
+                else
+                {
+                    comanda.Pagamentos.Add(
+                        new PagamentoVenda
+                        {
+                            FormaPagamento = pagamentoNovo.FormaPagamento,
+                            Valor = pagamentoNovo.Valor
+                        }
+                    );
+                }
+            }
+
+            if (pagamentoParcial)
+            {
+                AtualizarVisaoComanda();
+                return;
+            }
+
+            dadossistema.vendas.Add(
+                CriarVenda(
+                    comanda.NumeroMesa,
+                    comanda.Total,
+                    comanda.IdCliente,
+                    comanda.Itens,
+                    comanda.Pagamentos
+                )
+            );
+
+            dadossistema.comandas.Remove(comanda);
+
+            AtualizarVisaoComanda();
+
+            MessageBox.Show(
+                "Venda finalizada com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void bcancelarcomanda_Click(object sender, EventArgs e)
+        {
+            Comanda comanda =
+                dadossistema.ComandaDaMesa((int)nudnumeromesa.Value);
+
+            if (comanda == null)
+            {
+                return;
+            }
+
+            if (comanda.Pagamentos.Count > 0)
+            {
+                MessageBox.Show(
+                    "Cancelamento bloqueado: esta comanda já possui pagamentos.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            DialogResult resposta = MessageBox.Show(
+                $"Deseja cancelar a comanda da mesa {comanda.NumeroMesa}? Os itens voltarão ao estoque.",
+                "Cancelar comanda",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            foreach (ItemVenda item in comanda.Itens)
+            {
+                Produto produto =
+                    dadossistema.produtos
+                    .FirstOrDefault(p => p.Nome == item.Produto);
+
+                if (produto != null)
+                {
+                    produto.EstoqueAtual += item.Quantidade;
+                }
+            }
+
+            dadossistema.comandas.Remove(comanda);
+
+            AtualizarVisaoComanda();
+        }
+        private void bfinalizarvenda_Click(object sender, EventArgs e)
+        {
             if (itensVenda.Count == 0)
             {
                 MessageBox.Show(
@@ -257,34 +680,6 @@ namespace erp_salgados_e_cia
                 }
             }
 
-            BindingList<PagamentoVenda> pagamentosCobrados;
-
-            using (frmcobranca cobranca = new frmcobranca(totalVenda))
-            {
-                if (cobranca.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                pagamentosCobrados = cobranca.Pagamentos;
-            }
-
-            decimal totalPago =
-                pagamentosCobrados.Sum(pagamento => pagamento.Valor);
-
-            decimal troco =
-                Math.Max(0m, totalPago - totalVenda);
-
-            foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
-            {
-                Produto produto =
-                    dadossistema.produtos
-                    .First(p => p.Nome == grupo.Key);
-
-                produto.EstoqueAtual -=
-                    grupo.Sum(item => item.Quantidade);
-            }
-
             Cliente clienteSelecionado =
                 cbcliente.SelectedItem as Cliente;
 
@@ -294,61 +689,17 @@ namespace erp_salgados_e_cia
                 ? (int?)null
                 : clienteSelecionado.IdCliente;
 
-            Venda venda = new Venda
+            int numeroMesa =
+                (int)nudnumeromesa.Value;
+
+            if (numeroMesa == 0)
             {
-                NumeroMesa = (int)nudnumeromesa.Value,
-                IdVenda = dadossistema.vendas.Count + 1,
-                DataHora = DateTime.Now,
-                FormaPagamento = string.Join(
-                    " + ",
-                    pagamentosCobrados.Select(pagamento =>
-                        $"{pagamento.FormaPagamento} R$ {pagamento.Valor:N2}")
-                ),
-                ValorTotal = totalVenda,
-                ValorRecebido = totalPago,
-                Troco = troco,
-                Status = "Concluída",
-                IdCliente = idClienteVenda,
-                Itens = new BindingList<ItemVenda>(
-                    itensVenda
-                    .Select(item => new ItemVenda
-                    {
-                        Produto = item.Produto,
-                        Quantidade = item.Quantidade,
-                        PrecoUnitario = item.PrecoUnitario
-                    })
-                    .ToList()
-                ),
-                Pagamentos = new BindingList<PagamentoVenda>(
-                    pagamentosCobrados
-                    .Select(pagamento => new PagamentoVenda
-                    {
-                        FormaPagamento = pagamento.FormaPagamento,
-                        Valor = pagamento.Valor
-                    })
-                    .ToList()
-                )
-            };
-
-            dadossistema.vendas.Add(venda);
-
-            itensVenda.Clear();
-
-            fonteItensVenda.ResetBindings(false);
-
-            AtualizarTotalVenda();
-
-            cbproduto.SelectedIndex = -1;
-            nudquantidade.Value = 1;
-            nudnumeromesa.Value = 1;
-            cbcliente.SelectedIndex = 0;
-
-            MessageBox.Show(
-                "Venda finalizada com sucesso.",
-                "Sucesso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+                CobrarPedidoNoBalcao(idClienteVenda);
+            }
+            else
+            {
+                EnviarPedidoParaComanda(numeroMesa, idClienteVenda);
+            }
         }
     }
 }

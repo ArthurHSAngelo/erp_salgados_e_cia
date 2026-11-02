@@ -13,6 +13,9 @@ namespace erp_salgados_e_cia
                        m.Produto == produto.Nome) ||
                     vendas.Any(v =>
                        v.Itens.Any(item =>
+                           item.Produto == produto.Nome)) ||
+                    comandas.Any(c =>
+                       c.Itens.Any(item =>
                            item.Produto == produto.Nome)));
         }
 
@@ -36,8 +39,16 @@ namespace erp_salgados_e_cia
             Cliente cliente)
         {
             return cliente != null &&
-                   vendas.Any(v =>
-                       v.IdCliente == cliente.IdCliente);
+                   (vendas.Any(v =>
+                       v.IdCliente == cliente.IdCliente) ||
+                    comandas.Any(c =>
+                       c.IdCliente == cliente.IdCliente));
+        }
+
+        public static Comanda ComandaDaMesa(int numeroMesa)
+        {
+            return comandas.FirstOrDefault(c =>
+                c.NumeroMesa == numeroMesa);
         }
 
         public static int ProximoIdCliente()
@@ -63,6 +74,9 @@ namespace erp_salgados_e_cia
         public static BindingList<Cliente> clientes =
             new BindingList<Cliente>();
 
+        public static BindingList<Comanda> comandas =
+            new BindingList<Comanda>();
+
         static dadossistema()
         {
             produtos.Add(new Produto
@@ -73,7 +87,7 @@ namespace erp_salgados_e_cia
                 Categoria = "Salgados",
                 UnidadeMedida = "Unidade",
                 EstoqueMinimo = 10,
-                EstoqueAtual = 0
+                EstoqueAtual = 50
             });
 
             produtos.Add(new Produto
@@ -84,7 +98,7 @@ namespace erp_salgados_e_cia
                 Categoria = "Salgados",
                 UnidadeMedida = "Unidade",
                 EstoqueMinimo = 10,
-                EstoqueAtual = 0
+                EstoqueAtual = 50
             });
 
             produtos.Add(new Produto
@@ -95,7 +109,28 @@ namespace erp_salgados_e_cia
                 Categoria = "Bebidas",
                 UnidadeMedida = "Unidade",
                 EstoqueMinimo = 5,
-                EstoqueAtual = 0
+                EstoqueAtual = 50
+            });
+            produtos.Add(new Produto
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "Pastel de carne",
+                Preco = 7.00m,
+                Categoria = "Salgados",
+                UnidadeMedida = "Unidade",
+                EstoqueMinimo = 10,
+                EstoqueAtual = 30
+            });
+
+            produtos.Add(new Produto
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "Suco de laranja",
+                Preco = 5.50m,
+                Categoria = "Bebidas",
+                UnidadeMedida = "Unidade",
+                EstoqueMinimo = 5,
+                EstoqueAtual = 20
             });
 
             fornecedores.Add(new Fornecedor

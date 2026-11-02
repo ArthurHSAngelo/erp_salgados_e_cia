@@ -9,6 +9,12 @@ namespace erp_salgados_e_cia
     {
         private decimal totalVenda;
 
+        private decimal jaPago;
+
+        private bool aceitaParcial;
+
+        public bool PagamentoParcial { get; private set; }
+
         private BindingList<PagamentoVenda> pagamentos =
             new BindingList<PagamentoVenda>();
 
@@ -23,7 +29,7 @@ namespace erp_salgados_e_cia
         private void AtualizarResumoPagamento()
         {
             decimal totalPago =
-                pagamentos.Sum(pagamento => pagamento.Valor);
+                jaPago + pagamentos.Sum(pagamento => pagamento.Valor);
 
             decimal falta =
                 Math.Max(0m, totalVenda - totalPago);
@@ -46,9 +52,15 @@ namespace erp_salgados_e_cia
             InitializeComponent();
         }
 
-        public frmcobranca(decimal total) : this()
+        public frmcobranca(decimal total) : this(total, 0m, false)
+        {
+        }
+
+        public frmcobranca(decimal total, decimal pagoAnterior, bool permiteParcial) : this()
         {
             totalVenda = total;
+            jaPago = pagoAnterior;
+            aceitaParcial = permiteParcial;
 
             fontePagamentos.DataSource = pagamentos;
             dgvpagamentosvenda.DataSource = fontePagamentos;
@@ -77,7 +89,7 @@ namespace erp_salgados_e_cia
             }
 
             decimal totalPago =
-                pagamentos.Sum(pagamento => pagamento.Valor);
+                jaPago + pagamentos.Sum(pagamento => pagamento.Valor);
 
             decimal falta =
                 totalVenda - totalPago;
@@ -140,7 +152,7 @@ namespace erp_salgados_e_cia
             }
 
             decimal totalPago =
-                pagamentos.Sum(pagamento => pagamento.Valor);
+                jaPago + pagamentos.Sum(pagamento => pagamento.Valor);
 
             decimal falta =
                 totalVenda - totalPago;
@@ -230,7 +242,7 @@ namespace erp_salgados_e_cia
         private void bconfirmarvenda_Click(object sender, EventArgs e)
         {
             decimal totalPago =
-                pagamentos.Sum(pagamento => pagamento.Valor);
+                jaPago + pagamentos.Sum(pagamento => pagamento.Valor);
 
             decimal totalDinheiro =
                 pagamentos
@@ -255,13 +267,32 @@ namespace erp_salgados_e_cia
 
             if (totalPago < totalVenda)
             {
-                MessageBox.Show(
-                    $"Ainda faltam R$ {totalVenda - totalPago:N2} para cobrir o total da venda.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                if (!aceitaParcial)
+                {
+                    MessageBox.Show(
+                        $"Ainda faltam R$ {totalVenda - totalPago:N2} para cobrir o total da venda.",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                DialogResult resposta = MessageBox.Show(
+                    $"Ainda faltam R$ {totalVenda - totalPago:N2}. Registrar este pagamento parcial e manter a comanda aberta?",
+                    "Pagamento parcial",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
                 );
 
+                if (resposta != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                PagamentoParcial = true;
+                DialogResult = DialogResult.OK;
                 return;
             }
 
@@ -277,6 +308,7 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            PagamentoParcial = false;
             DialogResult = DialogResult.OK;
         }
     }
