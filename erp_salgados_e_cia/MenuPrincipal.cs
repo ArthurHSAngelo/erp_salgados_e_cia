@@ -18,7 +18,7 @@ namespace erp_salgados_e_cia
         {
             panelCadastros.Visible = false;
             panelestoque.Visible = false;
-            pvendas.Visible = false;
+            pvendas.Visible = false; 
 
             bacadastros.Text = "Cadastros ▼";
             baestoque.Text = "Estoque ▼";
@@ -219,6 +219,13 @@ namespace erp_salgados_e_cia
         private void bavendas_Click(object sender, EventArgs e)
         {
             SelecionarBotao(bavendas);
+
+            if (telavendas == null)
+            {
+                telavendas = new ucvendas();
+            }
+
+            AbrirTela(telavendas);
 
             bool abrir = !pvendas.Visible;
 

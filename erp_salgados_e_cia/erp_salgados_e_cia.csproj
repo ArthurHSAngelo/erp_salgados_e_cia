@@ -49,6 +49,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="dadossistema.cs" />
+    <Compile Include="Cliente.cs" />
     <Compile Include="Fornecedor.cs" />
     <Compile Include="itemvenda.cs" />
     <Compile Include="MenuPrincipal.cs">

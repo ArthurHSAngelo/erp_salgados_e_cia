@@ -28,6 +28,9 @@ namespace erp_salgados_e_cia
                 dgvhistoricovendas.Columns["IdVenda"].HeaderText =
                     "Venda";
 
+                dgvhistoricovendas.Columns["NumeroMesa"].HeaderText =
+                    "Mesa";
+
                 dgvhistoricovendas.Columns["DataHora"].HeaderText =
                     "Data e hora";
 
@@ -46,7 +49,24 @@ namespace erp_salgados_e_cia
                 dgvhistoricovendas.Columns["Status"].HeaderText =
                     "Status";
 
-                dgvhistoricovendas.Columns["Itens"].Visible = false;
+                dgvhistoricovendas.Columns["Produtos"].HeaderText =
+                    "Produtos";
+
+                dgvhistoricovendas.Columns["Produtos"]
+                    .DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+                dgvhistoricovendas.AutoSizeRowsMode =
+                    DataGridViewAutoSizeRowsMode.AllCells;
+
+                if (dgvhistoricovendas.Columns.Contains("Itens"))
+                {
+                    dgvhistoricovendas.Columns["Itens"].Visible = false;
+                }
+
+                if (dgvhistoricovendas.Columns.Contains("Pagamentos"))
+                {
+                    dgvhistoricovendas.Columns["Pagamentos"].Visible = false;
+                }
 
                 dgvhistoricovendas.Columns["DataHora"]
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
@@ -60,11 +80,16 @@ namespace erp_salgados_e_cia
                 dgvhistoricovendas.Columns["Troco"]
                     .DefaultCellStyle.Format = "N2";
             }
-        } 
+        }
 
         public uchistoricovendas()
         {
             InitializeComponent();
+
+            fonteVendas.DataSource = vendas;
+            dgvhistoricovendas.DataSource = fonteVendas;
+
+            AtualizarTabela();
         }
     }
 }

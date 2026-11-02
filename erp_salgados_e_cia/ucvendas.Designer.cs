@@ -28,12 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lprodutos = new System.Windows.Forms.Label();
             this.cbproduto = new System.Windows.Forms.ComboBox();
             this.lquantidade = new System.Windows.Forms.Label();
             this.nudquantidade = new System.Windows.Forms.NumericUpDown();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.badicionaritem = new System.Windows.Forms.Button();
             this.litensdavenda = new System.Windows.Forms.Label();
             this.dgvitensvenda = new System.Windows.Forms.DataGridView();
@@ -45,8 +43,18 @@
             this.ltroco = new System.Windows.Forms.Label();
             this.tbvalorrecebido = new System.Windows.Forms.TextBox();
             this.lvalorrecebido = new System.Windows.Forms.Label();
+            this.lnumeromesa = new System.Windows.Forms.Label();
+            this.nudnumeromesa = new System.Windows.Forms.NumericUpDown();
+            this.dgvpagamentosvenda = new System.Windows.Forms.DataGridView();
+            this.lpagamentosvenda = new System.Windows.Forms.Label();
+            this.badicionarpagamento = new System.Windows.Forms.Button();
+            this.bremoverpagamento = new System.Windows.Forms.Button();
+            this.lpago = new System.Windows.Forms.Label();
+            this.lfalta = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudquantidade)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvitensvenda)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudnumeromesa)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvpagamentosvenda)).BeginInit();
             this.SuspendLayout();
             // 
             // lprodutos
@@ -93,12 +101,6 @@
             0,
             0});
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
             // badicionaritem
             // 
             this.badicionaritem.Location = new System.Drawing.Point(480, 44);
@@ -122,6 +124,7 @@
             // 
             this.dgvitensvenda.AllowUserToAddRows = false;
             this.dgvitensvenda.AllowUserToDeleteRows = false;
+            this.dgvitensvenda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvitensvenda.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvitensvenda.Location = new System.Drawing.Point(111, 290);
             this.dgvitensvenda.Name = "dgvitensvenda";
@@ -164,7 +167,7 @@
             // lpagamento
             // 
             this.lpagamento.AutoSize = true;
-            this.lpagamento.Location = new System.Drawing.Point(71, 92);
+            this.lpagamento.Location = new System.Drawing.Point(117, 742);
             this.lpagamento.Name = "lpagamento";
             this.lpagamento.Size = new System.Drawing.Size(140, 16);
             this.lpagamento.TabIndex = 12;
@@ -179,7 +182,7 @@
             "Pix",
             "Cartão",
             "Notinha"});
-            this.cbformapagamento.Location = new System.Drawing.Point(217, 89);
+            this.cbformapagamento.Location = new System.Drawing.Point(263, 739);
             this.cbformapagamento.Name = "cbformapagamento";
             this.cbformapagamento.Size = new System.Drawing.Size(120, 24);
             this.cbformapagamento.TabIndex = 13;
@@ -193,7 +196,6 @@
             this.ltroco.Size = new System.Drawing.Size(93, 16);
             this.ltroco.TabIndex = 15;
             this.ltroco.Text = "Troco: R$ 0,00";
-            this.ltroco.Visible = false;
             // 
             // tbvalorrecebido
             // 
@@ -201,7 +203,6 @@
             this.tbvalorrecebido.Name = "tbvalorrecebido";
             this.tbvalorrecebido.Size = new System.Drawing.Size(100, 22);
             this.tbvalorrecebido.TabIndex = 16;
-            this.tbvalorrecebido.Visible = false;
             this.tbvalorrecebido.TextChanged += new System.EventHandler(this.tbvalorrecebido_TextChanged);
             // 
             // lvalorrecebido
@@ -212,12 +213,112 @@
             this.lvalorrecebido.Size = new System.Drawing.Size(99, 16);
             this.lvalorrecebido.TabIndex = 17;
             this.lvalorrecebido.Text = "Valor recebido:";
-            this.lvalorrecebido.Visible = false;
+            // 
+            // lnumeromesa
+            // 
+            this.lnumeromesa.AutoSize = true;
+            this.lnumeromesa.Location = new System.Drawing.Point(402, 92);
+            this.lnumeromesa.Name = "lnumeromesa";
+            this.lnumeromesa.Size = new System.Drawing.Size(44, 16);
+            this.lnumeromesa.TabIndex = 19;
+            this.lnumeromesa.Text = "Mesa:";
+            // 
+            // nudnumeromesa
+            // 
+            this.nudnumeromesa.Location = new System.Drawing.Point(452, 89);
+            this.nudnumeromesa.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.nudnumeromesa.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudnumeromesa.Name = "nudnumeromesa";
+            this.nudnumeromesa.Size = new System.Drawing.Size(42, 22);
+            this.nudnumeromesa.TabIndex = 20;
+            this.nudnumeromesa.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // dgvpagamentosvenda
+            // 
+            this.dgvpagamentosvenda.AllowUserToAddRows = false;
+            this.dgvpagamentosvenda.AllowUserToDeleteRows = false;
+            this.dgvpagamentosvenda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvpagamentosvenda.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvpagamentosvenda.Location = new System.Drawing.Point(960, 406);
+            this.dgvpagamentosvenda.Name = "dgvpagamentosvenda";
+            this.dgvpagamentosvenda.ReadOnly = true;
+            this.dgvpagamentosvenda.RowHeadersWidth = 51;
+            this.dgvpagamentosvenda.RowTemplate.Height = 24;
+            this.dgvpagamentosvenda.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvpagamentosvenda.Size = new System.Drawing.Size(522, 275);
+            this.dgvpagamentosvenda.TabIndex = 21;
+            // 
+            // lpagamentosvenda
+            // 
+            this.lpagamentosvenda.AutoSize = true;
+            this.lpagamentosvenda.Location = new System.Drawing.Point(957, 371);
+            this.lpagamentosvenda.Name = "lpagamentosvenda";
+            this.lpagamentosvenda.Size = new System.Drawing.Size(147, 16);
+            this.lpagamentosvenda.TabIndex = 22;
+            this.lpagamentosvenda.Text = "Pagamentos da venda:";
+            // 
+            // badicionarpagamento
+            // 
+            this.badicionarpagamento.Location = new System.Drawing.Point(1222, 354);
+            this.badicionarpagamento.Name = "badicionarpagamento";
+            this.badicionarpagamento.Size = new System.Drawing.Size(154, 23);
+            this.badicionarpagamento.TabIndex = 23;
+            this.badicionarpagamento.Text = "Adicionar pagamento";
+            this.badicionarpagamento.UseVisualStyleBackColor = true;
+            this.badicionarpagamento.Click += new System.EventHandler(this.badicionarpagamento_Click);
+            // 
+            // bremoverpagamento
+            // 
+            this.bremoverpagamento.Location = new System.Drawing.Point(1456, 354);
+            this.bremoverpagamento.Name = "bremoverpagamento";
+            this.bremoverpagamento.Size = new System.Drawing.Size(174, 23);
+            this.bremoverpagamento.TabIndex = 24;
+            this.bremoverpagamento.Text = "Remover pagamento";
+            this.bremoverpagamento.UseVisualStyleBackColor = true;
+            this.bremoverpagamento.Click += new System.EventHandler(this.bremoverpagamento_Click);
+            // 
+            // lpago
+            // 
+            this.lpago.AutoSize = true;
+            this.lpago.Location = new System.Drawing.Point(1051, 727);
+            this.lpago.Name = "lpago";
+            this.lpago.Size = new System.Drawing.Size(90, 16);
+            this.lpago.TabIndex = 25;
+            this.lpago.Text = "Pago: R$ 0,00";
+            // 
+            // lfalta
+            // 
+            this.lfalta.AutoSize = true;
+            this.lfalta.Location = new System.Drawing.Point(1219, 742);
+            this.lfalta.Name = "lfalta";
+            this.lfalta.Size = new System.Drawing.Size(87, 16);
+            this.lfalta.TabIndex = 26;
+            this.lfalta.Text = "Falta: R$ 0,00";
             // 
             // ucvendas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lfalta);
+            this.Controls.Add(this.lpago);
+            this.Controls.Add(this.bremoverpagamento);
+            this.Controls.Add(this.badicionarpagamento);
+            this.Controls.Add(this.lpagamentosvenda);
+            this.Controls.Add(this.dgvpagamentosvenda);
+            this.Controls.Add(this.nudnumeromesa);
+            this.Controls.Add(this.lnumeromesa);
             this.Controls.Add(this.lvalorrecebido);
             this.Controls.Add(this.tbvalorrecebido);
             this.Controls.Add(this.ltroco);
@@ -237,6 +338,8 @@
             this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.nudquantidade)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvitensvenda)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudnumeromesa)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvpagamentosvenda)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -248,7 +351,6 @@
         private System.Windows.Forms.ComboBox cbproduto;
         private System.Windows.Forms.Label lquantidade;
         private System.Windows.Forms.NumericUpDown nudquantidade;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Button badicionaritem;
         private System.Windows.Forms.Label litensdavenda;
         private System.Windows.Forms.DataGridView dgvitensvenda;
@@ -260,5 +362,13 @@
         private System.Windows.Forms.Label ltroco;
         private System.Windows.Forms.TextBox tbvalorrecebido;
         private System.Windows.Forms.Label lvalorrecebido;
+        private System.Windows.Forms.Label lnumeromesa;
+        private System.Windows.Forms.NumericUpDown nudnumeromesa;
+        private System.Windows.Forms.DataGridView dgvpagamentosvenda;
+        private System.Windows.Forms.Label lpagamentosvenda;
+        private System.Windows.Forms.Button badicionarpagamento;
+        private System.Windows.Forms.Button bremoverpagamento;
+        private System.Windows.Forms.Label lpago;
+        private System.Windows.Forms.Label lfalta;
     }
 }

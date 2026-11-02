@@ -29,6 +29,14 @@ namespace erp_salgados_e_cia
                        m.Unidade == unidade.Nome);
         }
 
+        public static bool ClientePossuiVinculos(
+            Cliente cliente)
+        {
+            return cliente != null &&
+                   vendas.Any(v =>
+                       v.Cliente == cliente.Nome);
+        }
+
         public static BindingList<movimentoestoque> movimentacoes =
             new BindingList<movimentoestoque>();
         public static BindingList<Venda> vendas =
@@ -41,6 +49,9 @@ namespace erp_salgados_e_cia
 
         public static BindingList<Unidade> unidades =
             new BindingList<Unidade>();
+
+        public static BindingList<Cliente> clientes =
+            new BindingList<Cliente>();
 
         static dadossistema()
         {
@@ -99,6 +110,20 @@ namespace erp_salgados_e_cia
                 Cnpj = "11.222.333/0001-44",
                 Endereco = "Rua Principal",
                 Numero = "100"
+            });
+
+            clientes.Add(new Cliente
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "Maria Souza",
+                Telefone = "(11) 98888-1111"
+            });
+
+            clientes.Add(new Cliente
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "João Pereira",
+                Telefone = "(11) 97777-2222"
             });
         }
 
