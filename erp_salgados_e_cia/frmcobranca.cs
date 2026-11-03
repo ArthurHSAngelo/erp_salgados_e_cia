@@ -15,6 +15,8 @@ namespace erp_salgados_e_cia
 
         private bool temCliente;
 
+        private bool modoAbatimento;
+
         public bool PagamentoParcial { get; private set; }
 
         private BindingList<PagamentoVenda> pagamentos =
@@ -58,12 +60,14 @@ namespace erp_salgados_e_cia
             decimal total,
             decimal pagoAnterior,
             bool permiteParcial,
-            bool clienteInformado) : this()
+            bool clienteInformado,
+            bool abatimento = false) : this()
         {
             totalVenda = total;
             jaPago = pagoAnterior;
             aceitaParcial = permiteParcial;
             temCliente = clienteInformado;
+            modoAbatimento = abatimento;
 
             fontePagamentos.DataSource = pagamentos;
             dgvpagamentosvenda.DataSource = fontePagamentos;
@@ -77,8 +81,22 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "N2";
             }
 
-            ltotalvenda.Text =
-                $"Total da venda: R$ {totalVenda:N2}";
+            if (modoAbatimento)
+            {
+                cbformapagamento.Items.Remove("Notinha");
+
+                Text = "Pagamento de Notinha";
+
+                bconfirmarvenda.Text = "Confirmar pagamento";
+
+                ltotalvenda.Text =
+                    $"Saldo devido: R$ {totalVenda:N2}";
+            }
+            else
+            {
+                ltotalvenda.Text =
+                    $"Total da venda: R$ {totalVenda:N2}";
+            }
 
             AtualizarResumoPagamento();
         }
@@ -163,7 +181,9 @@ namespace erp_salgados_e_cia
             if (falta <= 0)
             {
                 MessageBox.Show(
-                    "Esta venda já está totalmente paga.",
+                    modoAbatimento
+                    ? "A dívida já está totalmente paga."
+                    : "Esta venda já está totalmente paga.",
                     "Atenção",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
@@ -283,7 +303,9 @@ namespace erp_salgados_e_cia
                 }
 
                 DialogResult resposta = MessageBox.Show(
-                    $"Ainda faltam R$ {totalVenda - totalPago:N2}. Registrar este pagamento parcial e manter a comanda aberta?",
+                    modoAbatimento
+                    ? $"Ainda restarão R$ {totalVenda - totalPago:N2} de dívida. Registrar este pagamento parcial?"
+                    : $"Ainda faltam R$ {totalVenda - totalPago:N2}. Registrar este pagamento parcial e manter a comanda aberta?",
                     "Pagamento parcial",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question

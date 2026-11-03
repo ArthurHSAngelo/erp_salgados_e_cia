@@ -40,7 +40,13 @@
             this.tbnomec = new System.Windows.Forms.TextBox();
             this.lcpfcnpjcliente = new System.Windows.Forms.Label();
             this.lnomecliente = new System.Windows.Forms.Label();
+            this.lnotinhacliente = new System.Windows.Forms.Label();
+            this.dgvhistoriconotinha = new System.Windows.Forms.DataGridView();
+            this.lsaldonotinha = new System.Windows.Forms.Label();
+            this.lsemclientenotinha = new System.Windows.Forms.Label();
+            this.bpagarnotinha = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvclientes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvhistoriconotinha)).BeginInit();
             this.SuspendLayout();
             // 
             // cbfiltrostatus
@@ -158,10 +164,68 @@
             this.lnomecliente.TabIndex = 21;
             this.lnomecliente.Text = "Nome do Cliente:";
             // 
+            // lnotinhacliente
+            // 
+            this.lnotinhacliente.AutoSize = true;
+            this.lnotinhacliente.Location = new System.Drawing.Point(1305, 259);
+            this.lnotinhacliente.Name = "lnotinhacliente";
+            this.lnotinhacliente.Size = new System.Drawing.Size(117, 16);
+            this.lnotinhacliente.TabIndex = 33;
+            this.lnotinhacliente.Text = "Notinha do cliente:";
+            // 
+            // dgvhistoriconotinha
+            // 
+            this.dgvhistoriconotinha.AllowUserToAddRows = false;
+            this.dgvhistoriconotinha.AllowUserToDeleteRows = false;
+            this.dgvhistoriconotinha.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvhistoriconotinha.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvhistoriconotinha.Location = new System.Drawing.Point(1308, 320);
+            this.dgvhistoriconotinha.MultiSelect = false;
+            this.dgvhistoriconotinha.Name = "dgvhistoriconotinha";
+            this.dgvhistoriconotinha.ReadOnly = true;
+            this.dgvhistoriconotinha.RowHeadersWidth = 51;
+            this.dgvhistoriconotinha.RowTemplate.Height = 24;
+            this.dgvhistoriconotinha.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvhistoriconotinha.Size = new System.Drawing.Size(522, 275);
+            this.dgvhistoriconotinha.TabIndex = 35;
+            // 
+            // lsaldonotinha
+            // 
+            this.lsaldonotinha.AutoSize = true;
+            this.lsaldonotinha.Location = new System.Drawing.Point(1308, 285);
+            this.lsaldonotinha.Name = "lsaldonotinha";
+            this.lsaldonotinha.Size = new System.Drawing.Size(138, 16);
+            this.lsaldonotinha.TabIndex = 34;
+            this.lsaldonotinha.Text = "Saldo devido: R$ 0,00";
+            // 
+            // lsemclientenotinha
+            // 
+            this.lsemclientenotinha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lsemclientenotinha.Location = new System.Drawing.Point(1308, 320);
+            this.lsemclientenotinha.Name = "lsemclientenotinha";
+            this.lsemclientenotinha.Size = new System.Drawing.Size(522, 275);
+            this.lsemclientenotinha.TabIndex = 36;
+            this.lsemclientenotinha.Text = "Selecione um cliente";
+            this.lsemclientenotinha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // bpagarnotinha
+            // 
+            this.bpagarnotinha.Location = new System.Drawing.Point(1308, 610);
+            this.bpagarnotinha.Name = "bpagarnotinha";
+            this.bpagarnotinha.Size = new System.Drawing.Size(138, 23);
+            this.bpagarnotinha.TabIndex = 37;
+            this.bpagarnotinha.Text = "Pagar notinha";
+            this.bpagarnotinha.UseVisualStyleBackColor = true;
+            // 
             // ucclientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.bpagarnotinha);
+            this.Controls.Add(this.lsemclientenotinha);
+            this.Controls.Add(this.dgvhistoriconotinha);
+            this.Controls.Add(this.lsaldonotinha);
+            this.Controls.Add(this.lnotinhacliente);
             this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.cbativo);
             this.Controls.Add(this.beditarc);
@@ -177,6 +241,7 @@
             this.Name = "ucclientes";
             this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.dgvclientes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvhistoriconotinha)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,5 +261,10 @@
         private System.Windows.Forms.TextBox tbnomec;
         private System.Windows.Forms.Label lcpfcnpjcliente;
         private System.Windows.Forms.Label lnomecliente;
+        private System.Windows.Forms.Label lnotinhacliente;
+        private System.Windows.Forms.DataGridView dgvhistoriconotinha;
+        private System.Windows.Forms.Label lsaldonotinha;
+        private System.Windows.Forms.Label lsemclientenotinha;
+        private System.Windows.Forms.Button bpagarnotinha;
     }
 }
