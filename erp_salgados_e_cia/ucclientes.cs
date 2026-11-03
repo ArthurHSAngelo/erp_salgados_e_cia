@@ -22,6 +22,125 @@ namespace erp_salgados_e_cia
         private BindingSource fonteClientes =
             new BindingSource();
 
+        private BindingSource fonteHistoricoNotinha =
+            new BindingSource();
+
+        private Cliente ClienteSelecionadoNaGrade()
+        {
+            if (dgvclientes.SelectedRows.Count == 0)
+            {
+                return null;
+            }
+
+            return dgvclientes.SelectedRows[0]
+                .DataBoundItem as Cliente;
+        }
+
+        private void AtualizarPainelNotinha()
+        {
+            Cliente cliente = ClienteSelecionadoNaGrade();
+
+            if (cliente == null)
+            {
+                lsemclientenotinha.Visible = true;
+                bpagarnotinha.Enabled = false;
+
+                lnotinhacliente.Text = "Notinha do cliente";
+                lsaldonotinha.Text = "Saldo devido: R$ 0,00";
+
+                fonteHistoricoNotinha.DataSource =
+                    new List<MovimentoNotinha>();
+
+                return;
+            }
+
+            lsemclientenotinha.Visible = false;
+            bpagarnotinha.Enabled = true;
+
+            lnotinhacliente.Text = $"Notinha - {cliente.Nome}";
+
+            lsaldonotinha.Text =
+                $"Saldo devido: R$ {dadossistema.SaldoNotinha(cliente.IdCliente):N2}";
+
+            List<MovimentoNotinha> movimentos =
+                dadossistema.notinhas
+                .Where(n => n.IdCliente == cliente.IdCliente)
+                .Select(n => new MovimentoNotinha
+                {
+                    DataHora = n.DataHora,
+                    Tipo = "Notinha",
+                    Valor = n.Valor,
+                    Detalhe = ProdutosDaVenda(n.IdVenda)
+                })
+                .Concat(
+                    dadossistema.abatimentos
+                    .Where(a => a.IdCliente == cliente.IdCliente)
+                    .Select(a => new MovimentoNotinha
+                    {
+                        DataHora = a.DataHora,
+                        Tipo = "Abatimento",
+                        Valor = a.Valor,
+                        Detalhe = a.FormaPagamento
+                    })
+                )
+                .OrderByDescending(m => m.DataHora)
+                .ToList();
+
+            fonteHistoricoNotinha.DataSource = movimentos;
+
+            dgvhistoriconotinha.Columns["DataHora"].HeaderText =
+                "Data/Hora";
+
+            dgvhistoriconotinha.Columns["DataHora"]
+                .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
+            dgvhistoriconotinha.Columns["Valor"]
+                .DefaultCellStyle.Format = "N2";
+        }
+
+        private string ProdutosDaVenda(int idVenda)
+        {
+            Venda venda =
+                dadossistema.vendas
+                .FirstOrDefault(v => v.IdVenda == idVenda);
+
+            if (venda == null)
+            {
+                return "";
+            }
+
+            return string.Join(
+                ", ",
+                venda.Itens.Select(item =>
+                    $"{item.Quantidade:0.##}x {item.Produto}")
+            );
+        }
+
+        private void SelecionarClienteNaGrade(int idCliente)
+        {
+            foreach (DataGridViewRow linha in dgvclientes.Rows)
+            {
+                Cliente cliente = linha.DataBoundItem as Cliente;
+
+                if (cliente != null && cliente.IdCliente == idCliente)
+                {
+                    dgvclientes.ClearSelection();
+                    linha.Selected = true;
+
+                    DataGridViewCell celula =
+                        linha.Cells.Cast<DataGridViewCell>()
+                        .FirstOrDefault(c => c.Visible);
+
+                    if (celula != null)
+                    {
+                        dgvclientes.CurrentCell = celula;
+                    }
+
+                    return;
+                }
+            }
+        }
+
         private string ApenasDigitos(string texto)
         {
             return new string(
@@ -73,6 +192,8 @@ namespace erp_salgados_e_cia
                 dgvclientes.Columns["SaldoNotinha"].DefaultCellStyle.Format =
                     "N2";
             }
+
+            AtualizarPainelNotinha();
         }
 
         public ucclientes()
@@ -97,10 +218,119 @@ namespace erp_salgados_e_cia
             dgvclientes.DataSource =
                 fonteClientes;
 
+            dgvhistoriconotinha.DataSource =
+                fonteHistoricoNotinha;
+
             cbfiltrostatus.SelectedIndex =
                 0;
 
             AtualizarTabela();
+
+            dgvclientes.SelectionChanged +=
+                dgvclientes_SelectionChanged;
+
+            AtualizarPainelNotinha();
+        }
+
+        private void dgvclientes_SelectionChanged(
+            object sender,
+            EventArgs e)
+        {
+            AtualizarPainelNotinha();
+        }
+
+        private void bpagarnotinha_Click(object sender, EventArgs e)
+        {
+            Cliente cliente = ClienteSelecionadoNaGrade();
+
+            if (cliente == null)
+            {
+                MessageBox.Show(
+                    "Selecione um cliente para pagar a notinha.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            decimal saldo =
+                dadossistema.SaldoNotinha(cliente.IdCliente);
+
+            if (saldo <= 0)
+            {
+                MessageBox.Show(
+                    "Este cliente não possui saldo de Notinha em aberto.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            BindingList<PagamentoVenda> pagamentosCobrados;
+
+            using (frmcobranca cobranca = new frmcobranca(
+                saldo,
+                0m,
+                true,
+                true,
+                true))
+            {
+                if (cobranca.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                pagamentosCobrados = cobranca.Pagamentos;
+            }
+
+            decimal totalPago =
+                pagamentosCobrados.Sum(pagamento => pagamento.Valor);
+
+            decimal restante = saldo;
+
+            foreach (PagamentoVenda pagamento in pagamentosCobrados
+                .OrderBy(p => p.FormaPagamento == "Dinheiro"))
+            {
+                decimal valorAbatido =
+                    Math.Min(pagamento.Valor, restante);
+
+                if (valorAbatido <= 0)
+                {
+                    break;
+                }
+
+                dadossistema.abatimentos.Add(
+                    new AbatimentoNotinha
+                    {
+                        IdAbatimento = dadossistema.ProximoIdAbatimento(),
+                        IdCliente = cliente.IdCliente,
+                        DataHora = DateTime.Now,
+                        Valor = valorAbatido,
+                        FormaPagamento = pagamento.FormaPagamento
+                    }
+                );
+
+                restante -= valorAbatido;
+            }
+
+            decimal troco = Math.Max(0m, totalPago - saldo);
+
+            AtualizarTabela();
+            SelecionarClienteNaGrade(cliente.IdCliente);
+            AtualizarPainelNotinha();
+
+            MessageBox.Show(
+                troco > 0
+                ? $"Pagamento registrado com sucesso.{Environment.NewLine}Troco: R$ {troco:N2}"
+                : "Pagamento registrado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void cbfiltrostatus_SelectedIndexChanged(

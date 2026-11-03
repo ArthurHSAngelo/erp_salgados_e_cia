@@ -216,6 +216,7 @@
             this.bpagarnotinha.TabIndex = 37;
             this.bpagarnotinha.Text = "Pagar notinha";
             this.bpagarnotinha.UseVisualStyleBackColor = true;
+            this.bpagarnotinha.Click += new System.EventHandler(this.bpagarnotinha_Click);
             // 
             // ucclientes
             // 

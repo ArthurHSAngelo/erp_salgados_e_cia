@@ -66,6 +66,7 @@
       <DependentUpon>frmmesas.cs</DependentUpon>
     </Compile>
     <Compile Include="itemvenda.cs" />
+    <Compile Include="MovimentoNotinha.cs" />
     <Compile Include="Notinha.cs" />
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
