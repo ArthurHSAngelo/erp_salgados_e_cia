@@ -212,6 +212,8 @@ namespace erp_salgados_e_cia
                 telaclientes = new ucclientes();
             }
 
+            telaclientes.AtualizarTabela();
+
             AbrirTela(telaclientes);
         }
 

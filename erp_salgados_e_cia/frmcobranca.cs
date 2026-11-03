@@ -13,6 +13,8 @@ namespace erp_salgados_e_cia
 
         private bool aceitaParcial;
 
+        private bool temCliente;
+
         public bool PagamentoParcial { get; private set; }
 
         private BindingList<PagamentoVenda> pagamentos =
@@ -52,15 +54,16 @@ namespace erp_salgados_e_cia
             InitializeComponent();
         }
 
-        public frmcobranca(decimal total) : this(total, 0m, false)
-        {
-        }
-
-        public frmcobranca(decimal total, decimal pagoAnterior, bool permiteParcial) : this()
+        public frmcobranca(
+            decimal total,
+            decimal pagoAnterior,
+            bool permiteParcial,
+            bool clienteInformado) : this()
         {
             totalVenda = total;
             jaPago = pagoAnterior;
             aceitaParcial = permiteParcial;
+            temCliente = clienteInformado;
 
             fontePagamentos.DataSource = pagamentos;
             dgvpagamentosvenda.DataSource = fontePagamentos;
@@ -123,10 +126,10 @@ namespace erp_salgados_e_cia
             string formaPagamento =
                 cbformapagamento.Text;
 
-            if (formaPagamento == "Notinha")
+            if (formaPagamento == "Notinha" && !temCliente)
             {
                 MessageBox.Show(
-                    "Notinha disponível em breve.",
+                    "Para usar Notinha, selecione um cliente na venda.",
                     "Atenção",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning

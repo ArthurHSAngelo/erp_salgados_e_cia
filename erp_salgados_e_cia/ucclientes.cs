@@ -31,7 +31,7 @@ namespace erp_salgados_e_cia
             );
         }
 
-        private void AtualizarTabela()
+        public void AtualizarTabela()
         {
             string filtro =
                 cbfiltrostatus.SelectedItem == null
@@ -66,6 +66,12 @@ namespace erp_salgados_e_cia
                     "CPF/CNPJ";
 
                 dgvclientes.Columns["Descricao"].Visible = false;
+
+                dgvclientes.Columns["SaldoNotinha"].HeaderText =
+                    "Saldo";
+
+                dgvclientes.Columns["SaldoNotinha"].DefaultCellStyle.Format =
+                    "N2";
             }
         }
 
@@ -180,6 +186,20 @@ namespace erp_salgados_e_cia
                 if (!cbativo.Checked &&
                     clienteAtual.Status == StatusCadastro.Ativo)
                 {
+                    if (dadossistema.SaldoNotinha(
+                            clienteAtual.IdCliente) > 0)
+                    {
+                        MessageBox.Show(
+                            "Cliente possui saldo de Notinha em aberto.",
+                            "Inativação não permitida",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+
+                        cbativo.Checked = true;
+                        return;
+                    }
+
                     DialogResult resposta = MessageBox.Show(
                         "Deseja realmente inativar este cliente?",
                         "Confirmar inativação",

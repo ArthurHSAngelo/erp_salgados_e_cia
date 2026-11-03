@@ -23,5 +23,13 @@ namespace erp_salgados_e_cia
                     : $"{Nome} ({CpfCnpj})";
             }
         }
+
+        public decimal SaldoNotinha
+        {
+            get
+            {
+                return dadossistema.SaldoNotinha(IdCliente);
+            }
+        }
     }
 }

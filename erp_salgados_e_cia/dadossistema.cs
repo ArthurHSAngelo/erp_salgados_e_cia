@@ -42,13 +42,71 @@ namespace erp_salgados_e_cia
                    (vendas.Any(v =>
                        v.IdCliente == cliente.IdCliente) ||
                     comandas.Any(c =>
-                       c.IdCliente == cliente.IdCliente));
+                       c.IdCliente == cliente.IdCliente) ||
+                    notinhas.Any(n =>
+                       n.IdCliente == cliente.IdCliente) ||
+                    abatimentos.Any(a =>
+                       a.IdCliente == cliente.IdCliente));
         }
 
         public static Comanda ComandaDaMesa(int numeroMesa)
         {
             return comandas.FirstOrDefault(c =>
                 c.NumeroMesa == numeroMesa);
+        }
+
+        public static int ProximoIdNotinha()
+        {
+            return notinhas.Any()
+                ? notinhas.Max(n => n.IdNotinha) + 1
+                : 1;
+        }
+
+        public static int ProximoIdAbatimento()
+        {
+            return abatimentos.Any()
+                ? abatimentos.Max(a => a.IdAbatimento) + 1
+                : 1;
+        }
+
+        public static decimal SaldoNotinha(int idCliente)
+        {
+            return notinhas
+                       .Where(n => n.IdCliente == idCliente)
+                       .Sum(n => n.Valor)
+                   - abatimentos
+                       .Where(a => a.IdCliente == idCliente)
+                       .Sum(a => a.Valor);
+        }
+
+        public static void LancarNotinhaDaVenda(Venda venda)
+        {
+            if (venda == null || venda.IdCliente == null)
+            {
+                return;
+            }
+
+            decimal valorNotinha =
+                venda.Pagamentos
+                .Where(pagamento =>
+                    pagamento.FormaPagamento == "Notinha")
+                .Sum(pagamento => pagamento.Valor);
+
+            if (valorNotinha <= 0)
+            {
+                return;
+            }
+
+            notinhas.Add(
+                new Notinha
+                {
+                    IdNotinha = ProximoIdNotinha(),
+                    IdCliente = venda.IdCliente.Value,
+                    IdVenda = venda.IdVenda,
+                    DataHora = venda.DataHora,
+                    Valor = valorNotinha
+                }
+            );
         }
 
         public static int ProximoIdCliente()
@@ -76,6 +134,12 @@ namespace erp_salgados_e_cia
 
         public static BindingList<Comanda> comandas =
             new BindingList<Comanda>();
+
+        public static BindingList<Notinha> notinhas =
+            new BindingList<Notinha>();
+
+        public static BindingList<AbatimentoNotinha> abatimentos =
+            new BindingList<AbatimentoNotinha>();
 
         static dadossistema()
         {

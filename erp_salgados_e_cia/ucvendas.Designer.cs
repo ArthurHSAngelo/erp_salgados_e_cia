@@ -175,11 +175,7 @@
             this.nudnumeromesa.Name = "nudnumeromesa";
             this.nudnumeromesa.Size = new System.Drawing.Size(42, 22);
             this.nudnumeromesa.TabIndex = 20;
-            this.nudnumeromesa.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.nudnumeromesa.ThousandsSeparator = true;
             this.nudnumeromesa.ValueChanged += new System.EventHandler(this.nudnumeromesa_ValueChanged);
             // 
             // lcliente

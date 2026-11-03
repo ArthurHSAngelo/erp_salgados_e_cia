@@ -343,11 +343,28 @@ namespace erp_salgados_e_cia
             Cliente clienteSelecionado =
                 cbcliente.SelectedItem as Cliente;
 
-            comanda.IdCliente =
+            int? novoCliente =
                 clienteSelecionado == null ||
                 clienteSelecionado.IdCliente == 0
                 ? (int?)null
                 : clienteSelecionado.IdCliente;
+
+            if (novoCliente != comanda.IdCliente &&
+                comanda.Pagamentos.Any(pagamento =>
+                    pagamento.FormaPagamento == "Notinha"))
+            {
+                MessageBox.Show(
+                    "Não é possível trocar o cliente: a comanda já possui pagamento em Notinha.",
+                    "Cliente bloqueado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                AtualizarVisaoComanda();
+                return;
+            }
+
+            comanda.IdCliente = novoCliente;
         }
 
         private void LimparPedido()
@@ -444,7 +461,9 @@ namespace erp_salgados_e_cia
                         $"{pagamento.FormaPagamento} R$ {pagamento.Valor:N2}")
                 ),
                 ValorTotal = totalVenda,
-                ValorRecebido = totalPago,
+                ValorRecebido = pagamentos
+                    .Where(pagamento => pagamento.FormaPagamento != "Notinha")
+                    .Sum(pagamento => pagamento.Valor),
                 Troco = Math.Max(0m, totalPago - totalVenda),
                 Status = "Concluída",
                 IdCliente = idCliente,
@@ -477,7 +496,11 @@ namespace erp_salgados_e_cia
 
             BindingList<PagamentoVenda> pagamentosCobrados;
 
-            using (frmcobranca cobranca = new frmcobranca(totalVenda))
+            using (frmcobranca cobranca = new frmcobranca(
+                totalVenda,
+                0m,
+                false,
+                idCliente != null))
             {
                 if (cobranca.ShowDialog() != DialogResult.OK)
                 {
@@ -489,15 +512,17 @@ namespace erp_salgados_e_cia
 
             BaixarEstoquePedido();
 
-            dadossistema.vendas.Add(
-                CriarVenda(
-                    0,
-                    totalVenda,
-                    idCliente,
-                    itensVenda,
-                    pagamentosCobrados
-                )
+            Venda vendaBalcao = CriarVenda(
+                0,
+                totalVenda,
+                idCliente,
+                itensVenda,
+                pagamentosCobrados
             );
+
+            dadossistema.vendas.Add(vendaBalcao);
+
+            dadossistema.LancarNotinhaDaVenda(vendaBalcao);
 
             LimparPedido();
 
@@ -530,7 +555,8 @@ namespace erp_salgados_e_cia
             using (frmcobranca cobranca = new frmcobranca(
                 comanda.Total,
                 comanda.TotalPago,
-                true))
+                true,
+                comanda.IdCliente != null))
             {
                 if (cobranca.ShowDialog() != DialogResult.OK)
                 {
@@ -571,15 +597,17 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            dadossistema.vendas.Add(
-                CriarVenda(
-                    comanda.NumeroMesa,
-                    comanda.Total,
-                    comanda.IdCliente,
-                    comanda.Itens,
-                    comanda.Pagamentos
-                )
+            Venda vendaComanda = CriarVenda(
+                comanda.NumeroMesa,
+                comanda.Total,
+                comanda.IdCliente,
+                comanda.Itens,
+                comanda.Pagamentos
             );
+
+            dadossistema.vendas.Add(vendaComanda);
+
+            dadossistema.LancarNotinhaDaVenda(vendaComanda);
 
             dadossistema.comandas.Remove(comanda);
 
