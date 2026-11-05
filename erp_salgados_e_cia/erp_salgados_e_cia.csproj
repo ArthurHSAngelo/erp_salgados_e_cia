@@ -53,6 +53,7 @@
     <Compile Include="Cliente.cs" />
     <Compile Include="AbatimentoNotinha.cs" />
     <Compile Include="Comanda.cs" />
+    <Compile Include="LinhaEstoque.cs" />
     <Compile Include="Fornecedor.cs" />
     <Compile Include="frmcobranca.cs">
       <SubType>Form</SubType>

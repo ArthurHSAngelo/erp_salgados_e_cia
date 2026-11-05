@@ -200,6 +200,56 @@ namespace erp_salgados_e_cia
             );
         }
 
+        public static decimal? UltimoCustoDoProduto(string nomeProduto)
+        {
+            var ultima = movimentacoes
+                .Select((m, posicao) => new { m, posicao })
+                .Where(x => x.m.Produto == nomeProduto)
+                .OrderByDescending(x => x.m.DataEntrada)
+                .ThenByDescending(x => x.posicao)
+                .FirstOrDefault();
+
+            if (ultima == null)
+            {
+                return null;
+            }
+
+            return ultima.m.CustoUnitario;
+        }
+
+        public static List<LinhaEstoque> MontarRelatorioEstoque()
+        {
+            List<LinhaEstoque> linhas = new List<LinhaEstoque>();
+
+            foreach (Produto produto in produtos)
+            {
+                decimal? ultimoCusto = UltimoCustoDoProduto(produto.Nome);
+
+                linhas.Add(
+                    new LinhaEstoque
+                    {
+                        Produto = produto.Nome,
+                        Categoria = produto.Categoria,
+                        UnidadeMedida = produto.UnidadeMedida,
+                        EstoqueAtual = produto.EstoqueAtual,
+                        EstoqueMinimo = produto.EstoqueMinimo,
+                        Situacao =
+                            produto.EstoqueAtual < produto.EstoqueMinimo
+                                ? "Crítico"
+                                : "Normal",
+                        PrecoVenda = produto.Preco,
+                        UltimoCusto = ultimoCusto,
+                        ValorACusto =
+                            produto.EstoqueAtual * (ultimoCusto ?? 0m),
+                        ValorAPrecoVenda =
+                            produto.EstoqueAtual * produto.Preco,
+                        Status = produto.Status.ToString()
+                    }
+                );
+            }
+
+            return linhas;
+        }
         public static int ProximoIdCliente()
         {
             return clientes.Any()
