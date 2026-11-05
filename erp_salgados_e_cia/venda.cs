@@ -24,6 +24,9 @@ namespace erp_salgados_e_cia
 
         public int? IdCliente { get; set; }
 
+        [Browsable(false)]
+        public int IdCaixa { get; set; }
+
         public BindingList<ItemVenda> Itens { get; set; } =
             new BindingList<ItemVenda>();
         public BindingList<PagamentoVenda> Pagamentos { get; set; } =

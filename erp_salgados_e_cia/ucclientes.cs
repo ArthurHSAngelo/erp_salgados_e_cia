@@ -241,6 +241,20 @@ namespace erp_salgados_e_cia
 
         private void bpagarnotinha_Click(object sender, EventArgs e)
         {
+            Caixa caixaAberto = dadossistema.CaixaAberto();
+
+            if (caixaAberto == null)
+            {
+                MessageBox.Show(
+                    "Abra o caixa antes de registrar pagamentos.",
+                    "Caixa fechado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             Cliente cliente = ClienteSelecionadoNaGrade();
 
             if (cliente == null)
@@ -310,7 +324,8 @@ namespace erp_salgados_e_cia
                         IdCliente = cliente.IdCliente,
                         DataHora = DateTime.Now,
                         Valor = valorAbatido,
-                        FormaPagamento = pagamento.FormaPagamento
+                        FormaPagamento = pagamento.FormaPagamento,
+                        IdCaixa = caixaAberto.IdCaixa
                     }
                 );
 

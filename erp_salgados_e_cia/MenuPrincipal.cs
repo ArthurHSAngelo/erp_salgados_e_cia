@@ -32,6 +32,7 @@ namespace erp_salgados_e_cia
             {
                 bapainel,
                 bavendas,
+                baclientes,
                 bacaixa,
                 baestoque,
                 bacadastros,
@@ -69,6 +70,11 @@ namespace erp_salgados_e_cia
                 botaoSelecionado == bavendas
                 ? Properties.Resources.vendas_laranja
                 : Properties.Resources.vendas_branco;
+
+            baclientes.Image =
+                botaoSelecionado == baclientes
+                ? Properties.Resources.clientes_laranja
+                : Properties.Resources.clientes_branco;
 
             bacaixa.Image =
                 botaoSelecionado == bacaixa
@@ -133,6 +139,7 @@ namespace erp_salgados_e_cia
         private ucmovimentoestoque telamovimentoestoque;
         private ucvendas telavendas;
         private uchistoricovendas telahistoricovendas;
+        private uccaixa telacaixa;
 
         private void AbrirTela(UserControl tela)
         {
@@ -150,6 +157,7 @@ namespace erp_salgados_e_cia
 
             bapainel.CorHover = Color.FromArgb(255, 165, 0);
             bavendas.CorHover = Color.FromArgb(255, 165, 0);
+            baclientes.CorHover = Color.FromArgb(255, 165, 0);
             bacaixa.CorHover = Color.FromArgb(255, 165, 0);
             baestoque.CorHover = Color.FromArgb(255, 165, 0);
             bacadastros.CorHover = Color.FromArgb(255, 165, 0);
@@ -158,6 +166,7 @@ namespace erp_salgados_e_cia
 
             ArredondarBotao(bapainel, 20);
             ArredondarBotao(bavendas, 20);
+            ArredondarBotao(baclientes, 20);
             ArredondarBotao(bacaixa, 20);
             ArredondarBotao(baestoque, 20);
             ArredondarBotao(bacadastros, 20);
@@ -206,6 +215,8 @@ namespace erp_salgados_e_cia
         private void bclientes_Click(object sender, EventArgs e)
         {
             FecharSubMenus();
+
+            SelecionarBotao(baclientes);
 
             if (telaclientes == null)
             {
@@ -268,6 +279,15 @@ namespace erp_salgados_e_cia
             FecharSubMenus();
 
             SelecionarBotao(bacaixa);
+
+            if (telacaixa == null)
+            {
+                telacaixa = new uccaixa();
+            }
+
+            telacaixa.AtualizarTela();
+
+            AbrirTela(telacaixa);
         }
 
         private void baestoque_Click(object sender, EventArgs e)

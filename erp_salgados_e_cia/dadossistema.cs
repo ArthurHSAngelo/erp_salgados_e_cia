@@ -49,6 +49,97 @@ namespace erp_salgados_e_cia
                        a.IdCliente == cliente.IdCliente));
         }
 
+        public const string UnidadeAtual = "Lanchonete Centro";
+
+        public static readonly string[] Responsaveis =
+        {
+            "Administrador",
+            "Gerente",
+            "Atendente"
+        };
+
+        public static Caixa CaixaAberto()
+        {
+            return caixas.FirstOrDefault(c =>
+                c.Unidade == UnidadeAtual &&
+                c.Status == "Aberto");
+        }
+
+        public static Caixa CaixaDeHoje()
+        {
+            return caixas.FirstOrDefault(c =>
+                c.Unidade == UnidadeAtual &&
+                c.DataAbertura.Date == System.DateTime.Today);
+        }
+
+        public static int ProximoIdCaixa()
+        {
+            return caixas.Any()
+                ? caixas.Max(c => c.IdCaixa) + 1
+                : 1;
+        }
+
+        public static decimal TotalRecebidoPorForma(
+            int idCaixa,
+            string formaPagamento)
+        {
+            IEnumerable<Venda> vendasDoCaixa =
+                vendas.Where(v =>
+                    v.IdCaixa == idCaixa &&
+                    v.Status == "Concluída");
+
+            decimal total =
+                vendasDoCaixa
+                .SelectMany(v => v.Pagamentos)
+                .Where(p => p.FormaPagamento == formaPagamento)
+                .Sum(p => p.Valor);
+
+            if (formaPagamento == "Dinheiro")
+            {
+                total -= vendasDoCaixa.Sum(v => v.Troco);
+            }
+
+            total += abatimentos
+                .Where(a =>
+                    a.IdCaixa == idCaixa &&
+                    a.FormaPagamento == formaPagamento)
+                .Sum(a => a.Valor);
+
+            return total;
+        }
+
+        public static decimal TotalVendasDoCaixa(int idCaixa)
+        {
+            IEnumerable<Venda> vendasDoCaixa =
+                vendas.Where(v =>
+                    v.IdCaixa == idCaixa &&
+                    v.Status == "Concluída");
+
+            return vendasDoCaixa
+                .SelectMany(v => v.Pagamentos)
+                .Where(p => p.FormaPagamento != "Notinha")
+                .Sum(p => p.Valor)
+                - vendasDoCaixa.Sum(v => v.Troco);
+        }
+
+        public static decimal TotalNotinhaDoCaixa(int idCaixa)
+        {
+            return vendas
+                .Where(v =>
+                    v.IdCaixa == idCaixa &&
+                    v.Status == "Concluída")
+                .SelectMany(v => v.Pagamentos)
+                .Where(p => p.FormaPagamento == "Notinha")
+                .Sum(p => p.Valor);
+        }
+
+        public static decimal TotalAbatimentosDoCaixa(int idCaixa)
+        {
+            return abatimentos
+                .Where(a => a.IdCaixa == idCaixa)
+                .Sum(a => a.Valor);
+        }
+
         public static Comanda ComandaDaMesa(int numeroMesa)
         {
             return comandas.FirstOrDefault(c =>
@@ -140,6 +231,9 @@ namespace erp_salgados_e_cia
 
         public static BindingList<AbatimentoNotinha> abatimentos =
             new BindingList<AbatimentoNotinha>();
+
+        public static BindingList<Caixa> caixas =
+            new BindingList<Caixa>();
 
         static dadossistema()
         {

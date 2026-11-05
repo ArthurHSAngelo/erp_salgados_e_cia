@@ -49,6 +49,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="dadossistema.cs" />
+    <Compile Include="Caixa.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="AbatimentoNotinha.cs" />
     <Compile Include="Comanda.cs" />
@@ -66,7 +67,7 @@
       <DependentUpon>frmmesas.cs</DependentUpon>
     </Compile>
     <Compile Include="itemvenda.cs" />
-    <Compile Include="MovimentoNotinha.cs" />
+    <Compile Include="MovimentoNotinha.cs" />
     <Compile Include="Notinha.cs" />
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
@@ -82,6 +83,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="uccaixa.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uccaixa.Designer.cs">
+      <DependentUpon>uccaixa.cs</DependentUpon>
     </Compile>
     <Compile Include="ucclientes.cs">
       <SubType>UserControl</SubType>
@@ -144,6 +151,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uccaixa.resx">
+      <DependentUpon>uccaixa.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucclientes.resx">
       <DependentUpon>ucclientes.cs</DependentUpon>

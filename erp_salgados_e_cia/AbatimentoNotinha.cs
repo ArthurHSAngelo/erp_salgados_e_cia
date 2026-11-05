@@ -13,5 +13,7 @@ namespace erp_salgados_e_cia
         public decimal Valor { get; set; }
 
         public string FormaPagamento { get; set; }
+
+        public int IdCaixa { get; set; }
     }
 }

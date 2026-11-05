@@ -35,8 +35,28 @@ namespace erp_salgados_e_cia
                 $"Total do pedido: R$ {totalVenda:N2}";
         }
 
+        private bool CaixaEstaAberto()
+        {
+            if (dadossistema.CaixaAberto() != null)
+            {
+                return true;
+            }
+
+            MessageBox.Show(
+                "Abra o caixa antes de registrar vendas.",
+                "Caixa fechado",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
+
+            return false;
+        }
+
         private void AtualizarVisaoComanda()
         {
+            lavisocaixa.Visible =
+                dadossistema.CaixaAberto() == null;
+
             int numeroMesa =
                 (int)nudnumeromesa.Value;
 
@@ -453,6 +473,7 @@ namespace erp_salgados_e_cia
             return new Venda
             {
                 NumeroMesa = numeroMesa,
+                IdCaixa = dadossistema.CaixaAberto().IdCaixa,
                 IdVenda = dadossistema.vendas.Count + 1,
                 DataHora = DateTime.Now,
                 FormaPagamento = string.Join(
@@ -545,6 +566,11 @@ namespace erp_salgados_e_cia
                 dadossistema.ComandaDaMesa(numeroMesa);
 
             if (comanda == null)
+            {
+                return;
+            }
+
+            if (!CaixaEstaAberto())
             {
                 return;
             }
@@ -673,6 +699,11 @@ namespace erp_salgados_e_cia
         }
         private void bfinalizarvenda_Click(object sender, EventArgs e)
         {
+            if (!CaixaEstaAberto())
+            {
+                return;
+            }
+
             if (itensVenda.Count == 0)
             {
                 MessageBox.Show(

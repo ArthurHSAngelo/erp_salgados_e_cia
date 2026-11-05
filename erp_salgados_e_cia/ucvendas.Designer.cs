@@ -51,6 +51,7 @@
             this.lfaltacomanda = new System.Windows.Forms.Label();
             this.lpagocomanda = new System.Windows.Forms.Label();
             this.bmesasabertas = new System.Windows.Forms.Button();
+            this.lavisocaixa = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudquantidade)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvitensvenda)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudnumeromesa)).BeginInit();
@@ -296,10 +297,20 @@
             this.bmesasabertas.UseVisualStyleBackColor = true;
             this.bmesasabertas.Click += new System.EventHandler(this.bmesasabertas_Click);
             // 
+            // lavisocaixa
+            // 
+            this.lavisocaixa.Location = new System.Drawing.Point(71, 8);
+            this.lavisocaixa.Name = "lavisocaixa";
+            this.lavisocaixa.Size = new System.Drawing.Size(760, 28);
+            this.lavisocaixa.TabIndex = 39;
+            this.lavisocaixa.Text = "O caixa ainda não foi aberto. Abra o caixa para registrar vendas.";
+            this.lavisocaixa.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ucvendas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lavisocaixa);
             this.Controls.Add(this.bmesasabertas);
             this.Controls.Add(this.lpagocomanda);
             this.Controls.Add(this.lfaltacomanda);
@@ -359,5 +370,6 @@
         private System.Windows.Forms.Label lfaltacomanda;
         private System.Windows.Forms.Label lpagocomanda;
         private System.Windows.Forms.Button bmesasabertas;
+        private System.Windows.Forms.Label lavisocaixa;
     }
 }
