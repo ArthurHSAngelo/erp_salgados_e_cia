@@ -250,6 +250,28 @@ namespace erp_salgados_e_cia
 
             return linhas;
         }
+        public static void RegistrarHistoricoEstoque(
+            Produto produto,
+            TipoMovimentoEstoque tipo,
+            decimal quantidade,
+            string responsavel,
+            string origem
+        )
+        {
+            historicoestoque.Add(
+                new HistoricoEstoque
+                {
+                    Data = System.DateTime.Now,
+                    Produto = produto.Nome,
+                    Tipo = tipo,
+                    Quantidade = quantidade,
+                    SaldoApos = produto.EstoqueAtual,
+                    Unidade = UnidadeAtual,
+                    Responsavel = responsavel,
+                    Origem = origem
+                }
+            );
+        }
         public static int ProximoIdCliente()
         {
             return clientes.Any()
@@ -258,7 +280,8 @@ namespace erp_salgados_e_cia
         }
 
         public static BindingList<movimentoestoque> movimentacoes =
-            new BindingList<movimentoestoque>();
+            new BindingList<movimentoestoque>();        public static BindingList<HistoricoEstoque> historicoestoque =
+            new BindingList<HistoricoEstoque>();
         public static BindingList<Venda> vendas =
             new BindingList<Venda>();
         public static BindingList<Produto> produtos =
