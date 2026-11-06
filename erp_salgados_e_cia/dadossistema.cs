@@ -272,6 +272,47 @@ namespace erp_salgados_e_cia
                 }
             );
         }
+        public static void DefinirPeriodoPadrao(
+            System.DateTime? inicio,
+            System.DateTime? fim,
+            out System.DateTime dataInicial,
+            out System.DateTime dataFinal
+        )
+        {
+            dataFinal = (fim ?? System.DateTime.Today).Date;
+            dataInicial = (inicio ?? dataFinal.AddDays(-29)).Date;
+        }
+
+        public static List<HistoricoEstoque> ConsultarHistoricoEstoque(
+            System.DateTime? inicio,
+            System.DateTime? fim,
+            string unidade,
+            string produto,
+            TipoMovimentoEstoque? tipo
+        )
+        {
+            System.DateTime dataInicial;
+            System.DateTime dataFinal;
+
+            DefinirPeriodoPadrao(
+                inicio,
+                fim,
+                out dataInicial,
+                out dataFinal
+            );
+
+            return historicoestoque
+                .Where(h =>
+                    h.Data.Date >= dataInicial &&
+                    h.Data.Date <= dataFinal &&
+                    (string.IsNullOrEmpty(unidade) ||
+                        h.Unidade == unidade) &&
+                    (string.IsNullOrEmpty(produto) ||
+                        h.Produto == produto) &&
+                    (tipo == null || h.Tipo == tipo))
+                .OrderByDescending(h => h.Data)
+                .ToList();
+        }
         public static int ProximoIdCliente()
         {
             return clientes.Any()
