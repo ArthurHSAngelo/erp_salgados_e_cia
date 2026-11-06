@@ -399,7 +399,7 @@ namespace erp_salgados_e_cia
             nudquantidade.Value = 1;
         }
 
-        private void BaixarEstoquePedido()
+        private void BaixarEstoquePedido(int numeroMesa)
         {
             foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
             {
@@ -407,8 +407,18 @@ namespace erp_salgados_e_cia
                     dadossistema.produtos
                     .First(p => p.Nome == grupo.Key);
 
-                produto.EstoqueAtual -=
+                decimal quantidadeBaixada =
                     grupo.Sum(item => item.Quantidade);
+
+                produto.EstoqueAtual -= quantidadeBaixada;
+
+                dadossistema.RegistrarHistoricoEstoque(
+                    produto,
+                    TipoMovimentoEstoque.Venda,
+                    quantidadeBaixada,
+                    dadossistema.CaixaAberto()?.Responsavel ?? "",
+                    numeroMesa == 0 ? "Balcão" : $"Mesa {numeroMesa}"
+                );
             }
         }
 
@@ -453,7 +463,7 @@ namespace erp_salgados_e_cia
                 }
             }
 
-            BaixarEstoquePedido();
+            BaixarEstoquePedido(numeroMesa);
 
             LimparPedido();
 
@@ -531,7 +541,7 @@ namespace erp_salgados_e_cia
                 pagamentosCobrados = cobranca.Pagamentos;
             }
 
-            BaixarEstoquePedido();
+            BaixarEstoquePedido(0);
 
             Venda vendaBalcao = CriarVenda(
                 0,
@@ -690,6 +700,14 @@ namespace erp_salgados_e_cia
                 if (produto != null)
                 {
                     produto.EstoqueAtual += item.Quantidade;
+
+                    dadossistema.RegistrarHistoricoEstoque(
+                        produto,
+                        TipoMovimentoEstoque.Estorno,
+                        item.Quantidade,
+                        dadossistema.CaixaAberto()?.Responsavel ?? "",
+                        $"Mesa {comanda.NumeroMesa}"
+                    );
                 }
             }
 

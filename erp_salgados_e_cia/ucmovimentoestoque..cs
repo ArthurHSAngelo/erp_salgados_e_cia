@@ -264,6 +264,14 @@ namespace erp_salgados_e_cia
                 if (produto != null)
                 {
                     produto.EstoqueAtual += item.Quantidade;
+
+                    dadossistema.RegistrarHistoricoEstoque(
+                        produto,
+                        TipoMovimentoEstoque.Entrada,
+                        item.Quantidade,
+                        item.Responsavel,
+                        "Fornecedor " + item.Fornecedor
+                    );
                 }
             }
 
