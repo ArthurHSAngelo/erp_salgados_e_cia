@@ -18,10 +18,27 @@ namespace erp_salgados_e_cia
         private BindingSource fonteVendas =
             new BindingSource();
 
-        private void AtualizarTabela()
+        public void AtualizarTabela()
         {
-            fonteVendas.DataSource = null;
-            fonteVendas.DataSource = vendas;
+            string filtroStatus =
+                cbfiltrostatus.SelectedItem == null
+                ? "Todas"
+                : cbfiltrostatus.SelectedItem.ToString();
+
+            IEnumerable<Venda> vendasFiltradas = vendas;
+
+            if (filtroStatus == "Concluídas")
+            {
+                vendasFiltradas =
+                    vendas.Where(v => v.Status == "Concluída");
+            }
+            else if (filtroStatus == "Canceladas")
+            {
+                vendasFiltradas =
+                    vendas.Where(v => v.Status == "Cancelada");
+            }
+
+            fonteVendas.DataSource = vendasFiltradas.ToList();
 
             if (dgvhistoricovendas.Columns.Count > 0)
             {
@@ -54,6 +71,18 @@ namespace erp_salgados_e_cia
 
                 dgvhistoricovendas.Columns["Produtos"].HeaderText =
                     "Produtos";
+
+                dgvhistoricovendas.Columns["MotivoCancelamento"].HeaderText =
+                    "Motivo do cancelamento";
+
+                dgvhistoricovendas.Columns["CanceladaPor"].HeaderText =
+                    "Cancelada por";
+
+                dgvhistoricovendas.Columns["DataCancelamento"].HeaderText =
+                    "Cancelada em";
+
+                dgvhistoricovendas.Columns["DataCancelamento"]
+                    .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
 
                 dgvhistoricovendas.Columns["Produtos"]
                     .DefaultCellStyle.WrapMode = DataGridViewTriState.True;
@@ -89,8 +118,7 @@ namespace erp_salgados_e_cia
             object sender,
             DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 ||
-                dgvhistoricovendas.Columns[e.ColumnIndex].Name != "IdCliente")
+            if (e.RowIndex < 0)
             {
                 return;
             }
@@ -100,6 +128,24 @@ namespace erp_salgados_e_cia
                 .DataBoundItem as Venda;
 
             if (vendaLinha == null)
+            {
+                return;
+            }
+
+            if (vendaLinha.Status == "Cancelada")
+            {
+                e.CellStyle.ForeColor = Color.Gray;
+            }
+
+            if (dgvhistoricovendas.Columns[e.ColumnIndex].Name == "NumeroMesa" &&
+                vendaLinha.NumeroMesa == 0)
+            {
+                e.Value = "Balcão";
+                e.FormattingApplied = true;
+                return;
+            }
+
+            if (dgvhistoricovendas.Columns[e.ColumnIndex].Name != "IdCliente")
             {
                 return;
             }
@@ -117,15 +163,80 @@ namespace erp_salgados_e_cia
             e.FormattingApplied = true;
         }
 
+        private void bcancelarvenda_Click(object sender, EventArgs e)
+        {
+            Venda vendaSelecionada =
+                dgvhistoricovendas.CurrentRow == null
+                ? null
+                : dgvhistoricovendas.CurrentRow.DataBoundItem as Venda;
+
+            if (vendaSelecionada == null)
+            {
+                MessageBox.Show(
+                    "Selecione uma venda.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (vendaSelecionada.Status != "Concluída")
+            {
+                MessageBox.Show(
+                    "Somente vendas concluídas podem ser canceladas.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            using (frmcancelarvenda janela =
+                new frmcancelarvenda(vendaSelecionada))
+            {
+                if (janela.ShowDialog() == DialogResult.OK)
+                {
+                    AtualizarTabela();
+                }
+            }
+        }
+
+        private void cbfiltrostatus_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            AtualizarTabela();
+        }
+
         public uchistoricovendas()
         {
             InitializeComponent();
+
+            cbfiltrostatus.Items.AddRange(
+                new object[]
+                {
+                    "Todas",
+                    "Concluídas",
+                    "Canceladas"
+                }
+            );
+
+            cbfiltrostatus.SelectedIndex = 0;
 
             fonteVendas.DataSource = vendas;
             dgvhistoricovendas.DataSource = fonteVendas;
 
             dgvhistoricovendas.CellFormatting +=
                 dgvhistoricovendas_CellFormatting;
+
+            bcancelarvenda.Click +=
+                bcancelarvenda_Click;
+
+            cbfiltrostatus.SelectedIndexChanged +=
+                cbfiltrostatus_SelectedIndexChanged;
 
             AtualizarTabela();
         }

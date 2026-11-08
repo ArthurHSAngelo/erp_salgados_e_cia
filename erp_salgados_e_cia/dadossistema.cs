@@ -200,6 +200,91 @@ namespace erp_salgados_e_cia
             );
         }
 
+        public static bool CancelarVenda(
+            Venda venda,
+            string motivo,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (venda == null)
+            {
+                mensagem = "Selecione uma venda.";
+                return false;
+            }
+
+            if (venda.Status != "Concluída")
+            {
+                mensagem = "Somente vendas concluídas podem ser canceladas.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo))
+            {
+                mensagem = "Informe o motivo do cancelamento.";
+                return false;
+            }
+
+            Caixa caixaDaVenda =
+                caixas.FirstOrDefault(c =>
+                    c.IdCaixa == venda.IdCaixa);
+
+            if (caixaDaVenda == null ||
+                caixaDaVenda.Status != "Aberto")
+            {
+                mensagem =
+                    "Cancelamento bloqueado: o caixa desta venda já foi fechado.";
+                return false;
+            }
+
+            Notinha notinhaDaVenda =
+                notinhas.FirstOrDefault(n =>
+                    n.IdVenda == venda.IdVenda);
+
+            if (notinhaDaVenda != null &&
+                SaldoNotinha(notinhaDaVenda.IdCliente) -
+                notinhaDaVenda.Valor < 0)
+            {
+                mensagem =
+                    "Cancelamento bloqueado: o cliente já abateu parte da Notinha desta venda.";
+                return false;
+            }
+
+            foreach (ItemVenda item in venda.Itens)
+            {
+                Produto produto =
+                    produtos.FirstOrDefault(p =>
+                        p.Nome == item.Produto);
+
+                if (produto == null)
+                {
+                    continue;
+                }
+
+                produto.EstoqueAtual += item.Quantidade;
+
+                RegistrarHistoricoEstoque(
+                    produto,
+                    TipoMovimentoEstoque.Estorno,
+                    item.Quantidade,
+                    caixaDaVenda.Responsavel,
+                    $"Venda {venda.IdVenda} cancelada"
+                );
+            }
+
+            if (notinhaDaVenda != null)
+            {
+                notinhas.Remove(notinhaDaVenda);
+            }
+
+            venda.Status = "Cancelada";
+            venda.MotivoCancelamento = motivo.Trim();
+            venda.CanceladaPor = caixaDaVenda.Responsavel;
+            venda.DataCancelamento = System.DateTime.Now;
+
+            return true;
+        }
+
         public static decimal? UltimoCustoDoProduto(string nomeProduto)
         {
             var ultima = movimentacoes

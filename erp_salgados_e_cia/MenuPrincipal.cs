@@ -401,6 +401,8 @@ namespace erp_salgados_e_cia
                 telahistoricovendas = new uchistoricovendas();
             }
 
+            telahistoricovendas.AtualizarTabela();
+
             AbrirTela(telahistoricovendas);
         }
     }

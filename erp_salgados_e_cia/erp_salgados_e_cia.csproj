@@ -54,6 +54,12 @@
     <Compile Include="Cliente.cs" />
     <Compile Include="AbatimentoNotinha.cs" />
     <Compile Include="Comanda.cs" />
+    <Compile Include="frmcancelarvenda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmcancelarvenda.Designer.cs">
+      <DependentUpon>frmcancelarvenda.cs</DependentUpon>
+    </Compile>
     <Compile Include="HistoricoEstoque.cs" />
     <Compile Include="LinhaEstoque.cs" />
     <Compile Include="RelatorioVendas.cs" />
@@ -161,6 +167,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmcancelarvenda.resx">
+      <DependentUpon>frmcancelarvenda.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmcobranca.resx">
       <DependentUpon>frmcobranca.cs</DependentUpon>
     </EmbeddedResource>
