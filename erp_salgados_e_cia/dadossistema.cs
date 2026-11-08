@@ -31,8 +31,12 @@ namespace erp_salgados_e_cia
             Unidade unidade)
         {
             return unidade != null &&
-                   movimentacoes.Any(m =>
-                       m.Unidade == unidade.Nome);
+                   (movimentacoes.Any(m =>
+                       m.Unidade == unidade.Nome) ||
+                    usuarios.Any(u =>
+                       u.Unidade == unidade.Nome) ||
+                    funcionarios.Any(f =>
+                       f.Unidade == unidade.Nome));
         }
 
         public static bool ClientePossuiVinculos(
@@ -49,7 +53,212 @@ namespace erp_salgados_e_cia
                        a.IdCliente == cliente.IdCliente));
         }
 
-        public const string UnidadeAtual = "Lanchonete Centro";
+        public static string UnidadeAtual { get; set; } =
+            "Lanchonete Centro";
+
+        public static Usuario UsuarioLogado { get; private set; }
+
+        public static string GerarHashSenha(string senha)
+        {
+            byte[] sal = new byte[16];
+
+            using (System.Security.Cryptography.RNGCryptoServiceProvider gerador =
+                new System.Security.Cryptography.RNGCryptoServiceProvider())
+            {
+                gerador.GetBytes(sal);
+            }
+
+            byte[] hash;
+
+            using (System.Security.Cryptography.Rfc2898DeriveBytes derivador =
+                new System.Security.Cryptography.Rfc2898DeriveBytes(
+                    senha,
+                    sal,
+                    10000,
+                    System.Security.Cryptography.HashAlgorithmName.SHA256))
+            {
+                hash = derivador.GetBytes(32);
+            }
+
+            return System.Convert.ToBase64String(sal) +
+                   ":" +
+                   System.Convert.ToBase64String(hash);
+        }
+
+        public static bool VerificarSenha(string senha, string senhaHash)
+        {
+            if (string.IsNullOrEmpty(senha) ||
+                string.IsNullOrEmpty(senhaHash))
+            {
+                return false;
+            }
+
+            string[] partes = senhaHash.Split(':');
+
+            if (partes.Length != 2)
+            {
+                return false;
+            }
+
+            byte[] sal = System.Convert.FromBase64String(partes[0]);
+            byte[] esperado = System.Convert.FromBase64String(partes[1]);
+            byte[] calculado;
+
+            using (System.Security.Cryptography.Rfc2898DeriveBytes derivador =
+                new System.Security.Cryptography.Rfc2898DeriveBytes(
+                    senha,
+                    sal,
+                    10000,
+                    System.Security.Cryptography.HashAlgorithmName.SHA256))
+            {
+                calculado = derivador.GetBytes(esperado.Length);
+            }
+
+            int diferenca = 0;
+
+            for (int i = 0; i < esperado.Length; i++)
+            {
+                diferenca |= esperado[i] ^ calculado[i];
+            }
+
+            return diferenca == 0;
+        }
+
+        public static bool Autenticar(
+            string login,
+            string senha,
+            out Usuario usuario,
+            out string mensagem)
+        {
+            usuario = null;
+            mensagem = "";
+
+            string loginInformado =
+                (login ?? "").Trim();
+
+            Usuario encontrado =
+                usuarios.FirstOrDefault(u =>
+                    string.Equals(
+                        u.Login,
+                        loginInformado,
+                        System.StringComparison.OrdinalIgnoreCase));
+
+            if (encontrado == null ||
+                !VerificarSenha(senha, encontrado.SenhaHash))
+            {
+                mensagem = "Login ou senha inválidos.";
+                return false;
+            }
+
+            if (encontrado.Status != StatusCadastro.Ativo)
+            {
+                mensagem = "Usuário inativo. Procure um gerente.";
+                return false;
+            }
+
+            usuario = encontrado;
+            UsuarioLogado = encontrado;
+
+            UnidadeAtual =
+                encontrado.Unidade ??
+                unidades
+                    .Where(u => u.Status == StatusCadastro.Ativo)
+                    .OrderBy(u => u.Nome)
+                    .Select(u => u.Nome)
+                    .FirstOrDefault() ??
+                UnidadeAtual;
+
+            return true;
+        }
+
+        public static void Sair()
+        {
+            UsuarioLogado = null;
+        }
+
+        public static int ProximoIdUsuario()
+        {
+            return usuarios.Any()
+                ? usuarios.Max(u => u.IdUsuario) + 1
+                : 1;
+        }
+
+        public static int ProximoIdFuncionario()
+        {
+            return funcionarios.Any()
+                ? funcionarios.Max(f => f.IdFuncionario) + 1
+                : 1;
+        }
+
+        private static void CriarUsuariosIniciais()
+        {
+            // SENHAS PROVISÓRIAS DE TESTE: troque pelas suas.
+            // Elas só existem aqui; o sistema guarda apenas o hash.
+            string senhaAdmin = "123";
+            string senhaGerente1 = "123";
+            string senhaGerente2 = "123";
+            string senhaCentro = "123";
+
+            usuarios.Add(new Usuario
+            {
+                IdUsuario = 1,
+                Nome = "Administrador",
+                Login = "admin",
+                SenhaHash = GerarHashSenha(senhaAdmin),
+                Perfil = PerfilUsuario.Administrador,
+                Unidade = null,
+                Status = StatusCadastro.Ativo
+            });
+
+            usuarios.Add(new Usuario
+            {
+                IdUsuario = 2,
+                Nome = "Gerente 1",
+                Login = "gerente1",
+                SenhaHash = GerarHashSenha(senhaGerente1),
+                Perfil = PerfilUsuario.Gerente,
+                Unidade = null,
+                Status = StatusCadastro.Ativo
+            });
+
+            usuarios.Add(new Usuario
+            {
+                IdUsuario = 3,
+                Nome = "Gerente 2",
+                Login = "gerente2",
+                SenhaHash = GerarHashSenha(senhaGerente2),
+                Perfil = PerfilUsuario.Gerente,
+                Unidade = null,
+                Status = StatusCadastro.Ativo
+            });
+
+            usuarios.Add(new Usuario
+            {
+                IdUsuario = 4,
+                Nome = "Lanchonete Centro",
+                Login = "centro",
+                SenhaHash = GerarHashSenha(senhaCentro),
+                Perfil = PerfilUsuario.Atendente,
+                Unidade = "Lanchonete Centro",
+                Status = StatusCadastro.Ativo
+            });
+
+            funcionarios.Add(new Funcionario
+            {
+                IdFuncionario = 1,
+                Nome = "Ana Lima",
+                Unidade = "Lanchonete Centro",
+                Status = StatusCadastro.Ativo
+            });
+
+            funcionarios.Add(new Funcionario
+            {
+                IdFuncionario = 2,
+                Nome = "Carlos Souza",
+                Unidade = "Lanchonete Centro",
+                Status = StatusCadastro.Ativo
+            });
+        }
 
         public static readonly string[] Responsaveis =
         {
@@ -613,6 +822,12 @@ namespace erp_salgados_e_cia
         public static BindingList<Caixa> caixas =
             new BindingList<Caixa>();
 
+        public static BindingList<Usuario> usuarios =
+            new BindingList<Usuario>();
+
+        public static BindingList<Funcionario> funcionarios =
+            new BindingList<Funcionario>();
+
         static dadossistema()
         {
             produtos.Add(new Produto
@@ -709,6 +924,8 @@ namespace erp_salgados_e_cia
                 Nome = "João Pereira",
                 Telefone = "(11) 97777-2222"
             });
+
+            CriarUsuariosIniciais();
         }
 
         public enum StatusCadastro

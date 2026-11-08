@@ -60,6 +60,12 @@
     <Compile Include="frmcancelarvenda.Designer.cs">
       <DependentUpon>frmcancelarvenda.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmlogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmlogin.Designer.cs">
+      <DependentUpon>frmlogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="HistoricoEstoque.cs" />
     <Compile Include="LinhaEstoque.cs" />
     <Compile Include="RelatorioVendas.cs" />
@@ -161,6 +167,8 @@
       <DependentUpon>ucvendas.cs</DependentUpon>
     </Compile>
     <Compile Include="Unidade.cs" />
+    <Compile Include="Usuario.cs" />
+    <Compile Include="Funcionario.cs" />
     <Compile Include="venda.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmcobranca.resx">
       <DependentUpon>frmcobranca.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmlogin.resx">
+      <DependentUpon>frmlogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmmesas.resx">
       <DependentUpon>frmmesas.cs</DependentUpon>
