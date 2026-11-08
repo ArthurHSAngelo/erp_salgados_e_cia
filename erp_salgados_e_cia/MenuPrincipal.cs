@@ -145,7 +145,153 @@ namespace erp_salgados_e_cia
         private ucestoquecompleto telaestoquecompleto;
         private ucmovimentacoes telamovimentacoes;
         private ucrelatoriovendas telarelatoriovendas;
+        private ucfuncionarios telafuncionarios;
 
+        private int alturaPanelRelatorios;
+
+        public bool TrocarUsuario { get; private set; }
+
+        private void AplicarPerfil()
+        {
+            bool atendente =
+                dadossistema.LoginEhDeAtendente;
+
+            bacadastros.Visible = !atendente;
+            bausuarios.Visible = !atendente;
+
+            bmovimentacoes.Visible = !atendente;
+            brelatoriovendas.Visible = !atendente;
+
+            panelrelatorios.Height =
+                atendente
+                ? 51
+                : alturaPanelRelatorios;
+
+            bperfil.Text =
+                dadossistema.UsuarioLogado == null
+                ? "Usuário ▲"
+                : $"{dadossistema.UsuarioLogado.Nome} ▲";
+        }
+
+        private void ReiniciarTelas()
+        {
+            telavendas = null;
+            telacaixa = null;
+            telahistoricovendas = null;
+            telamovimentoestoque = null;
+            telaestoquecompleto = null;
+            telamovimentacoes = null;
+            telarelatoriovendas = null;
+
+            pnltelas.Controls.Clear();
+
+            FecharSubMenus();
+
+            SelecionarBotao(bapainel);
+        }
+
+        private void TrocarUnidadeTrabalho(string nomeUnidade)
+        {
+            if (nomeUnidade == dadossistema.UnidadeAtual)
+            {
+                return;
+            }
+
+            if (dadossistema.comandas.Count > 0)
+            {
+                MessageBox.Show(
+                    "Não é possível trocar de unidade com comandas abertas. Finalize ou cancele as comandas antes.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            dadossistema.UnidadeAtual = nomeUnidade;
+
+            ReiniciarTelas();
+        }
+
+        private void SairDaConta()
+        {
+            DialogResult resposta = MessageBox.Show(
+                "Deseja sair da conta?",
+                "Sair",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            dadossistema.Sair();
+
+            TrocarUsuario = true;
+
+            Close();
+        }
+
+        private void bperfil_Click(object sender, EventArgs e)
+        {
+            Usuario usuario = dadossistema.UsuarioLogado;
+
+            if (usuario == null)
+            {
+                return;
+            }
+
+            tsmusuario.Text =
+                $"{usuario.Nome} · {usuario.Perfil}";
+
+            bool atendente =
+                dadossistema.LoginEhDeAtendente;
+
+            tsmunidadeatendente.Visible = atendente;
+            tsmunidade.Visible = !atendente;
+
+            if (atendente)
+            {
+                tsmunidadeatendente.Text =
+                    $"Unidade: {dadossistema.UnidadeAtual}";
+            }
+            else
+            {
+                tsmunidade.DropDownItems.Clear();
+
+                foreach (Unidade unidade in
+                    dadossistema.unidades
+                    .Where(u =>
+                        u.Status == dadossistema.StatusCadastro.Ativo)
+                    .OrderBy(u => u.Nome))
+                {
+                    string nomeUnidade = unidade.Nome;
+
+                    ToolStripMenuItem opcaoUnidade =
+                        new ToolStripMenuItem(nomeUnidade);
+
+                    opcaoUnidade.Checked =
+                        nomeUnidade == dadossistema.UnidadeAtual;
+
+                    opcaoUnidade.Click += (origem, argumentos) =>
+                        TrocarUnidadeTrabalho(nomeUnidade);
+
+                    tsmunidade.DropDownItems.Add(opcaoUnidade);
+                }
+            }
+
+            cmsperfil.Show(
+                bperfil,
+                new Point(0, -cmsperfil.PreferredSize.Height));
+        }
+
+        private void tsmsair_Click(object sender, EventArgs e)
+        {
+            SairDaConta();
+        }
         private void AbrirTela(UserControl tela)
         {
             pnltelas.Controls.Clear();
@@ -177,6 +323,19 @@ namespace erp_salgados_e_cia
             ArredondarBotao(bacadastros, 20);
             ArredondarBotao(barelatorios, 20);
             ArredondarBotao(bausuarios, 20);
+            ArredondarBotao(bperfil, 20);
+
+            bperfil.CorHover = Color.FromArgb(255, 165, 0);
+
+            bperfil.Click += bperfil_Click;
+
+            tsmsair.Click += tsmsair_Click;
+
+            bfuncionarios.Click += bfuncionarios_Click;
+
+            alturaPanelRelatorios = panelrelatorios.Height;
+
+            AplicarPerfil();
 
             SelecionarBotao(bapainel);
         }
@@ -215,6 +374,20 @@ namespace erp_salgados_e_cia
             }
 
             AbrirTela(telaunidades);
+        }
+
+        private void bfuncionarios_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telafuncionarios == null)
+            {
+                telafuncionarios = new ucfuncionarios();
+            }
+
+            telafuncionarios.AtualizarTela();
+
+            AbrirTela(telafuncionarios);
         }
 
         private void bclientes_Click(object sender, EventArgs e)

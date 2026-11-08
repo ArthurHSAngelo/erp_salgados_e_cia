@@ -58,19 +58,42 @@ namespace erp_salgados_e_cia
                 fonteItensEntrada;
 
             AtualizarCombos();
+        }
 
-            cbresponsavel.Items.AddRange(
-                new object[]
-                {
-            "Administrador",
-            "Gerente",
-            "Atendente"
-                }
-            );
+        private void CarregarResponsaveis()
+        {
+            if (!cbresponsavel.Enabled)
+            {
+                return;
+            }
+
+            string responsavelSelecionado =
+                cbresponsavel.SelectedItem as string;
+
+            cbresponsavel.Items.Clear();
+
+            foreach (string nome in
+                dadossistema.NomesFuncionariosAtivos(
+                    dadossistema.UnidadeAtual))
+            {
+                cbresponsavel.Items.Add(nome);
+            }
+
+            if (responsavelSelecionado != null &&
+                cbresponsavel.Items.Contains(responsavelSelecionado))
+            {
+                cbresponsavel.SelectedItem = responsavelSelecionado;
+            }
+            else
+            {
+                cbresponsavel.SelectedIndex = -1;
+            }
         }
 
         public void AtualizarCombos()
         {
+            CarregarResponsaveis();
+
             cbproduto.DataSource = null;
             cbproduto.DataSource =
                 dadossistema.produtos
@@ -149,6 +172,18 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            if (cbresponsavel.Items.Count == 0)
+            {
+                MessageBox.Show(
+                    "Esta unidade não tem funcionário ativo. Cadastre um em Cadastros, Funcionários.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             if (cbresponsavel.SelectedIndex == -1)
             {
                 MessageBox.Show(
@@ -177,7 +212,7 @@ namespace erp_salgados_e_cia
                 CustoUnitario = custoUnitario,
                 Fornecedor = cbfornecedor.Text,
                 Responsavel = cbresponsavel.Text,
-                Unidade = "Lanchonete Centro",
+                Unidade = dadossistema.UnidadeAtual,
                 DataEntrada = DateTime.Now
             };
 

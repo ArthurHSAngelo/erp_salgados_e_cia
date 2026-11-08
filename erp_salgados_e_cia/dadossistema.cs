@@ -58,6 +58,15 @@ namespace erp_salgados_e_cia
 
         public static Usuario UsuarioLogado { get; private set; }
 
+        public static bool LoginEhDeAtendente
+        {
+            get
+            {
+                return UsuarioLogado == null ||
+                       UsuarioLogado.Perfil == PerfilUsuario.Atendente;
+            }
+        }
+
         public static string GerarHashSenha(string senha)
         {
             byte[] sal = new byte[16];
@@ -260,12 +269,29 @@ namespace erp_salgados_e_cia
             });
         }
 
-        public static readonly string[] Responsaveis =
+        public static List<string> NomesFuncionariosAtivos(
+            string nomeUnidade)
         {
-            "Administrador",
-            "Gerente",
-            "Atendente"
-        };
+            return funcionarios
+                .Where(f =>
+                    f.Status == StatusCadastro.Ativo &&
+                    f.Unidade == nomeUnidade)
+                .Select(f => f.Nome)
+                .OrderBy(nome => nome)
+                .ToList();
+        }
+
+        public static bool FuncionarioPossuiVinculos(
+            Funcionario funcionario)
+        {
+            return funcionario != null &&
+                   (caixas.Any(c =>
+                       c.Responsavel == funcionario.Nome &&
+                       c.Unidade == funcionario.Unidade) ||
+                    movimentacoes.Any(m =>
+                       m.Responsavel == funcionario.Nome &&
+                       m.Unidade == funcionario.Unidade));
+        }
 
         public static Caixa CaixaAberto()
         {

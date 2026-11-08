@@ -118,6 +118,12 @@
     <Compile Include="ucestoquecompleto.Designer.cs">
       <DependentUpon>ucestoquecompleto.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucfuncionarios.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucfuncionarios.Designer.cs">
+      <DependentUpon>ucfuncionarios.cs</DependentUpon>
+    </Compile>
     <Compile Include="uchistoricovendas.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -202,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucestoquecompleto.resx">
       <DependentUpon>ucestoquecompleto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucfuncionarios.resx">
+      <DependentUpon>ucfuncionarios.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="uchistoricovendas.resx">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>

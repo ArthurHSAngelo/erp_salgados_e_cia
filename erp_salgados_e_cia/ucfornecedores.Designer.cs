@@ -151,6 +151,7 @@
             // 
             // cbfiltrostatus
             // 
+            this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbfiltrostatus.FormattingEnabled = true;
             this.cbfiltrostatus.Location = new System.Drawing.Point(755, 141);
             this.cbfiltrostatus.Name = "cbfiltrostatus";

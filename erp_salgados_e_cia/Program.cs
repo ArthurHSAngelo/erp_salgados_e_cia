@@ -11,15 +11,25 @@ namespace erp_salgados_e_cia
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using (frmlogin login = new frmlogin())
+            while (true)
             {
-                if (login.ShowDialog() != DialogResult.OK)
+                using (frmlogin login = new frmlogin())
+                {
+                    if (login.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+                }
+
+                MenuPrincipal menu = new MenuPrincipal();
+
+                Application.Run(menu);
+
+                if (!menu.TrocarUsuario)
                 {
                     return;
                 }
             }
-
-            Application.Run(new MenuPrincipal());
         }
     }
 }

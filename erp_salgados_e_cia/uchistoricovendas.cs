@@ -38,6 +38,15 @@ namespace erp_salgados_e_cia
                     vendas.Where(v => v.Status == "Cancelada");
             }
 
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                vendasFiltradas =
+                    vendasFiltradas.Where(v =>
+                        dadossistema.caixas.Any(c =>
+                            c.IdCaixa == v.IdCaixa &&
+                            c.Unidade == dadossistema.UnidadeAtual));
+            }
+
             fonteVendas.DataSource = vendasFiltradas.ToList();
 
             if (dgvhistoricovendas.Columns.Count > 0)
