@@ -203,8 +203,27 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            string autorizadoPor;
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                using (frmlogin autorizacao = new frmlogin(true))
+                {
+                    if (autorizacao.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    autorizadoPor = autorizacao.LoginAutorizador;
+                }
+            }
+            else
+            {
+                autorizadoPor = dadossistema.UsuarioLogado.Login;
+            }
+
             using (frmcancelarvenda janela =
-                new frmcancelarvenda(vendaSelecionada))
+                new frmcancelarvenda(vendaSelecionada, autorizadoPor))
             {
                 if (janela.ShowDialog() == DialogResult.OK)
                 {

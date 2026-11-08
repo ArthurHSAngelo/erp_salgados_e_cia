@@ -13,12 +13,14 @@ namespace erp_salgados_e_cia
     public partial class frmcancelarvenda : Form
     {
         private Venda vendaParaCancelar;
+        private string autorizadoPor;
 
-        public frmcancelarvenda(Venda venda)
+        public frmcancelarvenda(Venda venda, string autorizadoPor)
         {
             InitializeComponent();
 
             vendaParaCancelar = venda;
+            this.autorizadoPor = autorizadoPor;
 
             lcancelamentovenda.Text =
                 $"Venda nº {venda.IdVenda}";
@@ -62,6 +64,7 @@ namespace erp_salgados_e_cia
             if (!dadossistema.CancelarVenda(
                     vendaParaCancelar,
                     tbmotivo.Text,
+                    autorizadoPor,
                     out mensagem))
             {
                 MessageBox.Show(

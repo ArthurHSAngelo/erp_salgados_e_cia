@@ -44,7 +44,7 @@
             // lnomefuncionario
             // 
             this.lnomefuncionario.AutoSize = true;
-            this.lnomefuncionario.Location = new System.Drawing.Point(772, 66);
+            this.lnomefuncionario.Location = new System.Drawing.Point(772, 72);
             this.lnomefuncionario.Name = "lnomefuncionario";
             this.lnomefuncionario.Size = new System.Drawing.Size(134, 16);
             this.lnomefuncionario.TabIndex = 10;

@@ -146,6 +146,7 @@ namespace erp_salgados_e_cia
         private ucmovimentacoes telamovimentacoes;
         private ucrelatoriovendas telarelatoriovendas;
         private ucfuncionarios telafuncionarios;
+        private ucusuarios telausuarios;
 
         private int alturaPanelRelatorios;
 
@@ -170,7 +171,7 @@ namespace erp_salgados_e_cia
             bperfil.Text =
                 dadossistema.UsuarioLogado == null
                 ? "Usuário ▲"
-                : $"{dadossistema.UsuarioLogado.Nome} ▲";
+                : $"{dadossistema.UsuarioLogado.Login} ▲";
         }
 
         private void ReiniciarTelas()
@@ -245,7 +246,7 @@ namespace erp_salgados_e_cia
             }
 
             tsmusuario.Text =
-                $"{usuario.Nome} · {usuario.Perfil}";
+                $"{usuario.Login} · {usuario.Perfil}";
 
             bool atendente =
                 dadossistema.LoginEhDeAtendente;
@@ -563,6 +564,15 @@ namespace erp_salgados_e_cia
             FecharSubMenus();
 
             SelecionarBotao(bausuarios);
+
+            if (telausuarios == null)
+            {
+                telausuarios = new ucusuarios();
+            }
+
+            telausuarios.AtualizarTela();
+
+            AbrirTela(telausuarios);
         }
 
         private void bhistoricovendas_Click(object sender, EventArgs e)

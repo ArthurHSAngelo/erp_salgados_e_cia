@@ -12,11 +12,32 @@ namespace erp_salgados_e_cia
 {
     public partial class frmlogin : Form
     {
-        public frmlogin()
+        private bool modoAutorizacao;
+
+        public string LoginAutorizador { get; private set; }
+
+        public frmlogin() : this(false)
+        {
+        }
+
+        public frmlogin(bool autorizacao)
         {
             InitializeComponent();
 
+            modoAutorizacao = autorizacao;
+
             bsairlogin.DialogResult = DialogResult.Cancel;
+
+            if (modoAutorizacao)
+            {
+                Text = "Autorização do Gerente";
+                llogintitulo.Text = "Autorização do Gerente";
+                bentrar.Text = "Autorizar";
+                bsairlogin.Text = "Voltar";
+
+                lmensagemlogin.Text =
+                    "Informe o login e a senha de um Gerente ou do Administrador.";
+            }
 
             bentrar.Click += bentrar_Click;
         }
@@ -44,11 +65,20 @@ namespace erp_salgados_e_cia
             Usuario usuario;
             string mensagem;
 
-            if (!dadossistema.Autenticar(
+            bool aprovado =
+                modoAutorizacao
+                ? dadossistema.AutorizarGerente(
                     tblogin.Text,
                     tbsenha.Text,
                     out usuario,
-                    out mensagem))
+                    out mensagem)
+                : dadossistema.Autenticar(
+                    tblogin.Text,
+                    tbsenha.Text,
+                    out usuario,
+                    out mensagem);
+
+            if (!aprovado)
             {
                 lmensagemlogin.Text = mensagem;
 
@@ -56,6 +86,8 @@ namespace erp_salgados_e_cia
                 tbsenha.Focus();
                 return;
             }
+
+            LoginAutorizador = usuario.Login;
 
             DialogResult = DialogResult.OK;
         }

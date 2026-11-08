@@ -211,7 +211,6 @@ namespace erp_salgados_e_cia
             usuarios.Add(new Usuario
             {
                 IdUsuario = 1,
-                Nome = "Administrador",
                 Login = "admin",
                 SenhaHash = GerarHashSenha(senhaAdmin),
                 Perfil = PerfilUsuario.Administrador,
@@ -222,7 +221,6 @@ namespace erp_salgados_e_cia
             usuarios.Add(new Usuario
             {
                 IdUsuario = 2,
-                Nome = "Gerente 1",
                 Login = "gerente1",
                 SenhaHash = GerarHashSenha(senhaGerente1),
                 Perfil = PerfilUsuario.Gerente,
@@ -233,7 +231,6 @@ namespace erp_salgados_e_cia
             usuarios.Add(new Usuario
             {
                 IdUsuario = 3,
-                Nome = "Gerente 2",
                 Login = "gerente2",
                 SenhaHash = GerarHashSenha(senhaGerente2),
                 Perfil = PerfilUsuario.Gerente,
@@ -244,7 +241,6 @@ namespace erp_salgados_e_cia
             usuarios.Add(new Usuario
             {
                 IdUsuario = 4,
-                Nome = "Lanchonete Centro",
                 Login = "centro",
                 SenhaHash = GerarHashSenha(senhaCentro),
                 Perfil = PerfilUsuario.Atendente,
@@ -435,9 +431,53 @@ namespace erp_salgados_e_cia
             );
         }
 
+        public static bool AutorizarGerente(
+            string login,
+            string senha,
+            out Usuario autorizador,
+            out string mensagem)
+        {
+            autorizador = null;
+            mensagem = "";
+
+            string loginInformado =
+                (login ?? "").Trim();
+
+            Usuario encontrado =
+                usuarios.FirstOrDefault(u =>
+                    string.Equals(
+                        u.Login,
+                        loginInformado,
+                        System.StringComparison.OrdinalIgnoreCase));
+
+            if (encontrado == null ||
+                !VerificarSenha(senha, encontrado.SenhaHash))
+            {
+                mensagem = "Login ou senha inválidos.";
+                return false;
+            }
+
+            if (encontrado.Status != StatusCadastro.Ativo)
+            {
+                mensagem = "Usuário inativo.";
+                return false;
+            }
+
+            if (encontrado.Perfil == PerfilUsuario.Atendente)
+            {
+                mensagem = "Este login não tem permissão para autorizar.";
+                return false;
+            }
+
+            autorizador = encontrado;
+
+            return true;
+        }
+
         public static bool CancelarVenda(
             Venda venda,
             string motivo,
+            string autorizadoPor,
             out string mensagem)
         {
             mensagem = "";
@@ -502,7 +542,7 @@ namespace erp_salgados_e_cia
                     produto,
                     TipoMovimentoEstoque.Estorno,
                     item.Quantidade,
-                    caixaDaVenda.Responsavel,
+                    autorizadoPor,
                     $"Venda {venda.IdVenda} cancelada"
                 );
             }
@@ -514,7 +554,7 @@ namespace erp_salgados_e_cia
 
             venda.Status = "Cancelada";
             venda.MotivoCancelamento = motivo.Trim();
-            venda.CanceladaPor = caixaDaVenda.Responsavel;
+            venda.CanceladaPor = autorizadoPor;
             venda.DataCancelamento = System.DateTime.Now;
 
             return true;

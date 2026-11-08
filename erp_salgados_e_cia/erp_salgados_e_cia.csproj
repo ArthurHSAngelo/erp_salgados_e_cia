@@ -166,6 +166,12 @@
     <Compile Include="ucunidades.Designer.cs">
       <DependentUpon>ucunidades.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucusuarios.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucusuarios.Designer.cs">
+      <DependentUpon>ucusuarios.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucvendas.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -232,6 +238,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucunidades.resx">
       <DependentUpon>ucunidades.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucusuarios.resx">
+      <DependentUpon>ucusuarios.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucvendas.resx">
       <DependentUpon>ucvendas.cs</DependentUpon>

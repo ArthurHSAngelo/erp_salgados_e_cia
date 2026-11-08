@@ -13,8 +13,6 @@ namespace erp_salgados_e_cia
     {
         public int IdUsuario { get; set; }
 
-        public string Nome { get; set; }
-
         public string Login { get; set; }
 
         [Browsable(false)]
