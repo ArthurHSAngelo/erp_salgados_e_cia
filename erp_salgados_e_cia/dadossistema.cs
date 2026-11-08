@@ -313,6 +313,22 @@ namespace erp_salgados_e_cia
                 .OrderByDescending(h => h.Data)
                 .ToList();
         }
+        public static string CampoCsv(string valor)
+        {
+            if (valor == null)
+            {
+                return "";
+            }
+
+            if (valor.Contains(";") ||
+                valor.Contains("\"") ||
+                valor.Contains("\n"))
+            {
+                return "\"" + valor.Replace("\"", "\"\"") + "\"";
+            }
+
+            return valor;
+        }
         public static int ProximoIdCliente()
         {
             return clientes.Any()

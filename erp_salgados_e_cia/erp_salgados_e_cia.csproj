@@ -98,11 +98,23 @@
     <Compile Include="ucclientes.Designer.cs">
       <DependentUpon>ucclientes.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucestoquecompleto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucestoquecompleto.Designer.cs">
+      <DependentUpon>ucestoquecompleto.cs</DependentUpon>
+    </Compile>
     <Compile Include="uchistoricovendas.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="uchistoricovendas.Designer.cs">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucmovimentacoes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucmovimentacoes.Designer.cs">
+      <DependentUpon>ucmovimentacoes.cs</DependentUpon>
     </Compile>
     <Compile Include="ucmovimentoestoque..cs">
       <SubType>UserControl</SubType>
@@ -160,8 +172,14 @@
     <EmbeddedResource Include="ucclientes.resx">
       <DependentUpon>ucclientes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ucestoquecompleto.resx">
+      <DependentUpon>ucestoquecompleto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="uchistoricovendas.resx">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucmovimentacoes.resx">
+      <DependentUpon>ucmovimentacoes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucmovimentoestoque..resx">
       <DependentUpon>ucmovimentoestoque..cs</DependentUpon>
