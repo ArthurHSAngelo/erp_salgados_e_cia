@@ -280,7 +280,7 @@ namespace erp_salgados_e_cia
         )
         {
             dataFinal = (fim ?? System.DateTime.Today).Date;
-            dataInicial = (inicio ?? dataFinal.AddDays(-29)).Date;
+            dataInicial = (inicio ?? dataFinal.AddDays(-30)).Date;
         }
 
         public static List<HistoricoEstoque> ConsultarHistoricoEstoque(

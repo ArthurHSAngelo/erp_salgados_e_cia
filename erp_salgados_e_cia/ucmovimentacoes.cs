@@ -23,6 +23,8 @@ namespace erp_salgados_e_cia
         private List<HistoricoEstoque> ultimaConsulta =
             new List<HistoricoEstoque>();
 
+        private bool carregandoFiltros = false;
+
         private string periodoAplicado = "-";
         private string unidadeAplicada = "Todas";
         private string produtoAplicado = "Todos";
@@ -30,6 +32,8 @@ namespace erp_salgados_e_cia
 
         private void CarregarFiltros()
         {
+            carregandoFiltros = true;
+
             string unidadeSelecionada =
                 cbfiltrounidade.SelectedItem as string;
 
@@ -73,6 +77,8 @@ namespace erp_salgados_e_cia
             {
                 cbfiltroproduto.SelectedIndex = 0;
             }
+
+            carregandoFiltros = false;
         }
 
         private void ConfigurarColunas()
@@ -148,14 +154,20 @@ namespace erp_salgados_e_cia
 
             if (dataInicial > dataFinal)
             {
-                MessageBox.Show(
-                    "A data final não pode ser anterior à data inicial.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                ultimaConsulta = new List<HistoricoEstoque>();
 
-                dtpfiltrofim.Focus();
+                fonteMovimentacoes.DataSource =
+                    ultimaConsulta;
+
+                ConfigurarColunas();
+
+                lperiodoaplicado.Text =
+                    "Período: -";
+
+                lresultadomovimentacoes.Text =
+                    "A data final não pode ser anterior à data inicial.";
+
+
                 return;
             }
 
@@ -252,21 +264,45 @@ namespace erp_salgados_e_cia
             cbfiltrotipo.SelectedIndex =
                 0;
 
-            CarregarFiltros();
+            dtpfiltroinicio.Value =
+                DateTime.Today.AddDays(-30);
 
-            bgerarmovimentacoes.Click +=
-                bgerarmovimentacoes_Click;
+            dtpfiltroinicio.Checked =
+                true;
+
+            CarregarFiltros();
 
             bexportarmovimentacoes.Click +=
                 bexportarmovimentacoes_Click;
 
+            dtpfiltroinicio.ValueChanged +=
+                FiltroAlterado;
+
+            dtpfiltrofim.ValueChanged +=
+                FiltroAlterado;
+
+            cbfiltrounidade.SelectedIndexChanged +=
+                FiltroAlterado;
+
+            cbfiltroproduto.SelectedIndexChanged +=
+                FiltroAlterado;
+
+            cbfiltrotipo.SelectedIndexChanged +=
+                FiltroAlterado;
+
             GerarRelatorio();
         }
 
-        private void bgerarmovimentacoes_Click(object sender, EventArgs e)
+        private void FiltroAlterado(object sender, EventArgs e)
         {
+            if (carregandoFiltros)
+            {
+                return;
+            }
+
             GerarRelatorio();
         }
+
 
         private void bexportarmovimentacoes_Click(object sender, EventArgs e)
         {

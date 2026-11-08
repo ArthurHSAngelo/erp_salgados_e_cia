@@ -38,7 +38,6 @@
             this.cbfiltroproduto = new System.Windows.Forms.ComboBox();
             this.lfiltrotipo = new System.Windows.Forms.Label();
             this.cbfiltrotipo = new System.Windows.Forms.ComboBox();
-            this.bgerarmovimentacoes = new System.Windows.Forms.Button();
             this.bexportarmovimentacoes = new System.Windows.Forms.Button();
             this.lperiodoaplicado = new System.Windows.Forms.Label();
             this.lresultadomovimentacoes = new System.Windows.Forms.Label();
@@ -138,15 +137,6 @@
             this.cbfiltrotipo.Size = new System.Drawing.Size(121, 24);
             this.cbfiltrotipo.TabIndex = 9;
             // 
-            // bgerarmovimentacoes
-            // 
-            this.bgerarmovimentacoes.Location = new System.Drawing.Point(1435, 48);
-            this.bgerarmovimentacoes.Name = "bgerarmovimentacoes";
-            this.bgerarmovimentacoes.Size = new System.Drawing.Size(110, 23);
-            this.bgerarmovimentacoes.TabIndex = 10;
-            this.bgerarmovimentacoes.Text = "Gerar relatório";
-            this.bgerarmovimentacoes.UseVisualStyleBackColor = true;
-            // 
             // bexportarmovimentacoes
             // 
             this.bexportarmovimentacoes.Location = new System.Drawing.Point(1576, 49);
@@ -200,7 +190,6 @@
             this.Controls.Add(this.lresultadomovimentacoes);
             this.Controls.Add(this.lperiodoaplicado);
             this.Controls.Add(this.bexportarmovimentacoes);
-            this.Controls.Add(this.bgerarmovimentacoes);
             this.Controls.Add(this.cbfiltrotipo);
             this.Controls.Add(this.lfiltrotipo);
             this.Controls.Add(this.cbfiltroproduto);
@@ -231,7 +220,6 @@
         private System.Windows.Forms.ComboBox cbfiltroproduto;
         private System.Windows.Forms.Label lfiltrotipo;
         private System.Windows.Forms.ComboBox cbfiltrotipo;
-        private System.Windows.Forms.Button bgerarmovimentacoes;
         private System.Windows.Forms.Button bexportarmovimentacoes;
         private System.Windows.Forms.Label lperiodoaplicado;
         private System.Windows.Forms.Label lresultadomovimentacoes;
