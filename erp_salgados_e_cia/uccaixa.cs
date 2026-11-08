@@ -50,8 +50,11 @@ namespace erp_salgados_e_cia
                 lpix.Text =
                     $"Pix: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Pix"):N2}";
 
-                lcartao.Text =
-                    $"Cartão: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Cartão"):N2}";
+                lcredito.Text =
+                    $"Crédito: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Crédito"):N2}";
+
+                ldebito.Text =
+                    $"Débito: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Débito"):N2}";
 
                 ltotalvendas.Text =
                     $"Total de vendas (sem Notinha): R$ {caixa.TotalVendas:N2}";

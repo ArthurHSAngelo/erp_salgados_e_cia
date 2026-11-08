@@ -138,9 +138,10 @@
             this.cbformapagamento.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbformapagamento.FormattingEnabled = true;
             this.cbformapagamento.Items.AddRange(new object[] {
-            "Dinheiro",
             "Pix",
-            "Cartão",
+            "Dinheiro",
+            "Débito",
+            "Crédito",
             "Notinha"});
             this.cbformapagamento.Location = new System.Drawing.Point(170, 63);
             this.cbformapagamento.Name = "cbformapagamento";

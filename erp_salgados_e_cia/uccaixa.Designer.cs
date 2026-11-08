@@ -33,25 +33,26 @@
             this.lvalorinicial = new System.Windows.Forms.Label();
             this.lresponsavel = new System.Windows.Forms.Label();
             this.pabertura = new System.Windows.Forms.Panel();
+            this.babrircaixa = new System.Windows.Forms.Button();
             this.cbresponsavel = new System.Windows.Forms.ComboBox();
             this.tbvalorinicial = new System.Windows.Forms.TextBox();
-            this.babrircaixa = new System.Windows.Forms.Button();
             this.presumo = new System.Windows.Forms.Panel();
-            this.lcaixaaberto = new System.Windows.Forms.Label();
+            this.ldebito = new System.Windows.Forms.Label();
+            this.bfecharcaixa = new System.Windows.Forms.Button();
+            this.ldiferenca = new System.Windows.Forms.Label();
+            this.tbvalorcontado = new System.Windows.Forms.TextBox();
+            this.labatimentos = new System.Windows.Forms.Label();
+            this.ldinheiroesperado = new System.Windows.Forms.Label();
+            this.lvalorcontado = new System.Windows.Forms.Label();
             this.lnotinha = new System.Windows.Forms.Label();
             this.ltotalvendas = new System.Windows.Forms.Label();
-            this.lcartao = new System.Windows.Forms.Label();
+            this.lcredito = new System.Windows.Forms.Label();
             this.lpix = new System.Windows.Forms.Label();
             this.ldinheiro = new System.Windows.Forms.Label();
             this.ltituloformas = new System.Windows.Forms.Label();
             this.lvalorinicialresumo = new System.Windows.Forms.Label();
             this.linfocaixa = new System.Windows.Forms.Label();
-            this.lvalorcontado = new System.Windows.Forms.Label();
-            this.ldinheiroesperado = new System.Windows.Forms.Label();
-            this.labatimentos = new System.Windows.Forms.Label();
-            this.tbvalorcontado = new System.Windows.Forms.TextBox();
-            this.ldiferenca = new System.Windows.Forms.Label();
-            this.bfecharcaixa = new System.Windows.Forms.Button();
+            this.lcaixaaberto = new System.Windows.Forms.Label();
             this.lhistoricocaixas = new System.Windows.Forms.Label();
             this.dgvcaixas = new System.Windows.Forms.DataGridView();
             this.pabertura.SuspendLayout();
@@ -109,6 +110,16 @@
             this.pabertura.Size = new System.Drawing.Size(520, 220);
             this.pabertura.TabIndex = 4;
             // 
+            // babrircaixa
+            // 
+            this.babrircaixa.Location = new System.Drawing.Point(20, 160);
+            this.babrircaixa.Name = "babrircaixa";
+            this.babrircaixa.Size = new System.Drawing.Size(107, 23);
+            this.babrircaixa.TabIndex = 6;
+            this.babrircaixa.Text = "Abrir caixa";
+            this.babrircaixa.UseVisualStyleBackColor = true;
+            this.babrircaixa.Click += new System.EventHandler(this.babrircaixa_Click);
+            // 
             // cbresponsavel
             // 
             this.cbresponsavel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -125,19 +136,10 @@
             this.tbvalorinicial.Size = new System.Drawing.Size(100, 22);
             this.tbvalorinicial.TabIndex = 5;
             // 
-            // babrircaixa
-            // 
-            this.babrircaixa.Location = new System.Drawing.Point(20, 160);
-            this.babrircaixa.Name = "babrircaixa";
-            this.babrircaixa.Size = new System.Drawing.Size(107, 23);
-            this.babrircaixa.TabIndex = 6;
-            this.babrircaixa.Text = "Abrir caixa";
-            this.babrircaixa.UseVisualStyleBackColor = true;
-            this.babrircaixa.Click += new System.EventHandler(this.babrircaixa_Click);
-            // 
             // presumo
             // 
             this.presumo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.presumo.Controls.Add(this.ldebito);
             this.presumo.Controls.Add(this.bfecharcaixa);
             this.presumo.Controls.Add(this.ldiferenca);
             this.presumo.Controls.Add(this.tbvalorcontado);
@@ -146,7 +148,7 @@
             this.presumo.Controls.Add(this.lvalorcontado);
             this.presumo.Controls.Add(this.lnotinha);
             this.presumo.Controls.Add(this.ltotalvendas);
-            this.presumo.Controls.Add(this.lcartao);
+            this.presumo.Controls.Add(this.lcredito);
             this.presumo.Controls.Add(this.lpix);
             this.presumo.Controls.Add(this.ldinheiro);
             this.presumo.Controls.Add(this.ltituloformas);
@@ -158,14 +160,68 @@
             this.presumo.Size = new System.Drawing.Size(520, 480);
             this.presumo.TabIndex = 5;
             // 
-            // lcaixaaberto
+            // ldebito
             // 
-            this.lcaixaaberto.AutoSize = true;
-            this.lcaixaaberto.Location = new System.Drawing.Point(20, 15);
-            this.lcaixaaberto.Name = "lcaixaaberto";
-            this.lcaixaaberto.Size = new System.Drawing.Size(83, 16);
-            this.lcaixaaberto.TabIndex = 6;
-            this.lcaixaaberto.Text = "Caixa aberto";
+            this.ldebito.AutoSize = true;
+            this.ldebito.Location = new System.Drawing.Point(138, 203);
+            this.ldebito.Name = "ldebito";
+            this.ldebito.Size = new System.Drawing.Size(97, 16);
+            this.ldebito.TabIndex = 22;
+            this.ldebito.Text = "\tDébito: R$ 0,00";
+            // 
+            // bfecharcaixa
+            // 
+            this.bfecharcaixa.Location = new System.Drawing.Point(20, 430);
+            this.bfecharcaixa.Name = "bfecharcaixa";
+            this.bfecharcaixa.Size = new System.Drawing.Size(75, 23);
+            this.bfecharcaixa.TabIndex = 21;
+            this.bfecharcaixa.Text = "Fechar caixa";
+            this.bfecharcaixa.UseVisualStyleBackColor = true;
+            this.bfecharcaixa.Click += new System.EventHandler(this.bfecharcaixa_Click);
+            // 
+            // ldiferenca
+            // 
+            this.ldiferenca.AutoSize = true;
+            this.ldiferenca.Location = new System.Drawing.Point(20, 395);
+            this.ldiferenca.Name = "ldiferenca";
+            this.ldiferenca.Size = new System.Drawing.Size(115, 16);
+            this.ldiferenca.TabIndex = 20;
+            this.ldiferenca.Text = "Diferença: R$ 0,00";
+            // 
+            // tbvalorcontado
+            // 
+            this.tbvalorcontado.Location = new System.Drawing.Point(120, 359);
+            this.tbvalorcontado.Name = "tbvalorcontado";
+            this.tbvalorcontado.Size = new System.Drawing.Size(100, 22);
+            this.tbvalorcontado.TabIndex = 19;
+            this.tbvalorcontado.TextChanged += new System.EventHandler(this.tbvalorcontado_TextChanged);
+            // 
+            // labatimentos
+            // 
+            this.labatimentos.AutoSize = true;
+            this.labatimentos.Location = new System.Drawing.Point(20, 280);
+            this.labatimentos.Name = "labatimentos";
+            this.labatimentos.Size = new System.Drawing.Size(264, 16);
+            this.labatimentos.TabIndex = 18;
+            this.labatimentos.Text = "Abatimentos de Notinha recebidos: R$ 0,00";
+            // 
+            // ldinheiroesperado
+            // 
+            this.ldinheiroesperado.AutoSize = true;
+            this.ldinheiroesperado.Location = new System.Drawing.Point(20, 320);
+            this.ldinheiroesperado.Name = "ldinheiroesperado";
+            this.ldinheiroesperado.Size = new System.Drawing.Size(169, 16);
+            this.ldinheiroesperado.TabIndex = 17;
+            this.ldinheiroesperado.Text = "Dinheiro esperado: R$ 0,00";
+            // 
+            // lvalorcontado
+            // 
+            this.lvalorcontado.AutoSize = true;
+            this.lvalorcontado.Location = new System.Drawing.Point(20, 362);
+            this.lvalorcontado.Name = "lvalorcontado";
+            this.lvalorcontado.Size = new System.Drawing.Size(94, 16);
+            this.lvalorcontado.TabIndex = 16;
+            this.lvalorcontado.Text = "Valor contado:";
             // 
             // lnotinha
             // 
@@ -185,14 +241,14 @@
             this.ltotalvendas.TabIndex = 8;
             this.ltotalvendas.Text = "Total de vendas (sem Notinha): R$ 0,00\t";
             // 
-            // lcartao
+            // lcredito
             // 
-            this.lcartao.AutoSize = true;
-            this.lcartao.Location = new System.Drawing.Point(20, 202);
-            this.lcartao.Name = "lcartao";
-            this.lcartao.Size = new System.Drawing.Size(97, 16);
-            this.lcartao.TabIndex = 9;
-            this.lcartao.Text = "Cartão: R$ 0,00";
+            this.lcredito.AutoSize = true;
+            this.lcredito.Location = new System.Drawing.Point(20, 202);
+            this.lcredito.Name = "lcredito";
+            this.lcredito.Size = new System.Drawing.Size(100, 16);
+            this.lcredito.TabIndex = 9;
+            this.lcredito.Text = "Crédito: R$ 0,00";
             // 
             // lpix
             // 
@@ -239,59 +295,14 @@
             this.linfocaixa.TabIndex = 14;
             this.linfocaixa.Text = "Aberto em 00/00/0000 00:00 por Responsável";
             // 
-            // lvalorcontado
+            // lcaixaaberto
             // 
-            this.lvalorcontado.AutoSize = true;
-            this.lvalorcontado.Location = new System.Drawing.Point(20, 362);
-            this.lvalorcontado.Name = "lvalorcontado";
-            this.lvalorcontado.Size = new System.Drawing.Size(94, 16);
-            this.lvalorcontado.TabIndex = 16;
-            this.lvalorcontado.Text = "Valor contado:";
-            // 
-            // ldinheiroesperado
-            // 
-            this.ldinheiroesperado.AutoSize = true;
-            this.ldinheiroesperado.Location = new System.Drawing.Point(20, 320);
-            this.ldinheiroesperado.Name = "ldinheiroesperado";
-            this.ldinheiroesperado.Size = new System.Drawing.Size(169, 16);
-            this.ldinheiroesperado.TabIndex = 17;
-            this.ldinheiroesperado.Text = "Dinheiro esperado: R$ 0,00";
-            // 
-            // labatimentos
-            // 
-            this.labatimentos.AutoSize = true;
-            this.labatimentos.Location = new System.Drawing.Point(20, 280);
-            this.labatimentos.Name = "labatimentos";
-            this.labatimentos.Size = new System.Drawing.Size(264, 16);
-            this.labatimentos.TabIndex = 18;
-            this.labatimentos.Text = "Abatimentos de Notinha recebidos: R$ 0,00";
-            // 
-            // tbvalorcontado
-            // 
-            this.tbvalorcontado.Location = new System.Drawing.Point(120, 359);
-            this.tbvalorcontado.Name = "tbvalorcontado";
-            this.tbvalorcontado.Size = new System.Drawing.Size(100, 22);
-            this.tbvalorcontado.TabIndex = 19;
-            this.tbvalorcontado.TextChanged += new System.EventHandler(this.tbvalorcontado_TextChanged);
-            // 
-            // ldiferenca
-            // 
-            this.ldiferenca.AutoSize = true;
-            this.ldiferenca.Location = new System.Drawing.Point(20, 395);
-            this.ldiferenca.Name = "ldiferenca";
-            this.ldiferenca.Size = new System.Drawing.Size(115, 16);
-            this.ldiferenca.TabIndex = 20;
-            this.ldiferenca.Text = "Diferença: R$ 0,00";
-            // 
-            // bfecharcaixa
-            // 
-            this.bfecharcaixa.Location = new System.Drawing.Point(20, 430);
-            this.bfecharcaixa.Name = "bfecharcaixa";
-            this.bfecharcaixa.Size = new System.Drawing.Size(75, 23);
-            this.bfecharcaixa.TabIndex = 21;
-            this.bfecharcaixa.Text = "Fechar caixa";
-            this.bfecharcaixa.UseVisualStyleBackColor = true;
-            this.bfecharcaixa.Click += new System.EventHandler(this.bfecharcaixa_Click);
+            this.lcaixaaberto.AutoSize = true;
+            this.lcaixaaberto.Location = new System.Drawing.Point(20, 15);
+            this.lcaixaaberto.Name = "lcaixaaberto";
+            this.lcaixaaberto.Size = new System.Drawing.Size(83, 16);
+            this.lcaixaaberto.TabIndex = 6;
+            this.lcaixaaberto.Text = "Caixa aberto";
             // 
             // lhistoricocaixas
             // 
@@ -349,7 +360,7 @@
         private System.Windows.Forms.TextBox tbvalorinicial;
         private System.Windows.Forms.Button babrircaixa;
         private System.Windows.Forms.Panel presumo;
-        private System.Windows.Forms.Label lcartao;
+        private System.Windows.Forms.Label lcredito;
         private System.Windows.Forms.Label lpix;
         private System.Windows.Forms.Label ldinheiro;
         private System.Windows.Forms.Label ltituloformas;
@@ -366,5 +377,6 @@
         private System.Windows.Forms.TextBox tbvalorcontado;
         private System.Windows.Forms.Label lhistoricocaixas;
         private System.Windows.Forms.DataGridView dgvcaixas;
+        private System.Windows.Forms.Label ldebito;
     }
 }

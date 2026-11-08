@@ -37,6 +37,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -135,6 +136,12 @@
     <Compile Include="ucprodutos.Designer.cs">
       <DependentUpon>ucprodutos.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucrelatoriovendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrelatoriovendas.Designer.cs">
+      <DependentUpon>ucrelatoriovendas.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucunidades.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -190,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucprodutos.resx">
       <DependentUpon>ucprodutos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrelatoriovendas.resx">
+      <DependentUpon>ucrelatoriovendas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucunidades.resx">
       <DependentUpon>ucunidades.cs</DependentUpon>
