@@ -144,6 +144,7 @@ namespace erp_salgados_e_cia
         private uccaixa telacaixa;
         private ucestoquecompleto telaestoquecompleto;
         private ucmovimentacoes telamovimentacoes;
+        private ucrelatoriovendas telarelatoriovendas;
 
         private void AbrirTela(UserControl tela)
         {
@@ -368,6 +369,20 @@ namespace erp_salgados_e_cia
             telamovimentacoes.AtualizarTela();
 
             AbrirTela(telamovimentacoes);
+        }
+
+        private void brelatoriovendas_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telarelatoriovendas == null)
+            {
+                telarelatoriovendas = new ucrelatoriovendas();
+            }
+
+            telarelatoriovendas.AtualizarTela();
+
+            AbrirTela(telarelatoriovendas);
         }
 
         private void bausuarios_Click(object sender, EventArgs e)

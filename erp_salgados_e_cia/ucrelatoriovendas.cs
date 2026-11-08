@@ -32,15 +32,6 @@ namespace erp_salgados_e_cia
         private Series serieProdutos;
         private Series serieFormas;
 
-        private readonly Color[] coresFormas =
-        {
-            Color.SeaGreen,
-            Color.SteelBlue,
-            Color.DarkOrange,
-            Color.MediumPurple,
-            Color.Firebrick
-        };
-
         private void CarregarFiltros()
         {
             carregandoFiltros = true;
@@ -121,50 +112,23 @@ namespace erp_salgados_e_cia
             grade.MultiSelect = false;
             grade.SelectionMode =
                 DataGridViewSelectionMode.FullRowSelect;
-            grade.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
-            grade.RowHeadersVisible = false;
-            grade.BackgroundColor = Color.White;
         }
 
         private void ConfigurarGraficos()
         {
-            chartdia.Legends.Clear();
             chartdia.Series.Clear();
-
-            chartdia.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            chartdia.ChartAreas[0].AxisY.MajorGrid.LineColor =
-                Color.Gainsboro;
-            chartdia.ChartAreas[0].AxisY.LabelStyle.Format = "N0";
-            chartdia.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
 
             serieDia = new Series("Faturamento");
             serieDia.ChartType = SeriesChartType.Column;
-            serieDia.Color = Color.DarkOrange;
             chartdia.Series.Add(serieDia);
 
-            chartprodutos.Legends.Clear();
             chartprodutos.Series.Clear();
-
-            chartprodutos.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            chartprodutos.ChartAreas[0].AxisX.Interval = 1;
-            chartprodutos.ChartAreas[0].AxisY.MajorGrid.LineColor =
-                Color.Gainsboro;
 
             serieProdutos = new Series("Quantidade");
             serieProdutos.ChartType = SeriesChartType.Bar;
-            serieProdutos.Color = Color.DarkOrange;
             chartprodutos.Series.Add(serieProdutos);
 
-            chartformas.Series.Clear();
-
-            serieFormas = new Series("Formas");
-            serieFormas.ChartType = SeriesChartType.Doughnut;
-            serieFormas["PieLabelStyle"] = "Disabled";
-            serieFormas.Legend = chartformas.Legends[0].Name;
-            chartformas.Series.Add(serieFormas);
-
-            chartformas.Legends[0].Docking = Docking.Bottom;
+            serieFormas = chartformas.Series[0];
         }
 
         private void AtualizarGraficos()
@@ -224,8 +188,6 @@ namespace erp_salgados_e_cia
 
                 DataPoint ponto = serieFormas.Points[indice];
 
-                ponto.Color = coresFormas[i % coresFormas.Length];
-
                 ponto.LegendText =
                     $"{linha.Forma}: R$ {linha.Valor:N2}";
 
@@ -252,10 +214,6 @@ namespace erp_salgados_e_cia
 
                 dgvdia.Columns["Faturamento"]
                     .DefaultCellStyle.Format = "N2";
-
-                dgvdia.Columns["Faturamento"]
-                    .DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.MiddleRight;
             }
 
             dgvprodutos.DataSource = null;
@@ -272,14 +230,6 @@ namespace erp_salgados_e_cia
 
                 dgvprodutos.Columns["Receita"]
                     .DefaultCellStyle.Format = "N2";
-
-                dgvprodutos.Columns["Quantidade"]
-                    .DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.MiddleRight;
-
-                dgvprodutos.Columns["Receita"]
-                    .DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.MiddleRight;
             }
 
             dgvformas.DataSource = null;
@@ -292,10 +242,6 @@ namespace erp_salgados_e_cia
 
                 dgvformas.Columns["Valor"]
                     .DefaultCellStyle.Format = "N2";
-
-                dgvformas.Columns["Valor"]
-                    .DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.MiddleRight;
             }
         }
 
