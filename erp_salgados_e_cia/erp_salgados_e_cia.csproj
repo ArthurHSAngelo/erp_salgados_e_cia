@@ -55,6 +55,7 @@
     <Compile Include="Comanda.cs" />
     <Compile Include="HistoricoEstoque.cs" />
     <Compile Include="LinhaEstoque.cs" />
+    <Compile Include="RelatorioVendas.cs" />
     <Compile Include="Fornecedor.cs" />
     <Compile Include="frmcobranca.cs">
       <SubType>Form</SubType>

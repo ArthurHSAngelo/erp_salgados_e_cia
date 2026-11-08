@@ -329,6 +329,169 @@ namespace erp_salgados_e_cia
 
             return valor;
         }
+        public static readonly string[] FormasPagamento =
+        {
+            "Dinheiro",
+            "Pix",
+            "Crédito",
+            "Débito",
+            "Notinha"
+        };
+
+        public static RelatorioVendas GerarRelatorioVendas(
+            System.DateTime? inicio,
+            System.DateTime? fim,
+            string unidade,
+            string formaPagamento,
+            string produto
+        )
+        {
+            System.DateTime dataInicial;
+            System.DateTime dataFinal;
+
+            DefinirPeriodoPadrao(
+                inicio,
+                fim,
+                out dataInicial,
+                out dataFinal
+            );
+
+            IEnumerable<Venda> vendasFiltradas =
+                vendas.Where(v =>
+                    v.Status == "Concluída" &&
+                    v.DataHora.Date >= dataInicial &&
+                    v.DataHora.Date <= dataFinal);
+
+            if (!string.IsNullOrEmpty(unidade))
+            {
+                vendasFiltradas =
+                    vendasFiltradas.Where(v =>
+                        caixas.Any(c =>
+                            c.IdCaixa == v.IdCaixa &&
+                            c.Unidade == unidade));
+            }
+
+            if (!string.IsNullOrEmpty(formaPagamento))
+            {
+                vendasFiltradas =
+                    vendasFiltradas.Where(v =>
+                        v.Pagamentos.Any(p =>
+                            p.FormaPagamento == formaPagamento));
+            }
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                vendasFiltradas =
+                    vendasFiltradas.Where(v =>
+                        v.Itens.Any(i => i.Produto == produto));
+            }
+
+            List<Venda> vendasDoRelatorio =
+                vendasFiltradas.ToList();
+
+            RelatorioVendas relatorio = new RelatorioVendas
+            {
+                DataInicial = dataInicial,
+                DataFinal = dataFinal
+            };
+
+            decimal faturamento =
+                vendasDoRelatorio.Sum(v => v.ValorTotal);
+
+            decimal emNotinha =
+                vendasDoRelatorio
+                .SelectMany(v => v.Pagamentos)
+                .Where(p => p.FormaPagamento == "Notinha")
+                .Sum(p => p.Valor);
+
+            decimal recebido =
+                vendasDoRelatorio
+                .SelectMany(v => v.Pagamentos)
+                .Where(p => p.FormaPagamento != "Notinha")
+                .Sum(p => p.Valor)
+                - vendasDoRelatorio.Sum(v => v.Troco);
+
+            relatorio.Resumo = new ResumoVendas
+            {
+                QuantidadeVendas = vendasDoRelatorio.Count,
+                Faturamento = faturamento,
+                Recebido = recebido,
+                EmNotinha = emNotinha,
+                TicketMedio =
+                    vendasDoRelatorio.Count > 0
+                    ? faturamento / vendasDoRelatorio.Count
+                    : 0m
+            };
+
+            for (System.DateTime dia = dataInicial;
+                dia <= dataFinal;
+                dia = dia.AddDays(1))
+            {
+                System.DateTime diaAtual = dia;
+
+                List<Venda> vendasDoDia =
+                    vendasDoRelatorio
+                    .Where(v => v.DataHora.Date == diaAtual)
+                    .ToList();
+
+                relatorio.PorDia.Add(
+                    new LinhaFaturamentoDia
+                    {
+                        Dia = diaAtual,
+                        QuantidadeVendas = vendasDoDia.Count,
+                        Faturamento = vendasDoDia.Sum(v => v.ValorTotal)
+                    }
+                );
+            }
+
+            IEnumerable<ItemVenda> itensVendidos =
+                vendasDoRelatorio.SelectMany(v => v.Itens);
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                itensVendidos =
+                    itensVendidos.Where(i => i.Produto == produto);
+            }
+
+            relatorio.Produtos =
+                itensVendidos
+                .GroupBy(i => i.Produto)
+                .Select(g => new LinhaProdutoVendido
+                {
+                    Produto = g.Key,
+                    Quantidade = g.Sum(i => i.Quantidade),
+                    Receita = g.Sum(i => i.Total)
+                })
+                .OrderByDescending(l => l.Quantidade)
+                .ThenByDescending(l => l.Receita)
+                .ThenBy(l => l.Produto)
+                .ToList();
+
+            foreach (string forma in FormasPagamento)
+            {
+                decimal valorForma =
+                    vendasDoRelatorio
+                    .SelectMany(v => v.Pagamentos)
+                    .Where(p => p.FormaPagamento == forma)
+                    .Sum(p => p.Valor);
+
+                if (forma == "Dinheiro")
+                {
+                    valorForma -=
+                        vendasDoRelatorio.Sum(v => v.Troco);
+                }
+
+                relatorio.Formas.Add(
+                    new LinhaFormaPagamento
+                    {
+                        Forma = forma,
+                        Valor = valorForma
+                    }
+                );
+            }
+
+            return relatorio;
+        }
         public static int ProximoIdCliente()
         {
             return clientes.Any()
