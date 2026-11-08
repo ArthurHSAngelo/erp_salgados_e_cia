@@ -125,7 +125,7 @@
             this.dgvestoquecompleto.AllowUserToDeleteRows = false;
             this.dgvestoquecompleto.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvestoquecompleto.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvestoquecompleto.Location = new System.Drawing.Point(132, 202);
+            this.dgvestoquecompleto.Location = new System.Drawing.Point(45, 141);
             this.dgvestoquecompleto.MultiSelect = false;
             this.dgvestoquecompleto.Name = "dgvestoquecompleto";
             this.dgvestoquecompleto.ReadOnly = true;
@@ -133,7 +133,7 @@
             this.dgvestoquecompleto.RowHeadersWidth = 51;
             this.dgvestoquecompleto.RowTemplate.Height = 24;
             this.dgvestoquecompleto.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvestoquecompleto.Size = new System.Drawing.Size(721, 282);
+            this.dgvestoquecompleto.Size = new System.Drawing.Size(1020, 421);
             this.dgvestoquecompleto.TabIndex = 8;
             // 
             // ltotalvalorvenda

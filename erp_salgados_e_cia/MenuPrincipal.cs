@@ -18,10 +18,12 @@ namespace erp_salgados_e_cia
         {
             panelCadastros.Visible = false;
             panelestoque.Visible = false;
+            panelrelatorios.Visible = false;
             pvendas.Visible = false; 
 
             bacadastros.Text = "Cadastros ▼";
             baestoque.Text = "Estoque ▼";
+            barelatorios.Text = "Relatórios ▼";
             bavendas.Text = "Vendas ▼";
         }
         private void SelecionarBotao(Button botaoSelecionado)
@@ -140,6 +142,8 @@ namespace erp_salgados_e_cia
         private ucvendas telavendas;
         private uchistoricovendas telahistoricovendas;
         private uccaixa telacaixa;
+        private ucestoquecompleto telaestoquecompleto;
+        private ucmovimentacoes telamovimentacoes;
 
         private void AbrirTela(UserControl tela)
         {
@@ -324,9 +328,46 @@ namespace erp_salgados_e_cia
 
         private void barelatorios_Click(object sender, EventArgs e)
         {
+            SelecionarBotao(barelatorios);
+
+            bool abrir = !panelrelatorios.Visible;
+
             FecharSubMenus();
 
-            SelecionarBotao(barelatorios);
+            panelrelatorios.Visible = abrir;
+
+            if (abrir)
+            {
+                barelatorios.Text = "Relatórios ▲";
+            }
+        }
+
+        private void bestoquecompleto_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telaestoquecompleto == null)
+            {
+                telaestoquecompleto = new ucestoquecompleto();
+            }
+
+            telaestoquecompleto.AtualizarTela();
+
+            AbrirTela(telaestoquecompleto);
+        }
+
+        private void bmovimentacoes_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telamovimentacoes == null)
+            {
+                telamovimentacoes = new ucmovimentacoes();
+            }
+
+            telamovimentacoes.AtualizarTela();
+
+            AbrirTela(telamovimentacoes);
         }
 
         private void bausuarios_Click(object sender, EventArgs e)

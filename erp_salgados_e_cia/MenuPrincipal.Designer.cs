@@ -254,6 +254,7 @@
             this.bestoquecompleto.Text = "● Estoque completo";
             this.bestoquecompleto.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bestoquecompleto.UseVisualStyleBackColor = true;
+            this.bestoquecompleto.Click += new System.EventHandler(this.bestoquecompleto_Click);
             // 
             // bmovimentacoes
             // 
@@ -268,6 +269,7 @@
             this.bmovimentacoes.Text = "● Movimentações";
             this.bmovimentacoes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bmovimentacoes.UseVisualStyleBackColor = true;
+            this.bmovimentacoes.Click += new System.EventHandler(this.bmovimentacoes_Click);
             // 
             // bapainel
             // 
@@ -401,7 +403,7 @@
             this.barelatorios.raio = 25;
             this.barelatorios.Size = new System.Drawing.Size(250, 45);
             this.barelatorios.TabIndex = 15;
-            this.barelatorios.Text = "Relatórios";
+            this.barelatorios.Text = "Relatórios ▼";
             this.barelatorios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.barelatorios.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.barelatorios.UseVisualStyleBackColor = false;

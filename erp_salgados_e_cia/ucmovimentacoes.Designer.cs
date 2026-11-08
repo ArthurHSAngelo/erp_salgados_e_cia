@@ -159,7 +159,7 @@
             // lperiodoaplicado
             // 
             this.lperiodoaplicado.AutoSize = true;
-            this.lperiodoaplicado.Location = new System.Drawing.Point(1067, 246);
+            this.lperiodoaplicado.Location = new System.Drawing.Point(1017, 169);
             this.lperiodoaplicado.Name = "lperiodoaplicado";
             this.lperiodoaplicado.Size = new System.Drawing.Size(65, 16);
             this.lperiodoaplicado.TabIndex = 12;
@@ -177,9 +177,11 @@
             // 
             this.dgvmovimentacoes.AllowUserToAddRows = false;
             this.dgvmovimentacoes.AllowUserToDeleteRows = false;
+            this.dgvmovimentacoes.AllowUserToResizeColumns = false;
+            this.dgvmovimentacoes.AllowUserToResizeRows = false;
             this.dgvmovimentacoes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvmovimentacoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvmovimentacoes.Location = new System.Drawing.Point(232, 255);
+            this.dgvmovimentacoes.Location = new System.Drawing.Point(13, 131);
             this.dgvmovimentacoes.MultiSelect = false;
             this.dgvmovimentacoes.Name = "dgvmovimentacoes";
             this.dgvmovimentacoes.ReadOnly = true;
@@ -187,7 +189,7 @@
             this.dgvmovimentacoes.RowHeadersWidth = 51;
             this.dgvmovimentacoes.RowTemplate.Height = 24;
             this.dgvmovimentacoes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvmovimentacoes.Size = new System.Drawing.Size(618, 358);
+            this.dgvmovimentacoes.Size = new System.Drawing.Size(915, 482);
             this.dgvmovimentacoes.TabIndex = 14;
             // 
             // ucmovimentacoes
