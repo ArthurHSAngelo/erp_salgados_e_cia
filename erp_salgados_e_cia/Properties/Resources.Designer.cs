@@ -143,6 +143,26 @@ namespace erp_salgados_e_cia.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap log_branco {
+            get {
+                object obj = ResourceManager.GetObject("log_branco", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap log_laranja {
+            get {
+                object obj = ResourceManager.GetObject("log_laranja", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap painel_branco1 {
             get {
                 object obj = ResourceManager.GetObject("painel_branco1", resourceCulture);

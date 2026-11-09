@@ -142,6 +142,12 @@
   <data name="estoque_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\estoque_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="log_branco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\log_branco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="log_laranja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\log_laranja.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="painel_branco1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\painel_branco1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

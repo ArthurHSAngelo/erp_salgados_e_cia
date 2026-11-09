@@ -104,6 +104,10 @@ namespace erp_salgados_e_cia
                 ? Properties.Resources.usuarios_laranja
                 : Properties.Resources.usuarios_branco;
 
+            balog.Image =
+                botaoSelecionado == balog
+                ? Properties.Resources.log_laranja
+                : Properties.Resources.log_branco;
         }
         private void ArredondarBotao(Button botao, int raio)
         {
