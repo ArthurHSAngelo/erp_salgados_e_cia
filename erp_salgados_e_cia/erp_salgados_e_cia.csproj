@@ -130,6 +130,12 @@
     <Compile Include="uchistoricovendas.Designer.cs">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucinventario.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucinventario.Designer.cs">
+      <DependentUpon>ucinventario.cs</DependentUpon>
+    </Compile>
     <Compile Include="uclogoperacoes.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -195,6 +201,7 @@
     <Compile Include="Funcionario.cs" />
     <Compile Include="LogOperacao.cs" />
     <Compile Include="Perda.cs" />
+    <Compile Include="Inventario.cs" />
     <Compile Include="venda.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +241,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="uchistoricovendas.resx">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucinventario.resx">
+      <DependentUpon>ucinventario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="uclogoperacoes.resx">
       <DependentUpon>uclogoperacoes.cs</DependentUpon>

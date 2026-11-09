@@ -360,6 +360,180 @@ namespace erp_salgados_e_cia
             return true;
         }
 
+        public static BindingList<Inventario> inventarios =
+            new BindingList<Inventario>();
+
+        public static int ProximoIdInventario()
+        {
+            return inventarios.Any()
+                ? inventarios.Max(i => i.IdInventario) + 1
+                : 1;
+        }
+
+        public static List<ItemInventario> MontarItensInventario()
+        {
+            return produtos
+                .Where(p => p.Status == StatusCadastro.Ativo)
+                .OrderBy(p => p.Nome)
+                .Select(p => new ItemInventario
+                {
+                    Produto = p.Nome,
+                    SaldoSistema = p.EstoqueAtual,
+                    QuantidadeContada = null,
+                    Motivo = null
+                })
+                .ToList();
+        }
+
+        public static bool EfetivarInventario(
+            List<ItemInventario> itens,
+            string observacao,
+            out int quantidadeAjustes,
+            out string mensagem,
+            string responsavel = null)
+        {
+            quantidadeAjustes = 0;
+            mensagem = "";
+
+            if (UsuarioLogado == null)
+            {
+                mensagem = "Entre no sistema para efetivar o inventário.";
+                return false;
+            }
+
+            List<ItemInventario> contados =
+                itens == null
+                ? new List<ItemInventario>()
+                : itens
+                    .Where(i => i.QuantidadeContada.HasValue)
+                    .ToList();
+
+            if (contados.Count == 0)
+            {
+                mensagem = "Informe a contagem de pelo menos um produto.";
+                return false;
+            }
+
+            foreach (ItemInventario item in contados)
+            {
+                Produto produto =
+                    produtos.FirstOrDefault(p =>
+                        p.Nome == item.Produto &&
+                        p.Status == StatusCadastro.Ativo);
+
+                if (produto == null)
+                {
+                    mensagem = $"Produto não encontrado: {item.Produto}.";
+                    return false;
+                }
+
+                if (item.QuantidadeContada.Value < 0)
+                {
+                    mensagem =
+                        $"A contagem de {item.Produto} não pode ser negativa.";
+                    return false;
+                }
+
+                decimal diferencaItem =
+                    item.QuantidadeContada.Value - produto.EstoqueAtual;
+
+                if (diferencaItem != 0 &&
+                    string.IsNullOrWhiteSpace(item.Motivo))
+                {
+                    mensagem =
+                        $"Informe o motivo da divergência de {item.Produto}.";
+                    return false;
+                }
+            }
+
+            string responsavelEfetivo =
+                string.IsNullOrWhiteSpace(responsavel)
+                ? UsuarioLogado.Login
+                : responsavel.Trim();
+
+            Inventario inventario = new Inventario
+            {
+                IdInventario = ProximoIdInventario(),
+                DataHora = System.DateTime.Now,
+                Unidade = UnidadeAtual,
+                Usuario = UsuarioLogado.Login,
+                Responsavel = responsavelEfetivo,
+                Observacao =
+                    string.IsNullOrWhiteSpace(observacao)
+                    ? null
+                    : observacao.Trim()
+            };
+
+            List<string> linhasLog = new List<string>();
+
+            foreach (ItemInventario item in contados)
+            {
+                Produto produto =
+                    produtos.First(p =>
+                        p.Nome == item.Produto &&
+                        p.Status == StatusCadastro.Ativo);
+
+                decimal saldoAnterior = produto.EstoqueAtual;
+                decimal contada = item.QuantidadeContada.Value;
+                decimal diferenca = contada - saldoAnterior;
+
+                string motivo =
+                    diferenca == 0
+                    ? null
+                    : item.Motivo.Trim();
+
+                inventario.Itens.Add(
+                    new ItemInventario
+                    {
+                        Produto = produto.Nome,
+                        SaldoSistema = saldoAnterior,
+                        QuantidadeContada = contada,
+                        Motivo = motivo
+                    }
+                );
+
+                if (diferenca != 0)
+                {
+                    produto.EstoqueAtual = contada;
+
+                    RegistrarHistoricoEstoque(
+                        produto,
+                        TipoMovimentoEstoque.Ajuste,
+                        diferenca,
+                        responsavelEfetivo,
+                        $"Inventário {inventario.IdInventario}: {motivo}"
+                    );
+
+                    quantidadeAjustes++;
+
+                    linhasLog.Add(
+                        $"{produto.Nome}: {saldoAnterior:N2} → {contada:N2} ({motivo})");
+                }
+            }
+
+            inventarios.Add(inventario);
+
+            RegistrarLog(
+                TipoOperacaoLog.Inclusao,
+                "Inventario",
+                $"Inventário {inventario.IdInventario}",
+                JuntarDetalhes(
+                    $"Unidade: {inventario.Unidade}",
+                    $"Responsável: {responsavelEfetivo}",
+                    $"Produtos contados: {contados.Count}",
+                    $"Ajustes: {quantidadeAjustes}",
+                    inventario.Observacao == null
+                        ? null
+                        : $"Observação: {inventario.Observacao}",
+                    linhasLog.Count == 0
+                        ? null
+                        : string.Join(" | ", linhasLog)
+                )
+            );
+
+            return true;
+        }
+
         public static List<string> UsuariosDoLog()
         {
             return registrosLog
