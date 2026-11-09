@@ -151,6 +151,7 @@ namespace erp_salgados_e_cia
         private ucmovimentacoes telamovimentacoes;
         private ucrelatoriovendas telarelatoriovendas;
         private ucfuncionarios telafuncionarios;
+        private ucperdas telaperdas;
         private ucusuarios telausuarios;
         private uclogoperacoes telalogoperacoes;
 
@@ -190,6 +191,7 @@ namespace erp_salgados_e_cia
             telaestoquecompleto = null;
             telamovimentacoes = null;
             telarelatoriovendas = null;
+            telaperdas = null;
 
             pnltelas.Controls.Clear();
 
@@ -358,6 +360,8 @@ namespace erp_salgados_e_cia
 
             bfuncionarios.Click += bfuncionarios_Click;
 
+            bperdas.Click += bperdas_Click;
+
             alturaPanelRelatorios = panelrelatorios.Height;
 
             AplicarPerfil();
@@ -443,6 +447,20 @@ namespace erp_salgados_e_cia
             telamovimentoestoque.AtualizarCombos();
 
             AbrirTela(telamovimentoestoque);
+        }
+
+        private void bperdas_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (telaperdas == null)
+            {
+                telaperdas = new ucperdas();
+            }
+
+            telaperdas.AtualizarTela();
+
+            AbrirTela(telaperdas);
         }
 
         private void bavendas_Click(object sender, EventArgs e)

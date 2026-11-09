@@ -257,7 +257,9 @@ namespace erp_salgados_e_cia
                     "Todos",
                     "Entrada",
                     "Venda",
-                    "Estorno"
+                    "Estorno",
+                    "Perda",
+                    "Ajuste"
                 }
             );
 

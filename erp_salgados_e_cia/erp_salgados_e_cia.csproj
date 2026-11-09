@@ -154,6 +154,12 @@
     <Compile Include="ucfornecedores.Designer.cs">
       <DependentUpon>ucfornecedores.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucperdas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucperdas.Designer.cs">
+      <DependentUpon>ucperdas.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucprodutos.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -188,6 +194,7 @@
     <Compile Include="Usuario.cs" />
     <Compile Include="Funcionario.cs" />
     <Compile Include="LogOperacao.cs" />
+    <Compile Include="Perda.cs" />
     <Compile Include="venda.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucfornecedores.resx">
       <DependentUpon>ucfornecedores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucperdas.resx">
+      <DependentUpon>ucperdas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucprodutos.resx">
       <DependentUpon>ucprodutos.cs</DependentUpon>

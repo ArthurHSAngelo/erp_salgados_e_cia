@@ -6,7 +6,9 @@ namespace erp_salgados_e_cia
     {
         Entrada,
         Venda,
-        Estorno
+        Estorno,
+        Perda,
+        Ajuste
     }
 
     public class HistoricoEstoque

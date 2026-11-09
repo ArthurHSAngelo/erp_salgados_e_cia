@@ -250,6 +250,116 @@ namespace erp_salgados_e_cia
             );
         }
 
+        public static BindingList<Perda> perdas =
+            new BindingList<Perda>();
+
+        public static int ProximoIdPerda()
+        {
+            return perdas.Any()
+                ? perdas.Max(p => p.IdPerda) + 1
+                : 1;
+        }
+
+        public static List<Perda> PerdasDaUnidade(
+            string unidade,
+            int dias)
+        {
+            System.DateTime inicio =
+                System.DateTime.Today.AddDays(-dias);
+
+            return perdas
+                .Where(p =>
+                    p.Unidade == unidade &&
+                    p.Data >= inicio)
+                .OrderByDescending(p => p.Data)
+                .ThenByDescending(p => p.IdPerda)
+                .ToList();
+        }
+
+        public static bool RegistrarPerda(
+            string nomeProduto,
+            decimal quantidade,
+            MotivoPerda motivo,
+            System.DateTime data,
+            string responsavel,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            Produto produto =
+                produtos.FirstOrDefault(p =>
+                    p.Nome == nomeProduto &&
+                    p.Status == StatusCadastro.Ativo);
+
+            if (produto == null)
+            {
+                mensagem = "Selecione um produto.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(responsavel))
+            {
+                mensagem = "Selecione o responsável.";
+                return false;
+            }
+
+            if (quantidade <= 0)
+            {
+                mensagem = "Informe uma quantidade maior que zero.";
+                return false;
+            }
+
+            if (quantidade > produto.EstoqueAtual)
+            {
+                mensagem =
+                    $"Quantidade acima do saldo disponível ({produto.EstoqueAtual:N2}).";
+                return false;
+            }
+
+            if (data.Date > System.DateTime.Today)
+            {
+                mensagem = "A data da perda não pode ser futura.";
+                return false;
+            }
+
+            decimal saldoAnterior = produto.EstoqueAtual;
+
+            produto.EstoqueAtual -= quantidade;
+
+            Perda perda = new Perda
+            {
+                IdPerda = ProximoIdPerda(),
+                Data = data.Date,
+                Unidade = UnidadeAtual,
+                Produto = produto.Nome,
+                Quantidade = quantidade,
+                Motivo = motivo,
+                Responsavel = responsavel,
+                Usuario = UsuarioLogado == null
+                    ? "sistema"
+                    : UsuarioLogado.Login,
+                DataHoraRegistro = System.DateTime.Now
+            };
+
+            perdas.Add(perda);
+
+            RegistrarHistoricoEstoque(
+                produto,
+                TipoMovimentoEstoque.Perda,
+                quantidade,
+                responsavel,
+                $"Perda ({perda.MotivoTexto})"
+            );
+
+            RegistrarLog(
+                TipoOperacaoLog.Inclusao,
+                "Perda",
+                $"Perda {perda.IdPerda}: {produto.Nome}",
+                $"Quantidade: {quantidade:N2}; Motivo: {perda.MotivoTexto}; Data: {perda.Data:dd/MM/yyyy}; Responsável: {responsavel}; Unidade: {perda.Unidade}; Saldo: {saldoAnterior:N2} → {produto.EstoqueAtual:N2}");
+
+            return true;
+        }
+
         public static List<string> UsuariosDoLog()
         {
             return registrosLog
