@@ -391,6 +391,17 @@ namespace erp_salgados_e_cia
             AtualizarVisualizacoes();
         }
 
+        private List<string> FiltrosAplicados()
+        {
+            return new List<string>
+            {
+                "Período: " + periodoAplicado,
+                "Unidade: " + unidadeAplicada,
+                "Forma de pagamento: " + formaAplicada,
+                "Produto: " + produtoAplicado
+            };
+        }
+
         private void bexportarvenda_Click(object sender, EventArgs e)
         {
             if (ultimoRelatorio.Resumo.QuantidadeVendas == 0)
@@ -405,129 +416,277 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            using (SaveFileDialog janela = new SaveFileDialog())
+            bool pdf;
+
+            string caminho =
+                ExportacaoRelatorio.PedirArquivo(
+                    "relatorio_vendas",
+                    out pdf);
+
+            if (caminho == null)
             {
-                janela.Filter = "Arquivo CSV (*.csv)|*.csv";
-
-                janela.FileName =
-                    $"relatorio_vendas_{DateTime.Now:yyyyMMdd_HHmm}.csv";
-
-                if (janela.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                ResumoVendas resumo = ultimoRelatorio.Resumo;
-
-                StringBuilder csv = new StringBuilder();
-
-                csv.AppendLine("Relatório de vendas");
-
-                csv.AppendLine(
-                    $"Gerado em;{DateTime.Now:dd/MM/yyyy HH:mm}");
-
-                csv.AppendLine("Filtros aplicados");
-
-                csv.AppendLine(
-                    "Período;" + dadossistema.CampoCsv(periodoAplicado));
-
-                csv.AppendLine(
-                    "Unidade;" + dadossistema.CampoCsv(unidadeAplicada));
-
-                csv.AppendLine(
-                    "Forma de pagamento;" +
-                    dadossistema.CampoCsv(formaAplicada));
-
-                csv.AppendLine(
-                    "Produto;" + dadossistema.CampoCsv(produtoAplicado));
-
-                csv.AppendLine();
-
-                csv.AppendLine("Resumo");
-
-                csv.AppendLine(
-                    $"Vendas;{resumo.QuantidadeVendas}");
-
-                csv.AppendLine(
-                    "Faturamento;" +
-                    resumo.Faturamento.ToString("N2", culturaBrasil));
-
-                csv.AppendLine(
-                    "Recebido;" +
-                    resumo.Recebido.ToString("N2", culturaBrasil));
-
-                csv.AppendLine(
-                    "Em Notinha;" +
-                    resumo.EmNotinha.ToString("N2", culturaBrasil));
-
-                csv.AppendLine(
-                    "Ticket médio;" +
-                    resumo.TicketMedio.ToString("N2", culturaBrasil));
-
-                csv.AppendLine();
-
-                csv.AppendLine("Faturamento por dia");
-                csv.AppendLine("Dia;Vendas;Faturamento");
-
-                foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
-                {
-                    csv.AppendLine(
-                        string.Join(
-                            ";",
-                            linha.Dia.ToString("dd/MM/yyyy"),
-                            linha.QuantidadeVendas,
-                            linha.Faturamento.ToString("N2", culturaBrasil)
-                        )
-                    );
-                }
-
-                csv.AppendLine();
-
-                csv.AppendLine("Produtos vendidos");
-                csv.AppendLine("Produto;Quantidade;Receita");
-
-                foreach (LinhaProdutoVendido linha in ultimoRelatorio.Produtos)
-                {
-                    csv.AppendLine(
-                        string.Join(
-                            ";",
-                            dadossistema.CampoCsv(linha.Produto),
-                            linha.Quantidade.ToString("N2", culturaBrasil),
-                            linha.Receita.ToString("N2", culturaBrasil)
-                        )
-                    );
-                }
-
-                csv.AppendLine();
-
-                csv.AppendLine("Formas de pagamento");
-                csv.AppendLine("Forma de pagamento;Valor");
-
-                foreach (LinhaFormaPagamento linha in ultimoRelatorio.Formas)
-                {
-                    csv.AppendLine(
-                        string.Join(
-                            ";",
-                            dadossistema.CampoCsv(linha.Forma),
-                            linha.Valor.ToString("N2", culturaBrasil)
-                        )
-                    );
-                }
-
-                File.WriteAllText(
-                    janela.FileName,
-                    csv.ToString(),
-                    new UTF8Encoding(true));
-
-                MessageBox.Show(
-                    "Relatório exportado com sucesso.",
-                    "Sucesso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                return;
             }
+
+            try
+            {
+                if (pdf)
+                {
+                    GerarPdfVendas(caminho);
+                }
+                else
+                {
+                    GerarCsvVendas(caminho);
+                }
+            }
+            catch (IOException)
+            {
+                ExportacaoRelatorio.AvisarFalhaAoSalvar();
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                ExportacaoRelatorio.AvisarFalhaAoSalvar();
+                return;
+            }
+
+            ExportacaoRelatorio.Concluir(caminho);
         }
 
+        private string Moeda(decimal valor)
+        {
+            return "R$ " + valor.ToString("N2", culturaBrasil);
+        }
+
+        private void GerarPdfVendas(string caminho)
+        {
+            ResumoVendas resumo = ultimoRelatorio.Resumo;
+
+            RelatorioPdf relatorio = new RelatorioPdf(
+                "Relatório de vendas",
+                false,
+                FiltrosAplicados());
+
+            relatorio.AdicionarResumo(
+                "Resumo",
+                new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>(
+                        "Vendas",
+                        resumo.QuantidadeVendas.ToString()),
+                    new KeyValuePair<string, string>(
+                        "Faturamento",
+                        Moeda(resumo.Faturamento)),
+                    new KeyValuePair<string, string>(
+                        "Recebido",
+                        Moeda(resumo.Recebido)),
+                    new KeyValuePair<string, string>(
+                        "Em Notinha",
+                        Moeda(resumo.EmNotinha)),
+                    new KeyValuePair<string, string>(
+                        "Ticket médio",
+                        Moeda(resumo.TicketMedio))
+                });
+
+            List<string[]> linhasFormas = new List<string[]>();
+
+            foreach (LinhaFormaPagamento linha in ultimoRelatorio.Formas)
+            {
+                linhasFormas.Add(
+                    new string[]
+                    {
+                        linha.Forma,
+                        linha.Valor.ToString("N2", culturaBrasil)
+                    }
+                );
+            }
+
+            relatorio.AdicionarTabela(
+                "Formas de pagamento",
+                new List<ColunaPdf>
+                {
+                    new ColunaPdf("Forma de pagamento", 4.0),
+                    new ColunaPdf("Valor (R$)", 2.0, true)
+                },
+                linhasFormas,
+                new string[]
+                {
+                    "Total",
+                    ultimoRelatorio.Formas.Sum(f => f.Valor)
+                        .ToString("N2", culturaBrasil)
+                });
+
+            List<string[]> linhasProdutos = new List<string[]>();
+
+            foreach (LinhaProdutoVendido linha in ultimoRelatorio.Produtos)
+            {
+                linhasProdutos.Add(
+                    new string[]
+                    {
+                        linha.Produto,
+                        linha.Quantidade.ToString("N2", culturaBrasil),
+                        linha.Receita.ToString("N2", culturaBrasil)
+                    }
+                );
+            }
+
+            relatorio.AdicionarTabela(
+                "Produtos vendidos",
+                new List<ColunaPdf>
+                {
+                    new ColunaPdf("Produto", 4.0),
+                    new ColunaPdf("Quantidade", 1.6, true),
+                    new ColunaPdf("Receita (R$)", 1.8, true)
+                },
+                linhasProdutos,
+                new string[]
+                {
+                    "Total",
+                    ultimoRelatorio.Produtos.Sum(p => p.Quantidade)
+                        .ToString("N2", culturaBrasil),
+                    ultimoRelatorio.Produtos.Sum(p => p.Receita)
+                        .ToString("N2", culturaBrasil)
+                });
+
+            List<string[]> linhasDias = new List<string[]>();
+
+            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+            {
+                linhasDias.Add(
+                    new string[]
+                    {
+                        linha.Dia.ToString("dd/MM/yyyy"),
+                        linha.QuantidadeVendas.ToString(),
+                        linha.Faturamento.ToString("N2", culturaBrasil)
+                    }
+                );
+            }
+
+            relatorio.AdicionarTabela(
+                "Faturamento por dia",
+                new List<ColunaPdf>
+                {
+                    new ColunaPdf("Dia", 2.2),
+                    new ColunaPdf("Vendas", 1.4, true),
+                    new ColunaPdf("Faturamento (R$)", 2.0, true)
+                },
+                linhasDias,
+                new string[]
+                {
+                    "Total",
+                    ultimoRelatorio.PorDia.Sum(d => d.QuantidadeVendas)
+                        .ToString(),
+                    ultimoRelatorio.PorDia.Sum(d => d.Faturamento)
+                        .ToString("N2", culturaBrasil)
+                });
+
+            relatorio.Salvar(caminho);
+        }
+
+        private void GerarCsvVendas(string caminho)
+        {
+            ResumoVendas resumo = ultimoRelatorio.Resumo;
+
+            StringBuilder csv = new StringBuilder();
+
+            csv.AppendLine("Relatório de vendas");
+
+            csv.AppendLine(
+                $"Gerado em;{DateTime.Now:dd/MM/yyyy HH:mm}");
+
+            csv.AppendLine("Filtros aplicados");
+
+            csv.AppendLine(
+                "Período;" + dadossistema.CampoCsv(periodoAplicado));
+
+            csv.AppendLine(
+                "Unidade;" + dadossistema.CampoCsv(unidadeAplicada));
+
+            csv.AppendLine(
+                "Forma de pagamento;" +
+                dadossistema.CampoCsv(formaAplicada));
+
+            csv.AppendLine(
+                "Produto;" + dadossistema.CampoCsv(produtoAplicado));
+
+            csv.AppendLine();
+
+            csv.AppendLine("Resumo");
+
+            csv.AppendLine(
+                $"Vendas;{resumo.QuantidadeVendas}");
+
+            csv.AppendLine(
+                "Faturamento;" +
+                resumo.Faturamento.ToString("N2", culturaBrasil));
+
+            csv.AppendLine(
+                "Recebido;" +
+                resumo.Recebido.ToString("N2", culturaBrasil));
+
+            csv.AppendLine(
+                "Em Notinha;" +
+                resumo.EmNotinha.ToString("N2", culturaBrasil));
+
+            csv.AppendLine(
+                "Ticket médio;" +
+                resumo.TicketMedio.ToString("N2", culturaBrasil));
+
+            csv.AppendLine();
+
+            csv.AppendLine("Faturamento por dia");
+            csv.AppendLine("Dia;Vendas;Faturamento");
+
+            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+            {
+                csv.AppendLine(
+                    string.Join(
+                        ";",
+                        linha.Dia.ToString("dd/MM/yyyy"),
+                        linha.QuantidadeVendas,
+                        linha.Faturamento.ToString("N2", culturaBrasil)
+                    )
+                );
+            }
+
+            csv.AppendLine();
+
+            csv.AppendLine("Produtos vendidos");
+            csv.AppendLine("Produto;Quantidade;Receita");
+
+            foreach (LinhaProdutoVendido linha in ultimoRelatorio.Produtos)
+            {
+                csv.AppendLine(
+                    string.Join(
+                        ";",
+                        dadossistema.CampoCsv(linha.Produto),
+                        linha.Quantidade.ToString("N2", culturaBrasil),
+                        linha.Receita.ToString("N2", culturaBrasil)
+                    )
+                );
+            }
+
+            csv.AppendLine();
+
+            csv.AppendLine("Formas de pagamento");
+            csv.AppendLine("Forma de pagamento;Valor");
+
+            foreach (LinhaFormaPagamento linha in ultimoRelatorio.Formas)
+            {
+                csv.AppendLine(
+                    string.Join(
+                        ";",
+                        dadossistema.CampoCsv(linha.Forma),
+                        linha.Valor.ToString("N2", culturaBrasil)
+                    )
+                );
+            }
+
+            File.WriteAllText(
+                caminho,
+                csv.ToString(),
+                new UTF8Encoding(true));
+        }
         public ucrelatoriovendas()
         {
             InitializeComponent();

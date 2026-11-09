@@ -320,80 +320,156 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            using (SaveFileDialog janela = new SaveFileDialog())
+            bool pdf;
+
+            string caminho =
+                ExportacaoRelatorio.PedirArquivo(
+                    "movimentacoes_estoque",
+                    out pdf);
+
+            if (caminho == null)
             {
-                janela.Filter = "Arquivo CSV (*.csv)|*.csv";
+                return;
+            }
 
-                janela.FileName =
-                    $"movimentacoes_estoque_{DateTime.Now:yyyyMMdd_HHmm}.csv";
-
-                if (janela.ShowDialog() != DialogResult.OK)
+            try
+            {
+                if (pdf)
                 {
-                    return;
+                    GerarPdfMovimentacoes(caminho);
                 }
-
-                StringBuilder csv = new StringBuilder();
-
-                csv.AppendLine(
-                    "Relatório de estoque - Movimentações");
-
-                csv.AppendLine(
-                    $"Gerado em;{DateTime.Now:dd/MM/yyyy HH:mm}");
-
-                csv.AppendLine("Filtros aplicados");
-
-                csv.AppendLine(
-                    "Período;" + dadossistema.CampoCsv(periodoAplicado));
-
-                csv.AppendLine(
-                    "Unidade;" + dadossistema.CampoCsv(unidadeAplicada));
-
-                csv.AppendLine(
-                    "Produto;" + dadossistema.CampoCsv(produtoAplicado));
-
-                csv.AppendLine(
-                    "Tipo;" + tipoAplicado);
-
-                csv.AppendLine();
-
-                csv.AppendLine(
-                    "Data e hora;Produto;Tipo;Quantidade;Saldo após;" +
-                    "Unidade;Responsável;Origem");
-
-                foreach (HistoricoEstoque registro in ultimaConsulta)
+                else
                 {
-                    csv.AppendLine(
-                        string.Join(
-                            ";",
-                            registro.Data.ToString("dd/MM/yyyy HH:mm"),
-                            dadossistema.CampoCsv(registro.Produto),
-                            registro.Tipo.ToString(),
-                            registro.Quantidade.ToString("N2", culturaBrasil),
-                            registro.SaldoApos.ToString("N2", culturaBrasil),
-                            dadossistema.CampoCsv(registro.Unidade),
-                            dadossistema.CampoCsv(registro.Responsavel),
-                            dadossistema.CampoCsv(registro.Origem)
-                        )
-                    );
+                    GerarCsvMovimentacoes(caminho);
                 }
+            }
+            catch (IOException)
+            {
+                ExportacaoRelatorio.AvisarFalhaAoSalvar();
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                ExportacaoRelatorio.AvisarFalhaAoSalvar();
+                return;
+            }
 
-                csv.AppendLine();
+            ExportacaoRelatorio.Concluir(caminho);
+        }
 
-                csv.AppendLine(
-                    $"Total de registros;{ultimaConsulta.Count}");
+        private void GerarPdfMovimentacoes(string caminho)
+        {
+            RelatorioPdf relatorio = new RelatorioPdf(
+                "Relatório de estoque - Movimentações",
+                true,
+                new List<string>
+                {
+                    "Período: " + periodoAplicado,
+                    "Unidade: " + unidadeAplicada,
+                    "Produto: " + produtoAplicado,
+                    "Tipo: " + tipoAplicado
+                });
 
-                File.WriteAllText(
-                    janela.FileName,
-                    csv.ToString(),
-                    new UTF8Encoding(true));
+            List<ColunaPdf> colunas = new List<ColunaPdf>
+            {
+                new ColunaPdf("Data e hora", 2.3),
+                new ColunaPdf("Produto", 3.0),
+                new ColunaPdf("Tipo", 1.5),
+                new ColunaPdf("Quantidade", 1.7, true),
+                new ColunaPdf("Saldo após", 1.7, true),
+                new ColunaPdf("Unidade", 2.6),
+                new ColunaPdf("Responsável", 2.4),
+                new ColunaPdf("Origem", 3.6)
+            };
 
-                MessageBox.Show(
-                    "Relatório exportado com sucesso.",
-                    "Sucesso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
+            List<string[]> linhas = new List<string[]>();
+
+            foreach (HistoricoEstoque registro in ultimaConsulta)
+            {
+                linhas.Add(
+                    new string[]
+                    {
+                        registro.Data.ToString("dd/MM/yyyy HH:mm"),
+                        registro.Produto,
+                        registro.Tipo.ToString(),
+                        registro.Quantidade.ToString("N2", culturaBrasil),
+                        registro.SaldoApos.ToString("N2", culturaBrasil),
+                        registro.Unidade,
+                        registro.Responsavel,
+                        registro.Origem
+                    }
                 );
             }
+
+            relatorio.AdicionarTabela(
+                "Movimentações de estoque",
+                colunas,
+                linhas,
+                new string[]
+                {
+                    $"Total de registros: {ultimaConsulta.Count}",
+                    "", "", "", "", "", "", ""
+                });
+
+            relatorio.Salvar(caminho);
+        }
+
+        private void GerarCsvMovimentacoes(string caminho)
+        {
+            StringBuilder csv = new StringBuilder();
+
+            csv.AppendLine(
+                "Relatório de estoque - Movimentações");
+
+            csv.AppendLine(
+                $"Gerado em;{DateTime.Now:dd/MM/yyyy HH:mm}");
+
+            csv.AppendLine("Filtros aplicados");
+
+            csv.AppendLine(
+                "Período;" + dadossistema.CampoCsv(periodoAplicado));
+
+            csv.AppendLine(
+                "Unidade;" + dadossistema.CampoCsv(unidadeAplicada));
+
+            csv.AppendLine(
+                "Produto;" + dadossistema.CampoCsv(produtoAplicado));
+
+            csv.AppendLine(
+                "Tipo;" + tipoAplicado);
+
+            csv.AppendLine();
+
+            csv.AppendLine(
+                "Data e hora;Produto;Tipo;Quantidade;Saldo após;" +
+                "Unidade;Responsável;Origem");
+
+            foreach (HistoricoEstoque registro in ultimaConsulta)
+            {
+                csv.AppendLine(
+                    string.Join(
+                        ";",
+                        registro.Data.ToString("dd/MM/yyyy HH:mm"),
+                        dadossistema.CampoCsv(registro.Produto),
+                        registro.Tipo.ToString(),
+                        registro.Quantidade.ToString("N2", culturaBrasil),
+                        registro.SaldoApos.ToString("N2", culturaBrasil),
+                        dadossistema.CampoCsv(registro.Unidade),
+                        dadossistema.CampoCsv(registro.Responsavel),
+                        dadossistema.CampoCsv(registro.Origem)
+                    )
+                );
+            }
+
+            csv.AppendLine();
+
+            csv.AppendLine(
+                $"Total de registros;{ultimaConsulta.Count}");
+
+            File.WriteAllText(
+                caminho,
+                csv.ToString(),
+                new UTF8Encoding(true));
         }
     }
 }

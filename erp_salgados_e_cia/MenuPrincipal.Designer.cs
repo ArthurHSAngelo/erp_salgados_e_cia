@@ -42,6 +42,7 @@
             this.bacaixa = new erp_salgados_e_cia.botaoarredondado();
             this.baestoque = new erp_salgados_e_cia.botaoarredondado();
             this.panelestoque = new System.Windows.Forms.Panel();
+            this.binventario = new System.Windows.Forms.Button();
             this.bperdas = new System.Windows.Forms.Button();
             this.bmovimentoestoque = new System.Windows.Forms.Button();
             this.bacadastros = new erp_salgados_e_cia.botaoarredondado();
@@ -64,7 +65,6 @@
             this.tsmunidade = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmsair = new System.Windows.Forms.ToolStripMenuItem();
-            this.binventario = new System.Windows.Forms.Button();
             this.pnlmenu.SuspendLayout();
             this.flpmenu.SuspendLayout();
             this.pvendas.SuspendLayout();
@@ -298,6 +298,22 @@
             this.panelestoque.Size = new System.Drawing.Size(260, 137);
             this.panelestoque.TabIndex = 19;
             this.panelestoque.Visible = false;
+            // 
+            // binventario
+            // 
+            this.binventario.BackColor = System.Drawing.Color.White;
+            this.binventario.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.binventario.FlatAppearance.BorderSize = 0;
+            this.binventario.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.binventario.ForeColor = System.Drawing.Color.DarkOrange;
+            this.binventario.Location = new System.Drawing.Point(2, 90);
+            this.binventario.Name = "binventario";
+            this.binventario.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.binventario.Size = new System.Drawing.Size(248, 35);
+            this.binventario.TabIndex = 5;
+            this.binventario.Text = "● Inventário";
+            this.binventario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.binventario.UseVisualStyleBackColor = false;
             // 
             // bperdas
             // 
@@ -616,22 +632,6 @@
             this.tsmsair.Name = "tsmsair";
             this.tsmsair.Size = new System.Drawing.Size(215, 24);
             this.tsmsair.Text = "Sair";
-            // 
-            // binventario
-            // 
-            this.binventario.BackColor = System.Drawing.Color.White;
-            this.binventario.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.binventario.FlatAppearance.BorderSize = 0;
-            this.binventario.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
-            this.binventario.ForeColor = System.Drawing.Color.DarkOrange;
-            this.binventario.Location = new System.Drawing.Point(2, 90);
-            this.binventario.Name = "binventario";
-            this.binventario.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.binventario.Size = new System.Drawing.Size(248, 35);
-            this.binventario.TabIndex = 5;
-            this.binventario.Text = "● Inventário";
-            this.binventario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.binventario.UseVisualStyleBackColor = false;
             // 
             // MenuPrincipal
             // 
