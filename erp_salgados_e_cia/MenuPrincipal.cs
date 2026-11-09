@@ -39,7 +39,8 @@ namespace erp_salgados_e_cia
                 baestoque,
                 bacadastros,
                 barelatorios,
-                bausuarios
+                bausuarios,
+                balog
     };
 
             foreach (Button botao in botoes)
@@ -147,6 +148,7 @@ namespace erp_salgados_e_cia
         private ucrelatoriovendas telarelatoriovendas;
         private ucfuncionarios telafuncionarios;
         private ucusuarios telausuarios;
+        private uclogoperacoes telalogoperacoes;
 
         private int alturaPanelRelatorios;
 
@@ -159,6 +161,7 @@ namespace erp_salgados_e_cia
 
             bacadastros.Visible = !atendente;
             bausuarios.Visible = !atendente;
+            balog.Visible = !atendente;
 
             bmovimentacoes.Visible = !atendente;
             brelatoriovendas.Visible = !atendente;
@@ -303,9 +306,21 @@ namespace erp_salgados_e_cia
 
             tela.BringToFront();
         }
+        private void MenuPrincipal_FormClosed(
+            object sender,
+            FormClosedEventArgs e)
+        {
+            if (dadossistema.UsuarioLogado != null)
+            {
+                dadossistema.Sair();
+            }
+        }
+
         public MenuPrincipal()
         {
             InitializeComponent();
+
+            FormClosed += MenuPrincipal_FormClosed;
 
             bapainel.CorHover = Color.FromArgb(255, 165, 0);
             bavendas.CorHover = Color.FromArgb(255, 165, 0);
@@ -324,6 +339,11 @@ namespace erp_salgados_e_cia
             ArredondarBotao(bacadastros, 20);
             ArredondarBotao(barelatorios, 20);
             ArredondarBotao(bausuarios, 20);
+            ArredondarBotao(balog, 20);
+
+            balog.CorHover = Color.FromArgb(255, 165, 0);
+
+            balog.Click += balog_Click;
             ArredondarBotao(bperfil, 20);
 
             bperfil.CorHover = Color.FromArgb(255, 165, 0);
@@ -557,6 +577,22 @@ namespace erp_salgados_e_cia
             telarelatoriovendas.AtualizarTela();
 
             AbrirTela(telarelatoriovendas);
+        }
+
+        private void balog_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            SelecionarBotao(balog);
+
+            if (telalogoperacoes == null)
+            {
+                telalogoperacoes = new uclogoperacoes();
+            }
+
+            telalogoperacoes.AtualizarTela();
+
+            AbrirTela(telalogoperacoes);
         }
 
         private void bausuarios_Click(object sender, EventArgs e)

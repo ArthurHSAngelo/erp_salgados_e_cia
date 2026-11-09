@@ -177,12 +177,123 @@ namespace erp_salgados_e_cia
                     .FirstOrDefault() ??
                 UnidadeAtual;
 
+            RegistrarLog(
+                TipoOperacaoLog.Login,
+                "Usuario",
+                encontrado.Login,
+                $"Unidade de trabalho: {UnidadeAtual}");
+
             return true;
         }
 
         public static void Sair()
         {
+            if (UsuarioLogado != null)
+            {
+                RegistrarLog(
+                    TipoOperacaoLog.Logout,
+                    "Usuario",
+                    UsuarioLogado.Login,
+                    null);
+            }
+
             UsuarioLogado = null;
+        }
+
+        private static List<LogOperacao> registrosLog =
+            new List<LogOperacao>();
+
+        public static void RegistrarLog(
+            TipoOperacaoLog operacao,
+            string tabela,
+            string registro,
+            string detalhes)
+        {
+            registrosLog.Add(
+                new LogOperacao(
+                    registrosLog.Count + 1,
+                    System.DateTime.Now,
+                    UsuarioLogado == null
+                        ? "sistema"
+                        : UsuarioLogado.Login,
+                    operacao,
+                    tabela,
+                    registro,
+                    detalhes
+                )
+            );
+        }
+
+        public static List<string> UsuariosDoLog()
+        {
+            return registrosLog
+                .Select(l => l.Usuario)
+                .Concat(usuarios.Select(u => u.Login))
+                .Distinct()
+                .OrderBy(nome => nome)
+                .ToList();
+        }
+
+        public static List<string> TabelasDoLog()
+        {
+            return registrosLog
+                .Select(l => l.Tabela)
+                .Distinct()
+                .OrderBy(nome => nome)
+                .ToList();
+        }
+
+        public static string Alteracao(
+            string campo,
+            string antes,
+            string depois)
+        {
+            return antes == depois
+                ? null
+                : $"{campo}: {antes} → {depois}";
+        }
+
+        public static string JuntarDetalhes(params string[] partes)
+        {
+            string[] preenchidas =
+                partes
+                .Where(parte => !string.IsNullOrWhiteSpace(parte))
+                .ToArray();
+
+            return preenchidas.Length == 0
+                ? null
+                : string.Join("; ", preenchidas);
+        }
+
+        public static List<LogOperacao> ConsultarLog(
+            System.DateTime? inicio,
+            System.DateTime? fim,
+            string usuario,
+            TipoOperacaoLog? operacao,
+            string tabela)
+        {
+            System.DateTime dataInicial;
+            System.DateTime dataFinal;
+
+            DefinirPeriodoPadrao(
+                inicio,
+                fim,
+                out dataInicial,
+                out dataFinal
+            );
+
+            return registrosLog
+                .Where(l =>
+                    l.DataHora.Date >= dataInicial &&
+                    l.DataHora.Date <= dataFinal &&
+                    (string.IsNullOrEmpty(usuario) ||
+                        l.Usuario == usuario) &&
+                    (operacao == null || l.Operacao == operacao) &&
+                    (string.IsNullOrEmpty(tabela) ||
+                        l.Tabela == tabela))
+                .OrderByDescending(l => l.DataHora)
+                .ThenByDescending(l => l.IdLog)
+                .ToList();
         }
 
         public static int ProximoIdUsuario()

@@ -161,6 +161,25 @@ namespace erp_salgados_e_cia
                     }
                 }
 
+                string registroLog = $"Unidade: {unidadeAtual.Nome}";
+
+                string detalhesLog = dadossistema.JuntarDetalhes(
+                    dadossistema.Alteracao(
+                        "Nome", unidadeAtual.Nome, tbnomeu.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "CNPJ", unidadeAtual.Cnpj, tbcnpju.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "Endereço", unidadeAtual.Endereco, tbenderecou.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "Número", unidadeAtual.Numero, tbnumerou.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "Status",
+                        unidadeAtual.Status.ToString(),
+                        (cbativo.Checked
+                            ? StatusCadastro.Ativo
+                            : StatusCadastro.Inativo).ToString())
+                );
+
                 unidadeAtual.Nome = tbnomeu.Text.Trim();
                 unidadeAtual.Cnpj = tbcnpju.Text.Trim();
                 unidadeAtual.Endereco = tbenderecou.Text.Trim();
@@ -170,6 +189,15 @@ namespace erp_salgados_e_cia
                     cbativo.Checked
                     ? StatusCadastro.Ativo
                     : StatusCadastro.Inativo;
+
+                if (detalhesLog != null)
+                {
+                    dadossistema.RegistrarLog(
+                        TipoOperacaoLog.Alteracao,
+                        "Unidade",
+                        registroLog,
+                        detalhesLog);
+                }
 
                 MessageBox.Show(
                     "Unidade atualizada com sucesso.",
@@ -190,6 +218,12 @@ namespace erp_salgados_e_cia
                 };
 
                 unidades.Add(unidade);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Unidade",
+                    $"Unidade: {unidade.Nome}",
+                    $"CNPJ: {unidade.Cnpj}; Endereço: {unidade.Endereco}, {unidade.Numero}");
 
                 MessageBox.Show(
                     "Unidade salva com sucesso.",
@@ -259,7 +293,15 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            string nomeExcluido = unidadeSelecionada.Nome;
+
             unidades.Remove(unidadeSelecionada);
+
+            dadossistema.RegistrarLog(
+                TipoOperacaoLog.Exclusao,
+                "Unidade",
+                $"Unidade: {nomeExcluido}",
+                null);
 
             AtualizarTabela();
             dgvunidades.Refresh();

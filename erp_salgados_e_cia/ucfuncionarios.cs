@@ -267,6 +267,22 @@ namespace erp_salgados_e_cia
                     }
                 }
 
+                string registroLog =
+                    $"Funcionário: {funcionarioAtual.Nome} ({funcionarioAtual.Unidade})";
+
+                string detalhesLog = dadossistema.JuntarDetalhes(
+                    dadossistema.Alteracao(
+                        "Nome", funcionarioAtual.Nome, nomeDigitado),
+                    dadossistema.Alteracao(
+                        "Unidade", funcionarioAtual.Unidade, unidadeEscolhida),
+                    dadossistema.Alteracao(
+                        "Status",
+                        funcionarioAtual.Status.ToString(),
+                        (cbativo.Checked
+                            ? StatusCadastro.Ativo
+                            : StatusCadastro.Inativo).ToString())
+                );
+
                 funcionarioAtual.Nome = nomeDigitado;
                 funcionarioAtual.Unidade = unidadeEscolhida;
 
@@ -274,6 +290,15 @@ namespace erp_salgados_e_cia
                     cbativo.Checked
                     ? StatusCadastro.Ativo
                     : StatusCadastro.Inativo;
+
+                if (detalhesLog != null)
+                {
+                    dadossistema.RegistrarLog(
+                        TipoOperacaoLog.Alteracao,
+                        "Funcionario",
+                        registroLog,
+                        detalhesLog);
+                }
 
                 MessageBox.Show(
                     "Funcionário atualizado com sucesso.",
@@ -293,6 +318,12 @@ namespace erp_salgados_e_cia
                 };
 
                 funcionarios.Add(funcionario);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Funcionario",
+                    $"Funcionário: {funcionario.Nome} ({funcionario.Unidade})",
+                    null);
 
                 MessageBox.Show(
                     "Funcionário salvo com sucesso.",
@@ -364,7 +395,16 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            string registroExcluido =
+                $"Funcionário: {funcionarioSelecionado.Nome} ({funcionarioSelecionado.Unidade})";
+
             funcionarios.Remove(funcionarioSelecionado);
+
+            dadossistema.RegistrarLog(
+                TipoOperacaoLog.Exclusao,
+                "Funcionario",
+                registroExcluido,
+                null);
 
             AtualizarTabela();
             dgvfuncionarios.Refresh();

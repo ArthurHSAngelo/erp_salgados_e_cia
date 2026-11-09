@@ -174,6 +174,23 @@ namespace erp_salgados_e_cia
                     }
                 }
 
+                string registroLog = $"Fornecedor: {fornecedorAtual.Nome}";
+
+                string detalhesLog = dadossistema.JuntarDetalhes(
+                    dadossistema.Alteracao(
+                        "Nome", fornecedorAtual.Nome, tbnomef.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "CNPJ", fornecedorAtual.Cnpj, tbcnpjf.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "Telefone", fornecedorAtual.Telefone, tbtelefonef.Text.Trim()),
+                    dadossistema.Alteracao(
+                        "Status",
+                        fornecedorAtual.Status.ToString(),
+                        (cbativo.Checked
+                            ? StatusCadastro.Ativo
+                            : StatusCadastro.Inativo).ToString())
+                );
+
                 fornecedorAtual.Nome = tbnomef.Text.Trim();
                 fornecedorAtual.Cnpj = tbcnpjf.Text.Trim();
                 fornecedorAtual.Telefone = tbtelefonef.Text.Trim();
@@ -182,6 +199,15 @@ namespace erp_salgados_e_cia
                     cbativo.Checked
                     ? StatusCadastro.Ativo
                     : StatusCadastro.Inativo;
+
+                if (detalhesLog != null)
+                {
+                    dadossistema.RegistrarLog(
+                        TipoOperacaoLog.Alteracao,
+                        "Fornecedor",
+                        registroLog,
+                        detalhesLog);
+                }
 
                 MessageBox.Show(
                     "Fornecedor atualizado com sucesso.",
@@ -201,6 +227,12 @@ namespace erp_salgados_e_cia
                 };
 
                 fornecedores.Add(fornecedor);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Fornecedor",
+                    $"Fornecedor: {fornecedor.Nome}",
+                    $"CNPJ: {fornecedor.Cnpj}; Telefone: {fornecedor.Telefone}");
 
                 MessageBox.Show(
                     "Fornecedor salvo com sucesso.",
@@ -270,7 +302,15 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            string nomeExcluido = fornecedorSelecionado.Nome;
+
             fornecedores.Remove(fornecedorSelecionado);
+
+            dadossistema.RegistrarLog(
+                TipoOperacaoLog.Exclusao,
+                "Fornecedor",
+                $"Fornecedor: {nomeExcluido}",
+                null);
 
             AtualizarTabela();
             dgvfornecedores.Refresh();

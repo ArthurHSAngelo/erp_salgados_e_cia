@@ -410,6 +410,24 @@ namespace erp_salgados_e_cia
                     }
                 }
 
+                string registroLog = $"Usuário: {usuarioAtual.Login}";
+
+                string detalhesLog = dadossistema.JuntarDetalhes(
+                    dadossistema.Alteracao(
+                        "Login", usuarioAtual.Login, loginDigitado),
+                    dadossistema.Alteracao(
+                        "Acesso",
+                        TextoAcesso(usuarioAtual),
+                        cbacesso.SelectedItem.ToString()),
+                    dadossistema.Alteracao(
+                        "Status",
+                        usuarioAtual.Status.ToString(),
+                        (cbativo.Checked
+                            ? StatusCadastro.Ativo
+                            : StatusCadastro.Inativo).ToString()),
+                    alterarSenha ? "Senha redefinida" : null
+                );
+
                 usuarioAtual.Login = loginDigitado;
                 usuarioAtual.Perfil = perfilEscolhido;
                 usuarioAtual.Unidade = unidadeEscolhida;
@@ -423,6 +441,15 @@ namespace erp_salgados_e_cia
                 {
                     usuarioAtual.SenhaHash =
                         dadossistema.GerarHashSenha(tbsenha.Text);
+                }
+
+                if (detalhesLog != null)
+                {
+                    dadossistema.RegistrarLog(
+                        TipoOperacaoLog.Alteracao,
+                        "Usuario",
+                        registroLog,
+                        detalhesLog);
                 }
 
                 MessageBox.Show(
@@ -445,6 +472,12 @@ namespace erp_salgados_e_cia
                 };
 
                 usuarios.Add(usuario);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Usuario",
+                    $"Usuário: {usuario.Login}",
+                    $"Acesso: {cbacesso.SelectedItem}");
 
                 MessageBox.Show(
                     "Usuário salvo com sucesso.",

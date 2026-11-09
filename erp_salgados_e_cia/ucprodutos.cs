@@ -207,6 +207,29 @@ namespace erp_salgados_e_cia
                 }
 
 
+                string registroLog = $"Produto: {produto.Nome}";
+
+                string detalhesLog = dadossistema.JuntarDetalhes(
+                    dadossistema.Alteracao(
+                        "Nome", produto.Nome, tbnomeproduto.Text),
+                    dadossistema.Alteracao(
+                        "Preço", produto.Preco.ToString("N2"), preco.ToString("N2")),
+                    dadossistema.Alteracao(
+                        "Categoria", produto.Categoria, cbcategoria.Text),
+                    dadossistema.Alteracao(
+                        "Unidade de medida", produto.UnidadeMedida, cbunidademedida.Text),
+                    dadossistema.Alteracao(
+                        "Estoque mínimo",
+                        produto.EstoqueMinimo.ToString("N2"),
+                        nudestoqueminimo.Value.ToString("N2")),
+                    dadossistema.Alteracao(
+                        "Status",
+                        produto.Status.ToString(),
+                        (cbativo.Checked
+                            ? StatusCadastro.Ativo
+                            : StatusCadastro.Inativo).ToString())
+                );
+
                 produto.Nome = tbnomeproduto.Text;
                 produto.Preco = preco;
                 produto.Categoria = cbcategoria.Text;
@@ -217,6 +240,15 @@ namespace erp_salgados_e_cia
                     cbativo.Checked
                     ? StatusCadastro.Ativo
                     : StatusCadastro.Inativo;
+
+                if (detalhesLog != null)
+                {
+                    dadossistema.RegistrarLog(
+                        TipoOperacaoLog.Alteracao,
+                        "Produto",
+                        registroLog,
+                        detalhesLog);
+                }
 
                 MessageBox.Show(
                     "Produto atualizado com sucesso.",
@@ -238,6 +270,12 @@ namespace erp_salgados_e_cia
                 };
 
                 produtos.Add(produto);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Produto",
+                    $"Produto: {produto.Nome}",
+                    $"Preço: {produto.Preco:N2}; Categoria: {produto.Categoria}; Unidade de medida: {produto.UnidadeMedida}; Estoque mínimo: {produto.EstoqueMinimo:N2}");
 
                 MessageBox.Show(
                     "Produto cadastrado com sucesso.",
@@ -308,7 +346,15 @@ namespace erp_salgados_e_cia
 
             if (produtoSelecionado != null)
             {
+                string nomeExcluido = produtoSelecionado.Nome;
+
                 produtos.Remove(produtoSelecionado);
+
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Exclusao,
+                    "Produto",
+                    $"Produto: {nomeExcluido}",
+                    null);
 
                 AtualizarTabela();
                 dgvprodutos.Refresh();

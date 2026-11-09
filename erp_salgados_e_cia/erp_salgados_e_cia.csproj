@@ -130,6 +130,12 @@
     <Compile Include="uchistoricovendas.Designer.cs">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
     </Compile>
+    <Compile Include="uclogoperacoes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uclogoperacoes.Designer.cs">
+      <DependentUpon>uclogoperacoes.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucmovimentacoes.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -181,6 +187,7 @@
     <Compile Include="Unidade.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Funcionario.cs" />
+    <Compile Include="LogOperacao.cs" />
     <Compile Include="venda.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="uchistoricovendas.resx">
       <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uclogoperacoes.resx">
+      <DependentUpon>uclogoperacoes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucmovimentacoes.resx">
       <DependentUpon>ucmovimentacoes.cs</DependentUpon>

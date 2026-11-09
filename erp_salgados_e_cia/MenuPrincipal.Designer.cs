@@ -40,6 +40,7 @@
             this.panelestoque = new System.Windows.Forms.Panel();
             this.bmovimentoestoque = new System.Windows.Forms.Button();
             this.panelCadastros = new System.Windows.Forms.Panel();
+            this.bfuncionarios = new System.Windows.Forms.Button();
             this.panelrelatorios = new System.Windows.Forms.Panel();
             this.brelatoriovendas = new System.Windows.Forms.Button();
             this.bestoquecompleto = new System.Windows.Forms.Button();
@@ -61,7 +62,7 @@
             this.bausuarios = new erp_salgados_e_cia.botaoarredondado();
             this.baclientes = new erp_salgados_e_cia.botaoarredondado();
             this.bperfil = new erp_salgados_e_cia.botaoarredondado();
-            this.bfuncionarios = new System.Windows.Forms.Button();
+            this.balog = new erp_salgados_e_cia.botaoarredondado();
             this.pnlmenu.SuspendLayout();
             this.flpmenu.SuspendLayout();
             this.pvendas.SuspendLayout();
@@ -152,6 +153,7 @@
             this.flpmenu.Controls.Add(this.panelrelatorios);
             this.flpmenu.Controls.Add(this.bausuarios);
             this.flpmenu.Controls.Add(this.baclientes);
+            this.flpmenu.Controls.Add(this.balog);
             this.flpmenu.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpmenu.Location = new System.Drawing.Point(0, 79);
             this.flpmenu.Name = "flpmenu";
@@ -231,6 +233,20 @@
             this.panelCadastros.Size = new System.Drawing.Size(260, 178);
             this.panelCadastros.TabIndex = 18;
             this.panelCadastros.Visible = false;
+            // 
+            // bfuncionarios
+            // 
+            this.bfuncionarios.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bfuncionarios.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.bfuncionarios.ForeColor = System.Drawing.Color.DarkOrange;
+            this.bfuncionarios.Location = new System.Drawing.Point(3, 132);
+            this.bfuncionarios.Name = "bfuncionarios";
+            this.bfuncionarios.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.bfuncionarios.Size = new System.Drawing.Size(250, 35);
+            this.bfuncionarios.TabIndex = 3;
+            this.bfuncionarios.Text = "● Funcionários";
+            this.bfuncionarios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.bfuncionarios.UseVisualStyleBackColor = true;
             // 
             // panelrelatorios
             // 
@@ -558,19 +574,27 @@
             this.bperfil.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.bperfil.UseVisualStyleBackColor = false;
             // 
-            // bfuncionarios
+            // balog
             // 
-            this.bfuncionarios.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bfuncionarios.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
-            this.bfuncionarios.ForeColor = System.Drawing.Color.DarkOrange;
-            this.bfuncionarios.Location = new System.Drawing.Point(3, 132);
-            this.bfuncionarios.Name = "bfuncionarios";
-            this.bfuncionarios.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.bfuncionarios.Size = new System.Drawing.Size(250, 35);
-            this.bfuncionarios.TabIndex = 3;
-            this.bfuncionarios.Text = "● Funcionários";
-            this.bfuncionarios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bfuncionarios.UseVisualStyleBackColor = true;
+            this.balog.BackColor = System.Drawing.Color.DarkOrange;
+            this.balog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.balog.CorHover = System.Drawing.Color.Empty;
+            this.balog.FlatAppearance.BorderSize = 0;
+            this.balog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.balog.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.balog.ForeColor = System.Drawing.Color.White;
+            this.balog.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.balog.Location = new System.Drawing.Point(20, 899);
+            this.balog.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.balog.Name = "balog";
+            this.balog.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.balog.raio = 25;
+            this.balog.Size = new System.Drawing.Size(250, 45);
+            this.balog.TabIndex = 22;
+            this.balog.Text = "Log de operações";
+            this.balog.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.balog.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.balog.UseVisualStyleBackColor = false;
             // 
             // MenuPrincipal
             // 
@@ -630,5 +654,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tsmsair;
         private System.Windows.Forms.Button bfuncionarios;
+        private botaoarredondado balog;
     }
 }
