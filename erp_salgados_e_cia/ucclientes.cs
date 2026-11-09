@@ -329,6 +329,12 @@ namespace erp_salgados_e_cia
                     }
                 );
 
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "AbatimentoNotinha",
+                    $"Cliente {cliente.IdCliente}: {cliente.Nome}",
+                    $"Valor: {valorAbatido:N2}; Forma: {pagamento.FormaPagamento}; Caixa {caixaAberto.IdCaixa}");
+
                 restante -= valorAbatido;
             }
 

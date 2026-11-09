@@ -292,6 +292,12 @@ namespace erp_salgados_e_cia
             {
                 movimentacoes.Add(item);
 
+                dadossistema.RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "MovimentoEstoque",
+                    $"Entrada: {item.Produto}",
+                    $"Quantidade: {item.Quantidade:N2}; Custo unitário: {item.CustoUnitario:N2}; Fornecedor: {item.Fornecedor}; Responsável: {item.Responsavel}; Unidade: {item.Unidade}");
+
                 Produto produto =
                     dadossistema.produtos.FirstOrDefault(p =>
                         p.Nome == item.Produto);

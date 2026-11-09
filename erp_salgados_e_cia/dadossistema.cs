@@ -224,6 +224,32 @@ namespace erp_salgados_e_cia
             );
         }
 
+        public static void RegistrarLogVenda(Venda venda)
+        {
+            Caixa caixaDaVenda =
+                caixas.FirstOrDefault(c =>
+                    c.IdCaixa == venda.IdCaixa);
+
+            RegistrarLog(
+                TipoOperacaoLog.Inclusao,
+                "Venda",
+                $"Venda {venda.IdVenda}",
+                JuntarDetalhes(
+                    $"Total: {venda.ValorTotal:N2}",
+                    $"Pagamento: {venda.FormaPagamento}",
+                    venda.NumeroMesa == 0
+                        ? "Balcão"
+                        : $"Mesa {venda.NumeroMesa}",
+                    venda.IdCliente == null
+                        ? null
+                        : $"Cliente {venda.IdCliente}",
+                    caixaDaVenda == null
+                        ? null
+                        : $"Caixa {caixaDaVenda.IdCaixa} (responsável: {caixaDaVenda.Responsavel})"
+                )
+            );
+        }
+
         public static List<string> UsuariosDoLog()
         {
             return registrosLog
@@ -667,6 +693,12 @@ namespace erp_salgados_e_cia
             venda.MotivoCancelamento = motivo.Trim();
             venda.CanceladaPor = autorizadoPor;
             venda.DataCancelamento = System.DateTime.Now;
+
+            RegistrarLog(
+                TipoOperacaoLog.Alteracao,
+                "Venda",
+                $"Venda {venda.IdVenda}",
+                $"Status: Concluída → Cancelada; Motivo: {venda.MotivoCancelamento}; Autorizado por: {autorizadoPor}; Total: {venda.ValorTotal:N2}");
 
             return true;
         }

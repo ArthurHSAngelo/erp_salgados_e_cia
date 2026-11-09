@@ -553,6 +553,8 @@ namespace erp_salgados_e_cia
 
             dadossistema.vendas.Add(vendaBalcao);
 
+            dadossistema.RegistrarLogVenda(vendaBalcao);
+
             dadossistema.LancarNotinhaDaVenda(vendaBalcao);
 
             LimparPedido();
@@ -642,6 +644,8 @@ namespace erp_salgados_e_cia
             );
 
             dadossistema.vendas.Add(vendaComanda);
+
+            dadossistema.RegistrarLogVenda(vendaComanda);
 
             dadossistema.LancarNotinhaDaVenda(vendaComanda);
 
