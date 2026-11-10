@@ -63,11 +63,15 @@ namespace erp_salgados_e_cia
                 dgvprodutos.Columns["EstoqueMinimo"].HeaderText =
                     "Estoque mínimo";
 
+                dgvprodutos.Columns["EstoqueAtual"].HeaderText =
+                    "Estoque atual";
+
                 dgvprodutos.Columns["Nome"].DisplayIndex = 0;
                 dgvprodutos.Columns["Preco"].DisplayIndex = 1;
                 dgvprodutos.Columns["Categoria"].DisplayIndex = 2;
                 dgvprodutos.Columns["UnidadeMedida"].DisplayIndex = 3;
                 dgvprodutos.Columns["EstoqueMinimo"].DisplayIndex = 4;
+                dgvprodutos.Columns["EstoqueAtual"].DisplayIndex = 5;
 
                 dgvprodutos.Columns["Preco"]
                     .DefaultCellStyle.Format = "N2";

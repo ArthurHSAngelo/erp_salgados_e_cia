@@ -175,6 +175,12 @@
     <Compile Include="ucfornecedores.Designer.cs">
       <DependentUpon>ucfornecedores.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucpainel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucpainel.Designer.cs">
+      <DependentUpon>ucpainel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucperdas.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -217,6 +223,7 @@
     <Compile Include="LogOperacao.cs" />
     <Compile Include="Perda.cs" />
     <Compile Include="Inventario.cs" />
+    <Compile Include="DadosPainel.cs" />
     <Compile Include="RelatorioPdf.cs" />
     <Compile Include="ExportacaoRelatorio.cs" />
     <Compile Include="venda.cs" />
@@ -274,6 +281,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucfornecedores.resx">
       <DependentUpon>ucfornecedores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucpainel.resx">
+      <DependentUpon>ucpainel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucperdas.resx">
       <DependentUpon>ucperdas.cs</DependentUpon>

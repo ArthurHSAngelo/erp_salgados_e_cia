@@ -153,6 +153,7 @@ namespace erp_salgados_e_cia
         private ucfuncionarios telafuncionarios;
         private ucperdas telaperdas;
         private ucinventario telainventario;
+        private ucpainel telapainel;
         private ucusuarios telausuarios;
         private uclogoperacoes telalogoperacoes;
 
@@ -199,7 +200,7 @@ namespace erp_salgados_e_cia
 
             FecharSubMenus();
 
-            SelecionarBotao(bapainel);
+            AbrirPainel();
         }
 
         private void TrocarUnidadeTrabalho(string nomeUnidade)
@@ -374,7 +375,7 @@ namespace erp_salgados_e_cia
 
             AplicarPerfil();
 
-            SelecionarBotao(bapainel);
+            AbrirPainel();
         }
 
         private void bprodutos_Click(object sender, EventArgs e)
@@ -515,11 +516,68 @@ namespace erp_salgados_e_cia
             }
         }
 
+        private void AbrirPainel()
+        {
+            SelecionarBotao(bapainel);
+
+            if (telapainel == null)
+            {
+                telapainel = new ucpainel();
+
+                telapainel.Navegar += NavegarDoPainel;
+            }
+
+            AbrirTela(telapainel);
+        }
+
+        private void NavegarDoPainel(string destino)
+        {
+            switch (destino)
+            {
+                case "caixa":
+                    bacaixa_Click(this, EventArgs.Empty);
+                    break;
+
+                case "vendas":
+                    if (dadossistema.LoginEhDeAtendente)
+                    {
+                        SelecionarBotao(bavendas);
+                        bhistoricovendas_Click(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        SelecionarBotao(barelatorios);
+                        brelatoriovendas_Click(this, EventArgs.Empty);
+                    }
+
+                    break;
+
+                case "estoquecritico":
+                    SelecionarBotao(barelatorios);
+                    bestoquecompleto_Click(this, EventArgs.Empty);
+                    telaestoquecompleto.DefinirSomenteCriticos();
+                    break;
+
+                case "notinha":
+                    bclientes_Click(this, EventArgs.Empty);
+                    break;
+
+                case "ultimasvendas":
+                    SelecionarBotao(bavendas);
+                    bhistoricovendas_Click(this, EventArgs.Empty);
+                    break;
+
+                case "log":
+                    balog_Click(this, EventArgs.Empty);
+                    break;
+            }
+        }
+
         private void bapainel_Click(object sender, EventArgs e)
         {
             FecharSubMenus();
 
-            SelecionarBotao(bapainel);
+            AbrirPainel();
         }
 
         private void bacaixa_Click(object sender, EventArgs e)

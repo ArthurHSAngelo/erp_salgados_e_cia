@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lunidadedemedida = new System.Windows.Forms.Label();
             this.cbunidademedida = new System.Windows.Forms.ComboBox();
             this.nudestoqueminimo = new System.Windows.Forms.NumericUpDown();
@@ -45,8 +47,8 @@
             this.cbativo = new System.Windows.Forms.CheckBox();
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lregistrodeprodutos = new System.Windows.Forms.Label();
             this.ldicaedicao = new System.Windows.Forms.Label();
+            this.lregistrodeprodutos = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudestoqueminimo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.panel1.SuspendLayout();
@@ -153,8 +155,28 @@
             // 
             this.dgvprodutos.AllowUserToAddRows = false;
             this.dgvprodutos.AllowUserToDeleteRows = false;
+            this.dgvprodutos.AllowUserToResizeColumns = false;
+            this.dgvprodutos.AllowUserToResizeRows = false;
+            this.dgvprodutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dgvprodutos.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dgvprodutos.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvprodutos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvprodutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvprodutos.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvprodutos.Location = new System.Drawing.Point(36, 286);
             this.dgvprodutos.MultiSelect = false;
             this.dgvprodutos.Name = "dgvprodutos";
@@ -274,7 +296,6 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
-            this.panel1.Controls.Add(this.ldicaedicao);
             this.panel1.Controls.Add(this.tbnomeproduto);
             this.panel1.Controls.Add(this.lproduto);
             this.panel1.Controls.Add(this.beditar);
@@ -294,6 +315,18 @@
             this.panel1.Size = new System.Drawing.Size(2445, 178);
             this.panel1.TabIndex = 30;
             // 
+            // ldicaedicao
+            // 
+            this.ldicaedicao.AutoSize = true;
+            this.ldicaedicao.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ldicaedicao.ForeColor = System.Drawing.Color.Firebrick;
+            this.ldicaedicao.Location = new System.Drawing.Point(31, 209);
+            this.ldicaedicao.Name = "ldicaedicao";
+            this.ldicaedicao.Size = new System.Drawing.Size(456, 28);
+            this.ldicaedicao.TabIndex = 32;
+            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
+            this.ldicaedicao.Visible = false;
+            // 
             // lregistrodeprodutos
             // 
             this.lregistrodeprodutos.AutoSize = true;
@@ -304,21 +337,12 @@
             this.lregistrodeprodutos.TabIndex = 31;
             this.lregistrodeprodutos.Text = "Registro de produtos:";
             // 
-            // ldicaedicao
-            // 
-            this.ldicaedicao.AutoSize = true;
-            this.ldicaedicao.Location = new System.Drawing.Point(1688, 35);
-            this.ldicaedicao.Name = "ldicaedicao";
-            this.ldicaedicao.Size = new System.Drawing.Size(298, 16);
-            this.ldicaedicao.TabIndex = 32;
-            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
-            this.ldicaedicao.Visible = false;
-            // 
             // ucprodutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.ldicaedicao);
             this.Controls.Add(this.lregistrodeprodutos);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.cbfiltrostatus);

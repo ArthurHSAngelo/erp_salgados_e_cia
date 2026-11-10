@@ -534,6 +534,120 @@ namespace erp_salgados_e_cia
             return true;
         }
 
+        public static DadosPainel MontarPainel(
+            string unidade,
+            bool incluirAtividade)
+        {
+            DadosPainel painel = new DadosPainel
+            {
+                Unidade = unidade
+            };
+
+            Caixa caixa =
+                caixas.FirstOrDefault(c =>
+                    c.Unidade == unidade &&
+                    c.Status == "Aberto") ??
+                caixas.FirstOrDefault(c =>
+                    c.Unidade == unidade &&
+                    c.DataAbertura.Date == System.DateTime.Today);
+
+            if (caixa != null)
+            {
+                painel.CaixaAberto = caixa.Status == "Aberto";
+
+                painel.StatusCaixa =
+                    painel.CaixaAberto
+                    ? "Aberto"
+                    : "Fechado";
+
+                painel.ResponsavelCaixa = caixa.Responsavel;
+                painel.AberturaCaixa = caixa.DataAbertura;
+                painel.ValorInicialCaixa = caixa.ValorInicial;
+                painel.DinheiroEsperado = caixa.DinheiroEsperado;
+            }
+
+            ResumoVendas resumo =
+                GerarRelatorioVendas(
+                    System.DateTime.Today,
+                    System.DateTime.Today,
+                    unidade,
+                    null,
+                    null).Resumo;
+
+            painel.VendasHoje = resumo.QuantidadeVendas;
+            painel.FaturamentoHoje = resumo.Faturamento;
+            painel.TicketMedioHoje = resumo.TicketMedio;
+            painel.EmNotinhaHoje = resumo.EmNotinha;
+
+            List<LinhaEstoque> criticos =
+                MontarRelatorioEstoque()
+                .Where(l =>
+                    l.Situacao == "Crítico" &&
+                    l.Status == StatusCadastro.Ativo.ToString())
+                .OrderBy(l => l.EstoqueAtual - l.EstoqueMinimo)
+                .ThenBy(l => l.Produto)
+                .ToList();
+
+            painel.TotalCriticos = criticos.Count;
+
+            painel.Criticos =
+                criticos
+                .Take(5)
+                .Select(l => new LinhaCriticoPainel
+                {
+                    Produto = l.Produto,
+                    Saldo = l.EstoqueAtual,
+                    Minimo = l.EstoqueMinimo
+                })
+                .ToList();
+
+            foreach (Cliente cliente in clientes)
+            {
+                decimal saldo = SaldoNotinha(cliente.IdCliente);
+
+                if (saldo > 0)
+                {
+                    painel.NotinhaTotal += saldo;
+                    painel.NotinhaClientes++;
+                }
+            }
+
+            painel.UltimasVendas =
+                vendas
+                .Where(v =>
+                    caixas.Any(c =>
+                        c.IdCaixa == v.IdCaixa &&
+                        c.Unidade == unidade))
+                .OrderByDescending(v => v.DataHora)
+                .ThenByDescending(v => v.IdVenda)
+                .Take(5)
+                .Select(v => new LinhaVendaPainel
+                {
+                    Venda = v.IdVenda,
+                    DataHora = v.DataHora,
+                    Total = v.ValorTotal,
+                    Status = v.Status
+                })
+                .ToList();
+
+            if (incluirAtividade)
+            {
+                painel.Atividade =
+                    ConsultarLog(null, null, null, null, null)
+                    .Take(5)
+                    .Select(l => new LinhaAtividadePainel
+                    {
+                        DataHora = l.DataHora,
+                        Usuario = l.Usuario,
+                        Operacao = l.OperacaoTexto,
+                        Registro = l.Registro
+                    })
+                    .ToList();
+            }
+
+            return painel;
+        }
+
         public static List<string> UsuariosDoLog()
         {
             return registrosLog

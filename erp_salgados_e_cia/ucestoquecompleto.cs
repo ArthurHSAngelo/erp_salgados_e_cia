@@ -250,6 +250,26 @@ namespace erp_salgados_e_cia
             AtualizarTabela();
         }
 
+        public void DefinirSomenteCriticos()
+        {
+            carregandoFiltros = true;
+
+            tbfiltroproduto.Clear();
+
+            if (cbfiltrocategoria.Items.Count > 0)
+            {
+                cbfiltrocategoria.SelectedIndex = 0;
+            }
+
+            cbfiltrostatus.SelectedItem = "Ativos";
+
+            cbfiltrocriticos.Checked = true;
+
+            carregandoFiltros = false;
+
+            AtualizarTabela();
+        }
+
         private void FiltroAlterado(object sender, EventArgs e)
         {
             if (carregandoFiltros)
