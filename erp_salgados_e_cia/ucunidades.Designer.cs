@@ -42,6 +42,7 @@
             this.lcnpju = new System.Windows.Forms.Label();
             this.cbativo = new System.Windows.Forms.CheckBox();
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
+            this.ldicaedicao = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).BeginInit();
             this.SuspendLayout();
             // 
@@ -175,10 +176,21 @@
             this.cbfiltrostatus.Size = new System.Drawing.Size(121, 24);
             this.cbfiltrostatus.TabIndex = 22;
             // 
+            // ldicaedicao
+            // 
+            this.ldicaedicao.AutoSize = true;
+            this.ldicaedicao.Location = new System.Drawing.Point(1109, 173);
+            this.ldicaedicao.Name = "ldicaedicao";
+            this.ldicaedicao.Size = new System.Drawing.Size(298, 16);
+            this.ldicaedicao.TabIndex = 29;
+            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
+            this.ldicaedicao.Visible = false;
+            // 
             // ucunidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ldicaedicao);
             this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.cbativo);
             this.Controls.Add(this.tbcnpju);
@@ -217,5 +229,6 @@
         private System.Windows.Forms.Label lcnpju;
         private System.Windows.Forms.CheckBox cbativo;
         private System.Windows.Forms.ComboBox cbfiltrostatus;
+        private System.Windows.Forms.Label ldicaedicao;
     }
 }

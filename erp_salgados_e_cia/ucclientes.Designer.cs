@@ -45,6 +45,7 @@
             this.lsaldonotinha = new System.Windows.Forms.Label();
             this.lsemclientenotinha = new System.Windows.Forms.Label();
             this.bpagarnotinha = new System.Windows.Forms.Button();
+            this.ldicaedicao = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvclientes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvhistoriconotinha)).BeginInit();
             this.SuspendLayout();
@@ -218,10 +219,21 @@
             this.bpagarnotinha.UseVisualStyleBackColor = true;
             this.bpagarnotinha.Click += new System.EventHandler(this.bpagarnotinha_Click);
             // 
+            // ldicaedicao
+            // 
+            this.ldicaedicao.AutoSize = true;
+            this.ldicaedicao.Location = new System.Drawing.Point(1047, 146);
+            this.ldicaedicao.Name = "ldicaedicao";
+            this.ldicaedicao.Size = new System.Drawing.Size(298, 16);
+            this.ldicaedicao.TabIndex = 38;
+            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
+            this.ldicaedicao.Visible = false;
+            // 
             // ucclientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ldicaedicao);
             this.Controls.Add(this.bpagarnotinha);
             this.Controls.Add(this.lsemclientenotinha);
             this.Controls.Add(this.dgvhistoriconotinha);
@@ -267,5 +279,6 @@
         private System.Windows.Forms.Label lsaldonotinha;
         private System.Windows.Forms.Label lsemclientenotinha;
         private System.Windows.Forms.Button bpagarnotinha;
+        private System.Windows.Forms.Label ldicaedicao;
     }
 }

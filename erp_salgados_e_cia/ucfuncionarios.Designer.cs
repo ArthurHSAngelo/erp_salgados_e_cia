@@ -38,6 +38,7 @@
             this.beditarfuncionario = new System.Windows.Forms.Button();
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             this.dgvfuncionarios = new System.Windows.Forms.DataGridView();
+            this.ldicaedicao = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvfuncionarios)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,10 +139,21 @@
             this.dgvfuncionarios.Size = new System.Drawing.Size(540, 191);
             this.dgvfuncionarios.TabIndex = 27;
             // 
+            // ldicaedicao
+            // 
+            this.ldicaedicao.AutoSize = true;
+            this.ldicaedicao.Location = new System.Drawing.Point(1348, 228);
+            this.ldicaedicao.Name = "ldicaedicao";
+            this.ldicaedicao.Size = new System.Drawing.Size(298, 16);
+            this.ldicaedicao.TabIndex = 28;
+            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
+            this.ldicaedicao.Visible = false;
+            // 
             // ucfuncionarios
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ldicaedicao);
             this.Controls.Add(this.dgvfuncionarios);
             this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.beditarfuncionario);
@@ -172,5 +184,6 @@
         private System.Windows.Forms.Button beditarfuncionario;
         private System.Windows.Forms.ComboBox cbfiltrostatus;
         private System.Windows.Forms.DataGridView dgvfuncionarios;
+        private System.Windows.Forms.Label ldicaedicao;
     }
 }

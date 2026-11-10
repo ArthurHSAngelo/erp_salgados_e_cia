@@ -361,6 +361,30 @@ namespace erp_salgados_e_cia
             AtualizarTabela();
         }
 
+        protected override bool ProcessCmdKey(
+            ref Message msg,
+            Keys keyData)
+        {
+            if (keyData == Keys.Escape && modoEdicao)
+            {
+                CancelarEdicao();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void CancelarEdicao()
+        {
+            modoEdicao = false;
+            indiceClienteEditando = -1;
+
+            bsalvarcliente.Text = "Salvar cliente";
+            beditarc.Enabled = true;
+
+            LimparCampos();
+        }
+
         private void LimparCampos()
         {
             tbnomec.Clear();
@@ -368,6 +392,7 @@ namespace erp_salgados_e_cia
             tbtelefonec.Clear();
             cbativo.Checked = true;
             cbativo.Visible = false;
+            ldicaedicao.Visible = false;
 
             tbnomec.Focus();
         }
@@ -663,6 +688,7 @@ namespace erp_salgados_e_cia
             cbativo.Visible = true;
 
             modoEdicao = true;
+            ldicaedicao.Visible = true;
 
             bsalvarcliente.Text = "Atualizar cliente";
             beditarc.Enabled = false;

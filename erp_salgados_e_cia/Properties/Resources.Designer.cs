@@ -183,6 +183,16 @@ namespace erp_salgados_e_cia.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap perfil_branco {
+            get {
+                object obj = ResourceManager.GetObject("perfil_branco", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap relatorios_branco {
             get {
                 object obj = ResourceManager.GetObject("relatorios_branco", resourceCulture);

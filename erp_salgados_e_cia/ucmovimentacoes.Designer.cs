@@ -141,9 +141,9 @@
             // 
             this.bexportarmovimentacoes.Location = new System.Drawing.Point(1576, 49);
             this.bexportarmovimentacoes.Name = "bexportarmovimentacoes";
-            this.bexportarmovimentacoes.Size = new System.Drawing.Size(111, 23);
+            this.bexportarmovimentacoes.Size = new System.Drawing.Size(76, 23);
             this.bexportarmovimentacoes.TabIndex = 11;
-            this.bexportarmovimentacoes.Text = "Exportar CSV";
+            this.bexportarmovimentacoes.Text = "Exportar";
             this.bexportarmovimentacoes.UseVisualStyleBackColor = true;
             // 
             // lperiodoaplicado

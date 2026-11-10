@@ -114,9 +114,9 @@
             // 
             this.bexportarestoque.Location = new System.Drawing.Point(1050, 57);
             this.bexportarestoque.Name = "bexportarestoque";
-            this.bexportarestoque.Size = new System.Drawing.Size(75, 23);
+            this.bexportarestoque.Size = new System.Drawing.Size(92, 23);
             this.bexportarestoque.TabIndex = 7;
-            this.bexportarestoque.Text = "Exportar CSV";
+            this.bexportarestoque.Text = "Exportar";
             this.bexportarestoque.UseVisualStyleBackColor = true;
             // 
             // dgvestoquecompleto

@@ -73,6 +73,30 @@ namespace erp_salgados_e_cia
             AtualizarTabela();
         }
 
+        protected override bool ProcessCmdKey(
+            ref Message msg,
+            Keys keyData)
+        {
+            if (keyData == Keys.Escape && modoEdicao)
+            {
+                CancelarEdicao();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void CancelarEdicao()
+        {
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
+
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
+
+            LimparCampos();
+        }
+
         private void LimparCampos()
         {
             tbnomeu.Clear();
@@ -81,6 +105,7 @@ namespace erp_salgados_e_cia
             tbnumerou.Clear();
             cbativo.Checked = true;
             cbativo.Visible = false;
+            ldicaedicao.Visible = false;
 
             tbnomeu.Focus();
         }
@@ -371,6 +396,7 @@ namespace erp_salgados_e_cia
             cbativo.Visible = true;
 
             modoEdicao = true;
+            ldicaedicao.Visible = true;
 
             bsalvaru.Text = "Atualizar unidade";
             beditaru.Enabled = false;

@@ -354,6 +354,8 @@ namespace erp_salgados_e_cia
             balog.Click += balog_Click;
             ArredondarBotao(bperfil, 20);
 
+            bperfil.Image = Properties.Resources.perfil_branco;
+
             bperfil.CorHover = Color.FromArgb(255, 165, 0);
 
             bperfil.Click += bperfil_Click;
@@ -363,6 +365,8 @@ namespace erp_salgados_e_cia
             bfuncionarios.Click += bfuncionarios_Click;
 
             bperdas.Click += bperdas_Click;
+
+            bnovavenda.Click += bnovavenda_Click;
 
             binventario.Click += binventario_Click;
 
@@ -481,9 +485,9 @@ namespace erp_salgados_e_cia
             AbrirTela(telaperdas);
         }
 
-        private void bavendas_Click(object sender, EventArgs e)
+        private void bnovavenda_Click(object sender, EventArgs e)
         {
-            SelecionarBotao(bavendas);
+            FecharSubMenus();
 
             if (telavendas == null)
             {
@@ -493,6 +497,11 @@ namespace erp_salgados_e_cia
             telavendas.AtualizarCombos();
 
             AbrirTela(telavendas);
+        }
+
+        private void bavendas_Click(object sender, EventArgs e)
+        {
+            SelecionarBotao(bavendas);
 
             bool abrir = !pvendas.Visible;
 

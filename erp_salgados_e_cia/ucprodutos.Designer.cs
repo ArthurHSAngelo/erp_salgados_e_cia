@@ -46,6 +46,7 @@
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lregistrodeprodutos = new System.Windows.Forms.Label();
+            this.ldicaedicao = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudestoqueminimo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.panel1.SuspendLayout();
@@ -273,6 +274,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
+            this.panel1.Controls.Add(this.ldicaedicao);
             this.panel1.Controls.Add(this.tbnomeproduto);
             this.panel1.Controls.Add(this.lproduto);
             this.panel1.Controls.Add(this.beditar);
@@ -301,6 +303,16 @@
             this.lregistrodeprodutos.Size = new System.Drawing.Size(216, 28);
             this.lregistrodeprodutos.TabIndex = 31;
             this.lregistrodeprodutos.Text = "Registro de produtos:";
+            // 
+            // ldicaedicao
+            // 
+            this.ldicaedicao.AutoSize = true;
+            this.ldicaedicao.Location = new System.Drawing.Point(1688, 35);
+            this.ldicaedicao.Name = "ldicaedicao";
+            this.ldicaedicao.Size = new System.Drawing.Size(298, 16);
+            this.ldicaedicao.TabIndex = 32;
+            this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
+            this.ldicaedicao.Visible = false;
             // 
             // ucprodutos
             // 
@@ -342,5 +354,6 @@
         private System.Windows.Forms.ComboBox cbfiltrostatus;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lregistrodeprodutos;
+        private System.Windows.Forms.Label ldicaedicao;
     }
 }

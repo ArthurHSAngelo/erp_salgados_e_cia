@@ -111,6 +111,30 @@ namespace erp_salgados_e_cia
             AtualizarTabela();
         }
 
+        protected override bool ProcessCmdKey(
+            ref Message msg,
+            Keys keyData)
+        {
+            if (keyData == Keys.Escape && modoEdicao)
+            {
+                CancelarEdicao();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void CancelarEdicao()
+        {
+            modoEdicao = false;
+            indiceProdutoEditando = -1;
+
+            bsalvar.Text = "Salvar";
+            beditar.Enabled = true;
+
+            LimparCampos();
+        }
+
         private void LimparCampos()
                 {
                     tbnomeproduto.Clear();
@@ -123,6 +147,7 @@ namespace erp_salgados_e_cia
 
                     cbativo.Checked = true;
                     cbativo.Visible = false;
+            ldicaedicao.Visible = false;
 
                     tbnomeproduto.Focus();
                 }
@@ -420,6 +445,7 @@ namespace erp_salgados_e_cia
             cbativo.Visible = true;
 
             modoEdicao = true;
+            ldicaedicao.Visible = true;
 
             bsalvar.Text = "Atualizar";
             beditar.Enabled = false;
