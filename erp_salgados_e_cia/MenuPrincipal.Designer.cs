@@ -81,7 +81,7 @@
             this.bprodutos.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bprodutos.ForeColor = System.Drawing.Color.DarkOrange;
             this.bprodutos.Location = new System.Drawing.Point(2, 7);
-            this.bprodutos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bprodutos.Margin = new System.Windows.Forms.Padding(2);
             this.bprodutos.Name = "bprodutos";
             this.bprodutos.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bprodutos.Size = new System.Drawing.Size(188, 28);
@@ -97,7 +97,7 @@
             this.bfornecedores.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bfornecedores.ForeColor = System.Drawing.Color.DarkOrange;
             this.bfornecedores.Location = new System.Drawing.Point(2, 41);
-            this.bfornecedores.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bfornecedores.Margin = new System.Windows.Forms.Padding(2);
             this.bfornecedores.Name = "bfornecedores";
             this.bfornecedores.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bfornecedores.Size = new System.Drawing.Size(188, 28);
@@ -113,7 +113,7 @@
             this.bunidades.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bunidades.ForeColor = System.Drawing.Color.DarkOrange;
             this.bunidades.Location = new System.Drawing.Point(2, 74);
-            this.bunidades.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bunidades.Margin = new System.Windows.Forms.Padding(2);
             this.bunidades.Name = "bunidades";
             this.bunidades.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bunidades.Size = new System.Drawing.Size(188, 28);
@@ -127,7 +127,7 @@
             // 
             this.pnltelas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnltelas.Location = new System.Drawing.Point(218, 0);
-            this.pnltelas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnltelas.Margin = new System.Windows.Forms.Padding(2);
             this.pnltelas.Name = "pnltelas";
             this.pnltelas.Size = new System.Drawing.Size(1593, 909);
             this.pnltelas.TabIndex = 3;
@@ -140,7 +140,7 @@
             this.pnlmenu.Controls.Add(this.bperfil);
             this.pnlmenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlmenu.Location = new System.Drawing.Point(0, 0);
-            this.pnlmenu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlmenu.Margin = new System.Windows.Forms.Padding(2);
             this.pnlmenu.Name = "pnlmenu";
             this.pnlmenu.Size = new System.Drawing.Size(218, 909);
             this.pnlmenu.TabIndex = 4;
@@ -165,7 +165,7 @@
             this.flpmenu.Controls.Add(this.balog);
             this.flpmenu.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpmenu.Location = new System.Drawing.Point(0, 64);
-            this.flpmenu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.flpmenu.Margin = new System.Windows.Forms.Padding(2);
             this.flpmenu.Name = "flpmenu";
             this.flpmenu.Padding = new System.Windows.Forms.Padding(15, 4, 0, 4);
             this.flpmenu.Size = new System.Drawing.Size(218, 780);
@@ -239,7 +239,7 @@
             this.bhistoricovendas.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bhistoricovendas.ForeColor = System.Drawing.Color.DarkOrange;
             this.bhistoricovendas.Location = new System.Drawing.Point(2, 40);
-            this.bhistoricovendas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bhistoricovendas.Margin = new System.Windows.Forms.Padding(2);
             this.bhistoricovendas.Name = "bhistoricovendas";
             this.bhistoricovendas.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bhistoricovendas.Size = new System.Drawing.Size(186, 28);
@@ -257,7 +257,7 @@
             this.bnovavenda.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bnovavenda.ForeColor = System.Drawing.Color.DarkOrange;
             this.bnovavenda.Location = new System.Drawing.Point(2, 6);
-            this.bnovavenda.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bnovavenda.Margin = new System.Windows.Forms.Padding(2);
             this.bnovavenda.Name = "bnovavenda";
             this.bnovavenda.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bnovavenda.Size = new System.Drawing.Size(186, 28);
@@ -334,7 +334,7 @@
             this.binventario.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.binventario.ForeColor = System.Drawing.Color.DarkOrange;
             this.binventario.Location = new System.Drawing.Point(2, 73);
-            this.binventario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.binventario.Margin = new System.Windows.Forms.Padding(2);
             this.binventario.Name = "binventario";
             this.binventario.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.binventario.Size = new System.Drawing.Size(186, 28);
@@ -351,7 +351,7 @@
             this.bperdas.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bperdas.ForeColor = System.Drawing.Color.DarkOrange;
             this.bperdas.Location = new System.Drawing.Point(2, 40);
-            this.bperdas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bperdas.Margin = new System.Windows.Forms.Padding(2);
             this.bperdas.Name = "bperdas";
             this.bperdas.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bperdas.Size = new System.Drawing.Size(186, 28);
@@ -368,7 +368,7 @@
             this.bmovimentoestoque.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bmovimentoestoque.ForeColor = System.Drawing.Color.DarkOrange;
             this.bmovimentoestoque.Location = new System.Drawing.Point(2, 6);
-            this.bmovimentoestoque.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bmovimentoestoque.Margin = new System.Windows.Forms.Padding(2);
             this.bmovimentoestoque.Name = "bmovimentoestoque";
             this.bmovimentoestoque.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bmovimentoestoque.Size = new System.Drawing.Size(186, 28);
@@ -421,7 +421,7 @@
             this.bfuncionarios.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bfuncionarios.ForeColor = System.Drawing.Color.DarkOrange;
             this.bfuncionarios.Location = new System.Drawing.Point(2, 107);
-            this.bfuncionarios.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bfuncionarios.Margin = new System.Windows.Forms.Padding(2);
             this.bfuncionarios.Name = "bfuncionarios";
             this.bfuncionarios.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bfuncionarios.Size = new System.Drawing.Size(188, 28);
@@ -472,7 +472,7 @@
             this.brelatoriovendas.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.brelatoriovendas.ForeColor = System.Drawing.Color.DarkOrange;
             this.brelatoriovendas.Location = new System.Drawing.Point(2, 74);
-            this.brelatoriovendas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.brelatoriovendas.Margin = new System.Windows.Forms.Padding(2);
             this.brelatoriovendas.Name = "brelatoriovendas";
             this.brelatoriovendas.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.brelatoriovendas.Size = new System.Drawing.Size(188, 28);
@@ -488,7 +488,7 @@
             this.bestoquecompleto.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bestoquecompleto.ForeColor = System.Drawing.Color.DarkOrange;
             this.bestoquecompleto.Location = new System.Drawing.Point(2, 7);
-            this.bestoquecompleto.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bestoquecompleto.Margin = new System.Windows.Forms.Padding(2);
             this.bestoquecompleto.Name = "bestoquecompleto";
             this.bestoquecompleto.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bestoquecompleto.Size = new System.Drawing.Size(188, 28);
@@ -504,7 +504,7 @@
             this.bmovimentacoes.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
             this.bmovimentacoes.ForeColor = System.Drawing.Color.DarkOrange;
             this.bmovimentacoes.Location = new System.Drawing.Point(2, 41);
-            this.bmovimentacoes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bmovimentacoes.Margin = new System.Windows.Forms.Padding(2);
             this.bmovimentacoes.Name = "bmovimentacoes";
             this.bmovimentacoes.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
             this.bmovimentacoes.Size = new System.Drawing.Size(188, 28);
@@ -676,7 +676,7 @@
             this.ClientSize = new System.Drawing.Size(1811, 909);
             this.Controls.Add(this.pnltelas);
             this.Controls.Add(this.pnlmenu);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MenuPrincipal";
             this.Text = " ";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

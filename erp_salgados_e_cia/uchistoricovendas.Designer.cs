@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvhistoricovendas = new System.Windows.Forms.DataGridView();
             this.lhistoricovendas = new System.Windows.Forms.Label();
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
@@ -39,54 +41,88 @@
             // 
             this.dgvhistoricovendas.AllowUserToAddRows = false;
             this.dgvhistoricovendas.AllowUserToDeleteRows = false;
-            this.dgvhistoricovendas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvhistoricovendas.AllowUserToResizeColumns = false;
+            this.dgvhistoricovendas.AllowUserToResizeRows = false;
+            this.dgvhistoricovendas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dgvhistoricovendas.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvhistoricovendas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvhistoricovendas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvhistoricovendas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvhistoricovendas.Location = new System.Drawing.Point(60, 179);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvhistoricovendas.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvhistoricovendas.Location = new System.Drawing.Point(51, 91);
+            this.dgvhistoricovendas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvhistoricovendas.Name = "dgvhistoricovendas";
             this.dgvhistoricovendas.ReadOnly = true;
             this.dgvhistoricovendas.RowHeadersWidth = 51;
             this.dgvhistoricovendas.RowTemplate.Height = 24;
             this.dgvhistoricovendas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvhistoricovendas.Size = new System.Drawing.Size(2313, 1012);
+            this.dgvhistoricovendas.Size = new System.Drawing.Size(1735, 909);
             this.dgvhistoricovendas.TabIndex = 0;
             // 
             // lhistoricovendas
             // 
             this.lhistoricovendas.AutoSize = true;
-            this.lhistoricovendas.Location = new System.Drawing.Point(67, 146);
+            this.lhistoricovendas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lhistoricovendas.Location = new System.Drawing.Point(47, 66);
+            this.lhistoricovendas.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lhistoricovendas.Name = "lhistoricovendas";
-            this.lhistoricovendas.Size = new System.Drawing.Size(130, 16);
+            this.lhistoricovendas.Size = new System.Drawing.Size(164, 21);
             this.lhistoricovendas.TabIndex = 1;
             this.lhistoricovendas.Text = "Histórico de vendas:";
             // 
             // cbfiltrostatus
             // 
+            this.cbfiltrostatus.BackColor = System.Drawing.Color.White;
             this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbfiltrostatus.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbfiltrostatus.FormattingEnabled = true;
-            this.cbfiltrostatus.Location = new System.Drawing.Point(1007, 91);
+            this.cbfiltrostatus.Location = new System.Drawing.Point(1664, 65);
+            this.cbfiltrostatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbfiltrostatus.Name = "cbfiltrostatus";
-            this.cbfiltrostatus.Size = new System.Drawing.Size(121, 24);
+            this.cbfiltrostatus.Size = new System.Drawing.Size(122, 27);
             this.cbfiltrostatus.TabIndex = 2;
             // 
             // bcancelarvenda
             // 
-            this.bcancelarvenda.Location = new System.Drawing.Point(776, 92);
+            this.bcancelarvenda.BackColor = System.Drawing.Color.White;
+            this.bcancelarvenda.FlatAppearance.BorderSize = 2;
+            this.bcancelarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bcancelarvenda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.bcancelarvenda.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.bcancelarvenda.Location = new System.Drawing.Point(352, 33);
+            this.bcancelarvenda.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bcancelarvenda.Name = "bcancelarvenda";
-            this.bcancelarvenda.Size = new System.Drawing.Size(117, 23);
+            this.bcancelarvenda.Size = new System.Drawing.Size(127, 42);
             this.bcancelarvenda.TabIndex = 3;
             this.bcancelarvenda.Text = "Cancelar venda";
-            this.bcancelarvenda.UseVisualStyleBackColor = true;
+            this.bcancelarvenda.UseVisualStyleBackColor = false;
             // 
             // uchistoricovendas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.Controls.Add(this.bcancelarvenda);
             this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.lhistoricovendas);
             this.Controls.Add(this.dgvhistoricovendas);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "uchistoricovendas";
-            this.Size = new System.Drawing.Size(2445, 1332);
+            this.Size = new System.Drawing.Size(1834, 1082);
             ((System.ComponentModel.ISupportInitialize)(this.dgvhistoricovendas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
