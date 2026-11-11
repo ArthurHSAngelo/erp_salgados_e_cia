@@ -47,6 +47,31 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             }
         }
+        private void ConfigurarColunasItens()
+        {
+            if (dgvitensentrada.Columns.Count == 0)
+            {
+                return;
+            }
+
+            dgvitensentrada.Columns["Produto"].HeaderText = "Produto";
+            dgvitensentrada.Columns["Quantidade"].HeaderText = "Quantidade";
+            dgvitensentrada.Columns["CustoUnitario"].HeaderText = "Custo unitário";
+            dgvitensentrada.Columns["Fornecedor"].HeaderText = "Fornecedor";
+            dgvitensentrada.Columns["Responsavel"].HeaderText = "Responsável";
+            dgvitensentrada.Columns["Unidade"].HeaderText = "Unidade";
+            dgvitensentrada.Columns["DataEntrada"].HeaderText = "Data da entrada";
+
+            dgvitensentrada.Columns["Quantidade"]
+                .DefaultCellStyle.Format = "N2";
+
+            dgvitensentrada.Columns["CustoUnitario"]
+                .DefaultCellStyle.Format = "N2";
+
+            dgvitensentrada.Columns["DataEntrada"]
+                .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+        }
+
         public ucmovimentoestoque()
         {
             InitializeComponent();
@@ -56,6 +81,10 @@ namespace erp_salgados_e_cia
 
             dgvitensentrada.DataSource =
                 fonteItensEntrada;
+
+            ConfigurarColunasItens();
+
+            AtualizarTabela();
 
             AtualizarCombos();
         }

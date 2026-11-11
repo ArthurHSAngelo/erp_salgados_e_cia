@@ -782,5 +782,10 @@ namespace erp_salgados_e_cia
                 EnviarPedidoParaComanda(numeroMesa, idClienteVenda);
             }
         }
+
+        private void lnumeromesa_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
