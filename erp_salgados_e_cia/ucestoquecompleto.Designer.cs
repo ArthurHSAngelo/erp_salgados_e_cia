@@ -41,6 +41,8 @@
             this.ltotalvalorcusto = new System.Windows.Forms.Label();
             this.ltotalcriticos = new System.Windows.Forms.Label();
             this.ltotalprodutos = new System.Windows.Forms.Label();
+            this.cbfiltrounidade = new System.Windows.Forms.ComboBox();
+            this.lfiltrounidade = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvestoquecompleto)).BeginInit();
             this.SuspendLayout();
             // 
@@ -172,10 +174,30 @@
             this.ltotalprodutos.TabIndex = 12;
             this.ltotalprodutos.Text = "Produtos: 0";
             // 
+            // cbfiltrounidade
+            // 
+            this.cbfiltrounidade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbfiltrounidade.FormattingEnabled = true;
+            this.cbfiltrounidade.Location = new System.Drawing.Point(1264, 57);
+            this.cbfiltrounidade.Name = "cbfiltrounidade";
+            this.cbfiltrounidade.Size = new System.Drawing.Size(121, 24);
+            this.cbfiltrounidade.TabIndex = 14;
+            // 
+            // lfiltrounidade
+            // 
+            this.lfiltrounidade.AutoSize = true;
+            this.lfiltrounidade.Location = new System.Drawing.Point(1196, 59);
+            this.lfiltrounidade.Name = "lfiltrounidade";
+            this.lfiltrounidade.Size = new System.Drawing.Size(62, 16);
+            this.lfiltrounidade.TabIndex = 13;
+            this.lfiltrounidade.Text = "Unidade:";
+            // 
             // ucestoquecompleto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbfiltrounidade);
+            this.Controls.Add(this.lfiltrounidade);
             this.Controls.Add(this.ltotalprodutos);
             this.Controls.Add(this.ltotalcriticos);
             this.Controls.Add(this.ltotalvalorcusto);
@@ -212,5 +234,7 @@
         private System.Windows.Forms.Label ltotalvalorcusto;
         private System.Windows.Forms.Label ltotalcriticos;
         private System.Windows.Forms.Label ltotalprodutos;
+        private System.Windows.Forms.ComboBox cbfiltrounidade;
+        private System.Windows.Forms.Label lfiltrounidade;
     }
 }

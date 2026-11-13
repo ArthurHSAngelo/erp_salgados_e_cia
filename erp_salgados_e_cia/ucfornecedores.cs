@@ -50,6 +50,16 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
+            dadossistema.AplicarMascara(
+                tbcnpjf,
+                dadossistema.FormatarCnpj,
+                14);
+
+            dadossistema.AplicarMascara(
+                tbtelefonef,
+                dadossistema.FormatarTelefone,
+                11);
+
             cbfiltrostatus.Items.AddRange(
                 new object[]
                 {
@@ -151,6 +161,37 @@ namespace erp_salgados_e_cia
                         .Where(char.IsDigit)
                         .ToArray()
                 );
+
+            if (cnpjDigitado.Length != 14)
+            {
+                MessageBox.Show(
+                    "Informe um CNPJ com 14 dígitos.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpjf.Focus();
+                return;
+            }
+
+            int digitosTelefone =
+                dadossistema.SomenteDigitos(tbtelefonef.Text).Length;
+
+            if (digitosTelefone > 0 &&
+                digitosTelefone != 10 &&
+                digitosTelefone != 11)
+            {
+                MessageBox.Show(
+                    "Informe o telefone com DDD (10 ou 11 dígitos).",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbtelefonef.Focus();
+                return;
+            }
 
             Fornecedor fornecedorAtual = null;
 

@@ -150,6 +150,7 @@ namespace erp_salgados_e_cia
         private ucestoquecompleto telaestoquecompleto;
         private ucmovimentacoes telamovimentacoes;
         private ucrelatoriovendas telarelatoriovendas;
+        private ucdre teladre;
         private ucfuncionarios telafuncionarios;
         private ucperdas telaperdas;
         private ucinventario telainventario;
@@ -172,6 +173,7 @@ namespace erp_salgados_e_cia
 
             bmovimentacoes.Visible = !atendente;
             brelatoriovendas.Visible = !atendente;
+            bdre.Visible = !atendente;
 
             panelrelatorios.Height =
                 atendente
@@ -193,6 +195,7 @@ namespace erp_salgados_e_cia
             telaestoquecompleto = null;
             telamovimentacoes = null;
             telarelatoriovendas = null;
+            teladre = null;
             telaperdas = null;
             telainventario = null;
             telapainel = null;
@@ -364,6 +367,8 @@ namespace erp_salgados_e_cia
             bnovavenda.Click += bnovavenda_Click;
 
             binventario.Click += binventario_Click;
+
+            bdre.Click += bdre_Click;
 
             alturaPanelRelatorios = panelrelatorios.Height;
 
@@ -664,6 +669,20 @@ namespace erp_salgados_e_cia
             telamovimentacoes.AtualizarTela();
 
             AbrirTela(telamovimentacoes);
+        }
+
+        private void bdre_Click(object sender, EventArgs e)
+        {
+            FecharSubMenus();
+
+            if (teladre == null)
+            {
+                teladre = new ucdre();
+            }
+
+            teladre.AtualizarTela();
+
+            AbrirTela(teladre);
         }
 
         private void brelatoriovendas_Click(object sender, EventArgs e)

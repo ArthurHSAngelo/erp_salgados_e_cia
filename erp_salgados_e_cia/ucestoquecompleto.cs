@@ -56,6 +56,62 @@ namespace erp_salgados_e_cia
             carregandoFiltros = false;
         }
 
+        private void CarregarUnidades()
+        {
+            carregandoFiltros = true;
+
+            string unidadeSelecionada =
+                cbfiltrounidade.SelectedItem as string;
+
+            cbfiltrounidade.Items.Clear();
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                cbfiltrounidade.Items.Add(dadossistema.UnidadeAtual);
+                cbfiltrounidade.SelectedIndex = 0;
+                cbfiltrounidade.Enabled = false;
+            }
+            else
+            {
+                cbfiltrounidade.Enabled = true;
+
+                cbfiltrounidade.Items.Add("Todas");
+
+                foreach (Unidade unidade in
+                    dadossistema.unidades.OrderBy(u => u.Nome))
+                {
+                    cbfiltrounidade.Items.Add(unidade.Nome);
+                }
+
+                if (unidadeSelecionada != null &&
+                    cbfiltrounidade.Items.Contains(unidadeSelecionada))
+                {
+                    cbfiltrounidade.SelectedItem = unidadeSelecionada;
+                }
+                else
+                {
+                    cbfiltrounidade.SelectedIndex = 0;
+                }
+            }
+
+            carregandoFiltros = false;
+        }
+
+        private string UnidadeFiltrada()
+        {
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                return dadossistema.UnidadeAtual;
+            }
+
+            string escolhida =
+                cbfiltrounidade.SelectedItem as string;
+
+            return escolhida == null || escolhida == "Todas"
+                ? null
+                : escolhida;
+        }
+
         private void AtualizarTabela()
         {
             string filtroProduto =
@@ -72,7 +128,7 @@ namespace erp_salgados_e_cia
                 : cbfiltrostatus.SelectedItem.ToString();
 
             IEnumerable<LinhaEstoque> linhasFiltradas =
-                dadossistema.MontarRelatorioEstoque();
+                dadossistema.MontarRelatorioEstoque(UnidadeFiltrada());
 
             if (filtroProduto != "")
             {
@@ -221,6 +277,8 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTela()
         {
+            CarregarUnidades();
+
             CarregarCategorias();
 
             AtualizarTabela();
@@ -239,7 +297,12 @@ namespace erp_salgados_e_cia
             cbfiltrostatus.SelectedIndex =
                 0;
 
+            CarregarUnidades();
+
             CarregarCategorias();
+
+            cbfiltrounidade.SelectedIndexChanged +=
+                FiltroAlterado;
 
             tbfiltroproduto.TextChanged +=
                 FiltroAlterado;
@@ -265,6 +328,11 @@ namespace erp_salgados_e_cia
         public void DefinirSomenteCriticos()
         {
             carregandoFiltros = true;
+
+            if (cbfiltrounidade.Items.Contains(dadossistema.UnidadeAtual))
+            {
+                cbfiltrounidade.SelectedItem = dadossistema.UnidadeAtual;
+            }
 
             tbfiltroproduto.Clear();
 
@@ -333,6 +401,7 @@ namespace erp_salgados_e_cia
 
             return new List<string>
             {
+                "Unidade: " + (UnidadeFiltrada() ?? "Todas"),
                 "Produto: " + filtroProduto,
                 "Categoria: " + cbfiltrocategoria.SelectedItem,
                 "Status: " + cbfiltrostatus.SelectedItem,
@@ -502,6 +571,10 @@ namespace erp_salgados_e_cia
                 $"Gerado em;{DateTime.Now:dd/MM/yyyy HH:mm}");
 
             csv.AppendLine("Filtros aplicados");
+
+            csv.AppendLine(
+                "Unidade;" +
+                dadossistema.CampoCsv(UnidadeFiltrada() ?? "Todas"));
 
             csv.AppendLine(
                 "Produto;" + dadossistema.CampoCsv(filtroProduto));

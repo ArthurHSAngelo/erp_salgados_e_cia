@@ -1291,13 +1291,56 @@ namespace erp_salgados_e_cia
             return ultima.m.CustoUnitario;
         }
 
+        public static decimal? UltimoCustoDoProduto(
+            string nomeProduto,
+            string unidade)
+        {
+            var ultima = movimentacoes
+                .Select((m, posicao) => new { m, posicao })
+                .Where(x =>
+                    x.m.Produto == nomeProduto &&
+                    x.m.Unidade == unidade)
+                .OrderByDescending(x => x.m.DataEntrada)
+                .ThenByDescending(x => x.posicao)
+                .FirstOrDefault();
+
+            return ultima == null
+                ? UltimoCustoDoProduto(nomeProduto)
+                : ultima.m.CustoUnitario;
+        }
+
         public static List<LinhaEstoque> MontarRelatorioEstoque()
+        {
+            return MontarRelatorioEstoque(UnidadeAtual);
+        }
+
+        public static List<LinhaEstoque> MontarRelatorioEstoque(
+            string unidade)
         {
             List<LinhaEstoque> linhas = new List<LinhaEstoque>();
 
+            bool todas = string.IsNullOrEmpty(unidade);
+
+            int quantidadeUnidades =
+                System.Math.Max(1, unidades.Count);
+
             foreach (Produto produto in produtos)
             {
-                decimal? ultimoCusto = UltimoCustoDoProduto(produto.Nome);
+                decimal saldo =
+                    todas
+                    ? unidades.Sum(u =>
+                        SaldoDoProduto(produto, u.Nome))
+                    : SaldoDoProduto(produto, unidade);
+
+                decimal minimo =
+                    todas
+                    ? produto.EstoqueMinimo * quantidadeUnidades
+                    : produto.EstoqueMinimo;
+
+                decimal? ultimoCusto =
+                    todas
+                    ? UltimoCustoDoProduto(produto.Nome)
+                    : UltimoCustoDoProduto(produto.Nome, unidade);
 
                 linhas.Add(
                     new LinhaEstoque
@@ -1305,18 +1348,18 @@ namespace erp_salgados_e_cia
                         Produto = produto.Nome,
                         Categoria = produto.Categoria,
                         UnidadeMedida = produto.UnidadeMedida,
-                        EstoqueAtual = produto.EstoqueAtual,
-                        EstoqueMinimo = produto.EstoqueMinimo,
+                        EstoqueAtual = saldo,
+                        EstoqueMinimo = minimo,
                         Situacao =
-                            produto.EstoqueAtual < produto.EstoqueMinimo
+                            saldo < minimo
                                 ? "Crítico"
                                 : "Normal",
                         PrecoVenda = produto.Preco,
                         UltimoCusto = ultimoCusto,
                         ValorACusto =
-                            produto.EstoqueAtual * (ultimoCusto ?? 0m),
+                            saldo * (ultimoCusto ?? 0m),
                         ValorAPrecoVenda =
-                            produto.EstoqueAtual * produto.Preco,
+                            saldo * produto.Preco,
                         Status = produto.Status.ToString()
                     }
                 );
@@ -1346,6 +1389,146 @@ namespace erp_salgados_e_cia
                 }
             );
         }
+        private static decimal? CustoDaPerda(Perda perda)
+        {
+            System.DateTime dia = perda.Data.Date;
+
+            var candidatas = movimentacoes
+                .Select((m, posicao) => new { m, posicao })
+                .Where(x =>
+                    x.m.Produto == perda.Produto &&
+                    x.m.DataEntrada.Date <= dia)
+                .ToList();
+
+            var daUnidade = candidatas
+                .Where(x => x.m.Unidade == perda.Unidade)
+                .OrderByDescending(x => x.m.DataEntrada)
+                .ThenByDescending(x => x.posicao)
+                .FirstOrDefault();
+
+            var escolhida = daUnidade ?? candidatas
+                .OrderByDescending(x => x.m.DataEntrada)
+                .ThenByDescending(x => x.posicao)
+                .FirstOrDefault();
+
+            return escolhida == null
+                ? (decimal?)null
+                : escolhida.m.CustoUnitario;
+        }
+
+        private static DreUnidade CalcularDreDaUnidade(
+            string unidade,
+            System.DateTime dataInicial,
+            System.DateTime dataFinal)
+        {
+            ResumoVendas resumo =
+                GerarRelatorioVendas(
+                    dataInicial,
+                    dataFinal,
+                    unidade,
+                    null,
+                    null).Resumo;
+
+            DreUnidade dre = new DreUnidade
+            {
+                Unidade = unidade,
+                Receita = resumo.Faturamento,
+                Recebido = resumo.Recebido,
+                VendidoEmNotinha = resumo.EmNotinha
+            };
+
+            dre.Abatimentos =
+                abatimentos
+                .Where(a =>
+                    a.Unidade == unidade &&
+                    a.DataHora.Date >= dataInicial &&
+                    a.DataHora.Date <= dataFinal)
+                .Sum(a => a.Valor);
+
+            dre.Despesas =
+                movimentacoes
+                .Where(m =>
+                    m.Unidade == unidade &&
+                    m.DataEntrada.Date >= dataInicial &&
+                    m.DataEntrada.Date <= dataFinal)
+                .Sum(m => m.Quantidade * m.CustoUnitario);
+
+            foreach (Perda perda in perdas.Where(p =>
+                p.Unidade == unidade &&
+                p.Data.Date >= dataInicial &&
+                p.Data.Date <= dataFinal))
+            {
+                decimal? custo = CustoDaPerda(perda);
+
+                if (custo == null)
+                {
+                    dre.PerdasSemCusto++;
+                    continue;
+                }
+
+                dre.Perdas += perda.Quantidade * custo.Value;
+            }
+
+            return dre;
+        }
+
+        public static RelatorioDre GerarDre(
+            System.DateTime? inicio,
+            System.DateTime? fim,
+            string unidade,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            System.DateTime dataInicial;
+            System.DateTime dataFinal;
+
+            DefinirPeriodoPadrao(
+                inicio,
+                fim,
+                out dataInicial,
+                out dataFinal
+            );
+
+            if (dataInicial > dataFinal)
+            {
+                mensagem =
+                    "A data inicial não pode ser maior que a data final.";
+
+                return null;
+            }
+
+            RelatorioDre relatorio = new RelatorioDre
+            {
+                DataInicial = dataInicial,
+                DataFinal = dataFinal,
+                Consolidado = string.IsNullOrEmpty(unidade)
+            };
+
+            List<string> nomes =
+                relatorio.Consolidado
+                ? unidades.Select(u => u.Nome).OrderBy(n => n).ToList()
+                : new List<string> { unidade };
+
+            foreach (string nome in nomes)
+            {
+                relatorio.Unidades.Add(
+                    CalcularDreDaUnidade(nome, dataInicial, dataFinal));
+            }
+
+            DreUnidade total = relatorio.Total;
+
+            total.Receita = relatorio.Unidades.Sum(u => u.Receita);
+            total.Recebido = relatorio.Unidades.Sum(u => u.Recebido);
+            total.VendidoEmNotinha = relatorio.Unidades.Sum(u => u.VendidoEmNotinha);
+            total.Abatimentos = relatorio.Unidades.Sum(u => u.Abatimentos);
+            total.Despesas = relatorio.Unidades.Sum(u => u.Despesas);
+            total.Perdas = relatorio.Unidades.Sum(u => u.Perdas);
+            total.PerdasSemCusto = relatorio.Unidades.Sum(u => u.PerdasSemCusto);
+
+            return relatorio;
+        }
+
         public static void DefinirPeriodoPadrao(
             System.DateTime? inicio,
             System.DateTime? fim,
@@ -1387,6 +1570,104 @@ namespace erp_salgados_e_cia
                 .OrderByDescending(h => h.Data)
                 .ToList();
         }
+        public static string SomenteDigitos(string texto)
+        {
+            return new string(
+                (texto ?? "")
+                    .Where(char.IsDigit)
+                    .ToArray());
+        }
+
+        private static string AplicarPadrao(string digitos, string padrao)
+        {
+            System.Text.StringBuilder resultado =
+                new System.Text.StringBuilder();
+
+            int posicao = 0;
+
+            foreach (char simbolo in padrao)
+            {
+                if (posicao >= digitos.Length)
+                {
+                    break;
+                }
+
+                if (simbolo == '0')
+                {
+                    resultado.Append(digitos[posicao]);
+                    posicao++;
+                }
+                else
+                {
+                    resultado.Append(simbolo);
+                }
+            }
+
+            return resultado.ToString();
+        }
+
+        public static string FormatarCnpj(string digitos)
+        {
+            return AplicarPadrao(digitos, "00.000.000/0000-00");
+        }
+
+        public static string FormatarCpfCnpj(string digitos)
+        {
+            return digitos.Length > 11
+                ? FormatarCnpj(digitos)
+                : AplicarPadrao(digitos, "000.000.000-00");
+        }
+
+        public static string FormatarTelefone(string digitos)
+        {
+            return digitos.Length > 10
+                ? AplicarPadrao(digitos, "(00) 00000-0000")
+                : AplicarPadrao(digitos, "(00) 0000-0000");
+        }
+
+        public static void AplicarMascara(
+            System.Windows.Forms.TextBox caixa,
+            System.Func<string, string> formatar,
+            int maximoDigitos)
+        {
+            string anterior = caixa.Text;
+            bool aplicando = false;
+
+            caixa.TextChanged += (origem, evento) =>
+            {
+                if (aplicando)
+                {
+                    return;
+                }
+
+                string digitos = SomenteDigitos(caixa.Text);
+
+                if (caixa.Text.Length < anterior.Length &&
+                    digitos == SomenteDigitos(anterior) &&
+                    digitos.Length > 0)
+                {
+                    digitos = digitos.Substring(0, digitos.Length - 1);
+                }
+
+                if (digitos.Length > maximoDigitos)
+                {
+                    digitos = digitos.Substring(0, maximoDigitos);
+                }
+
+                string novo = formatar(digitos);
+
+                if (novo != caixa.Text)
+                {
+                    aplicando = true;
+                    caixa.Text = novo;
+                    caixa.SelectionStart = novo.Length;
+                    aplicando = false;
+                }
+
+                anterior = caixa.Text;
+            };
+        }
+
         public static string CampoCsv(string valor)
         {
             if (valor == null)

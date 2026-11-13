@@ -53,6 +53,11 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
+            dadossistema.AplicarMascara(
+                tbcnpju,
+                dadossistema.FormatarCnpj,
+                14);
+
             cbfiltrostatus.Items.AddRange(
                 new object[]
                 {
@@ -129,6 +134,42 @@ namespace erp_salgados_e_cia
             {
                 MessageBox.Show(
                     "Informe o CNPJ da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
+                return;
+            }
+
+            string cnpjDigitado =
+                dadossistema.SomenteDigitos(tbcnpju.Text);
+
+            if (cnpjDigitado.Length != 14)
+            {
+                MessageBox.Show(
+                    "Informe um CNPJ com 14 dígitos.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
+                return;
+            }
+
+            Unidade unidadeEmEdicao =
+                modoEdicao && indiceUnidadeEditando >= 0
+                ? unidades[indiceUnidadeEditando]
+                : null;
+
+            if (unidades.Any(u =>
+                u != unidadeEmEdicao &&
+                dadossistema.SomenteDigitos(u.Cnpj) == cnpjDigitado))
+            {
+                MessageBox.Show(
+                    "Esse CNPJ já está cadastrado.",
                     "Atenção",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning

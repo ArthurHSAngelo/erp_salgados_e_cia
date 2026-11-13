@@ -204,6 +204,16 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
+            dadossistema.AplicarMascara(
+                tbcpfcnpjc,
+                dadossistema.FormatarCpfCnpj,
+                14);
+
+            dadossistema.AplicarMascara(
+                tbtelefonec,
+                dadossistema.FormatarTelefone,
+                11);
+
             cbfiltrostatus.Items.AddRange(
                 new object[]
                 {
@@ -432,6 +442,24 @@ namespace erp_salgados_e_cia
                 );
 
                 tbcpfcnpjc.Focus();
+                return;
+            }
+
+            int digitosTelefone =
+                ApenasDigitos(tbtelefonec.Text).Length;
+
+            if (digitosTelefone > 0 &&
+                digitosTelefone != 10 &&
+                digitosTelefone != 11)
+            {
+                MessageBox.Show(
+                    "Informe o telefone com DDD (10 ou 11 dígitos).",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbtelefonec.Focus();
                 return;
             }
 

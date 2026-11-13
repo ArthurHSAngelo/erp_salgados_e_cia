@@ -127,6 +127,12 @@
     <Compile Include="ucclientes.Designer.cs">
       <DependentUpon>ucclientes.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucdre.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucdre.Designer.cs">
+      <DependentUpon>ucdre.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucestoquecompleto.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -223,6 +229,7 @@
     <Compile Include="LogOperacao.cs" />
     <Compile Include="Perda.cs" />
     <Compile Include="SaldoEstoque.cs" />
+    <Compile Include="RelatorioDre.cs" />
     <Compile Include="Inventario.cs" />
     <Compile Include="DadosPainel.cs" />
     <Compile Include="RelatorioPdf.cs" />
@@ -258,6 +265,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucclientes.resx">
       <DependentUpon>ucclientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucdre.resx">
+      <DependentUpon>ucdre.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucestoquecompleto.resx">
       <DependentUpon>ucestoquecompleto.cs</DependentUpon>
