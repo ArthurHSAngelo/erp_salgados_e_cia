@@ -148,7 +148,7 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "dd/MM HH:mm";
 
                 dgvultimasvendas.Columns["Total"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
         }
 

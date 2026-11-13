@@ -60,6 +60,27 @@ namespace erp_salgados_e_cia
             }
         }
 
+        public decimal MaquininhaEsperada
+        {
+            get
+            {
+                return dadossistema.TotalRecebidoPorForma(IdCaixa, "Crédito") +
+                    dadossistema.TotalRecebidoPorForma(IdCaixa, "Débito");
+            }
+        }
+
+        public decimal? ValorMaquininha { get; set; }
+
+        public decimal? DiferencaMaquininha
+        {
+            get
+            {
+                return ValorMaquininha.HasValue
+                    ? ValorMaquininha.Value - MaquininhaEsperada
+                    : (decimal?)null;
+            }
+        }
+
         public string Status { get; set; }
 
         public string Unidade { get; set; }

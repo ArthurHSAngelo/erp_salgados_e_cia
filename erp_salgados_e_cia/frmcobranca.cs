@@ -78,7 +78,7 @@ namespace erp_salgados_e_cia
                     "Forma de pagamento";
 
                 dgvpagamentosvenda.Columns["Valor"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
 
             if (modoAbatimento)

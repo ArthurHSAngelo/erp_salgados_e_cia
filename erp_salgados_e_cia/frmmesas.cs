@@ -14,12 +14,12 @@ namespace erp_salgados_e_cia
         private void AtualizarTabela()
         {
             fonteMesas.DataSource =
-                dadossistema.comandas
+                dadossistema.ComandasDaUnidade()
                 .OrderBy(c => c.NumeroMesa)
                 .ToList();
 
             lsemmesas.Visible =
-                dadossistema.comandas.Count == 0;
+                dadossistema.ComandasDaUnidade().Count == 0;
 
             if (dgvmesas.Columns.Count > 0)
             {
@@ -48,17 +48,22 @@ namespace erp_salgados_e_cia
                     dgvmesas.Columns["Pagamentos"].Visible = false;
                 }
 
+                if (dgvmesas.Columns.Contains("Unidade"))
+                {
+                    dgvmesas.Columns["Unidade"].Visible = false;
+                }
+
                 dgvmesas.Columns["QuantidadeItens"]
                     .DefaultCellStyle.Format = "0.##";
 
                 dgvmesas.Columns["Total"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvmesas.Columns["TotalPago"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvmesas.Columns["Falta"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvmesas.Columns["Abertura"]
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
@@ -117,7 +122,7 @@ namespace erp_salgados_e_cia
 
         private void babrirmesa_Click(object sender, EventArgs e)
         {
-            if (dadossistema.comandas.Count == 0)
+            if (dadossistema.ComandasDaUnidade().Count == 0)
             {
                 MessageBox.Show(
                     "Nenhuma mesa aberta.",

@@ -213,7 +213,7 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "dd/MM/yyyy";
 
                 dgvdia.Columns["Faturamento"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
 
             dgvprodutos.DataSource = null;
@@ -229,7 +229,7 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "N2";
 
                 dgvprodutos.Columns["Receita"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
 
             dgvformas.DataSource = null;
@@ -241,7 +241,7 @@ namespace erp_salgados_e_cia
                 dgvformas.Columns["Valor"].HeaderText = "Valor";
 
                 dgvformas.Columns["Valor"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
         }
 

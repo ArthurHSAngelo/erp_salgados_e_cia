@@ -195,6 +195,12 @@ namespace erp_salgados_e_cia
             telarelatoriovendas = null;
             telaperdas = null;
             telainventario = null;
+            telapainel = null;
+            telaprodutos = null;
+            telaclientes = null;
+            telafuncionarios = null;
+            telausuarios = null;
+            telalogoperacoes = null;
 
             pnltelas.Controls.Clear();
 
@@ -207,18 +213,6 @@ namespace erp_salgados_e_cia
         {
             if (nomeUnidade == dadossistema.UnidadeAtual)
             {
-                return;
-            }
-
-            if (dadossistema.comandas.Count > 0)
-            {
-                MessageBox.Show(
-                    "Não é possível trocar de unidade com comandas abertas. Finalize ou cancele as comandas antes.",
-                    "Atenção",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-
                 return;
             }
 

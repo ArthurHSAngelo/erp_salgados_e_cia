@@ -64,7 +64,9 @@ namespace erp_salgados_e_cia
 
             List<MovimentoNotinha> movimentos =
                 dadossistema.notinhas
-                .Where(n => n.IdCliente == cliente.IdCliente)
+                .Where(n =>
+                    n.IdCliente == cliente.IdCliente &&
+                    n.Unidade == dadossistema.UnidadeAtual)
                 .Select(n => new MovimentoNotinha
                 {
                     DataHora = n.DataHora,
@@ -74,7 +76,9 @@ namespace erp_salgados_e_cia
                 })
                 .Concat(
                     dadossistema.abatimentos
-                    .Where(a => a.IdCliente == cliente.IdCliente)
+                    .Where(a =>
+                        a.IdCliente == cliente.IdCliente &&
+                        a.Unidade == dadossistema.UnidadeAtual)
                     .Select(a => new MovimentoNotinha
                     {
                         DataHora = a.DataHora,
@@ -95,7 +99,7 @@ namespace erp_salgados_e_cia
                 .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
 
             dgvhistoriconotinha.Columns["Valor"]
-                .DefaultCellStyle.Format = "N2";
+                .DefaultCellStyle.Format = "C2";
         }
 
         private string ProdutosDaVenda(int idVenda)
@@ -190,7 +194,7 @@ namespace erp_salgados_e_cia
                     "Saldo";
 
                 dgvclientes.Columns["SaldoNotinha"].DefaultCellStyle.Format =
-                    "N2";
+                    "C2";
             }
 
             AtualizarPainelNotinha();
@@ -325,7 +329,8 @@ namespace erp_salgados_e_cia
                         DataHora = DateTime.Now,
                         Valor = valorAbatido,
                         FormaPagamento = pagamento.FormaPagamento,
-                        IdCaixa = caixaAberto.IdCaixa
+                        IdCaixa = caixaAberto.IdCaixa,
+                        Unidade = caixaAberto.Unidade
                     }
                 );
 

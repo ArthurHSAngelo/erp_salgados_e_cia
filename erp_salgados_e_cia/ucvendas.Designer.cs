@@ -68,10 +68,9 @@
             // 
             this.lprodutos.AutoSize = true;
             this.lprodutos.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lprodutos.Location = new System.Drawing.Point(80, 52);
-            this.lprodutos.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lprodutos.Location = new System.Drawing.Point(107, 64);
             this.lprodutos.Name = "lprodutos";
-            this.lprodutos.Size = new System.Drawing.Size(62, 17);
+            this.lprodutos.Size = new System.Drawing.Size(76, 21);
             this.lprodutos.TabIndex = 0;
             this.lprodutos.Text = "Produto:";
             // 
@@ -80,35 +79,34 @@
             this.cbproduto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbproduto.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbproduto.FormattingEnabled = true;
-            this.cbproduto.Location = new System.Drawing.Point(83, 72);
-            this.cbproduto.Margin = new System.Windows.Forms.Padding(2);
+            this.cbproduto.Location = new System.Drawing.Point(111, 89);
+            this.cbproduto.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbproduto.Name = "cbproduto";
-            this.cbproduto.Size = new System.Drawing.Size(198, 27);
+            this.cbproduto.Size = new System.Drawing.Size(263, 31);
             this.cbproduto.TabIndex = 1;
             // 
             // lquantidade
             // 
             this.lquantidade.AutoSize = true;
             this.lquantidade.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lquantidade.Location = new System.Drawing.Point(330, 52);
-            this.lquantidade.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lquantidade.Location = new System.Drawing.Point(440, 64);
             this.lquantidade.Name = "lquantidade";
-            this.lquantidade.Size = new System.Drawing.Size(84, 17);
+            this.lquantidade.Size = new System.Drawing.Size(104, 21);
             this.lquantidade.TabIndex = 2;
             this.lquantidade.Text = "Quantidade:";
             // 
             // nudquantidade
             // 
             this.nudquantidade.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.nudquantidade.Location = new System.Drawing.Point(333, 72);
-            this.nudquantidade.Margin = new System.Windows.Forms.Padding(2);
+            this.nudquantidade.Location = new System.Drawing.Point(444, 89);
+            this.nudquantidade.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudquantidade.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.nudquantidade.Name = "nudquantidade";
-            this.nudquantidade.Size = new System.Drawing.Size(54, 26);
+            this.nudquantidade.Size = new System.Drawing.Size(72, 30);
             this.nudquantidade.TabIndex = 3;
             this.nudquantidade.Value = new decimal(new int[] {
             1,
@@ -123,10 +121,10 @@
             this.badicionaritem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.badicionaritem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.badicionaritem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.badicionaritem.Location = new System.Drawing.Point(1226, 62);
-            this.badicionaritem.Margin = new System.Windows.Forms.Padding(2);
+            this.badicionaritem.Location = new System.Drawing.Point(1635, 76);
+            this.badicionaritem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.badicionaritem.Name = "badicionaritem";
-            this.badicionaritem.Size = new System.Drawing.Size(129, 42);
+            this.badicionaritem.Size = new System.Drawing.Size(172, 52);
             this.badicionaritem.TabIndex = 5;
             this.badicionaritem.Text = "Adicionar item";
             this.badicionaritem.UseVisualStyleBackColor = false;
@@ -136,10 +134,9 @@
             // 
             this.litensdavenda.AutoSize = true;
             this.litensdavenda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.litensdavenda.Location = new System.Drawing.Point(23, 209);
-            this.litensdavenda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.litensdavenda.Location = new System.Drawing.Point(31, 257);
             this.litensdavenda.Name = "litensdavenda";
-            this.litensdavenda.Size = new System.Drawing.Size(133, 21);
+            this.litensdavenda.Size = new System.Drawing.Size(164, 28);
             this.litensdavenda.TabIndex = 6;
             this.litensdavenda.Text = "Itens do pedido:";
             // 
@@ -149,8 +146,7 @@
             this.dgvitensvenda.AllowUserToDeleteRows = false;
             this.dgvitensvenda.AllowUserToResizeColumns = false;
             this.dgvitensvenda.AllowUserToResizeRows = false;
-            this.dgvitensvenda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvitensvenda.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvitensvenda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvitensvenda.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -169,14 +165,14 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvitensvenda.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvitensvenda.Location = new System.Drawing.Point(27, 232);
-            this.dgvitensvenda.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvitensvenda.Location = new System.Drawing.Point(36, 286);
+            this.dgvitensvenda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvitensvenda.Name = "dgvitensvenda";
             this.dgvitensvenda.ReadOnly = true;
             this.dgvitensvenda.RowHeadersWidth = 51;
             this.dgvitensvenda.RowTemplate.Height = 24;
             this.dgvitensvenda.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvitensvenda.Size = new System.Drawing.Size(886, 807);
+            this.dgvitensvenda.Size = new System.Drawing.Size(1181, 993);
             this.dgvitensvenda.TabIndex = 7;
             // 
             // bfinalizarvenda
@@ -186,10 +182,10 @@
             this.bfinalizarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bfinalizarvenda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bfinalizarvenda.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.bfinalizarvenda.Location = new System.Drawing.Point(1516, 62);
-            this.bfinalizarvenda.Margin = new System.Windows.Forms.Padding(2);
+            this.bfinalizarvenda.Location = new System.Drawing.Point(2021, 76);
+            this.bfinalizarvenda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bfinalizarvenda.Name = "bfinalizarvenda";
-            this.bfinalizarvenda.Size = new System.Drawing.Size(129, 42);
+            this.bfinalizarvenda.Size = new System.Drawing.Size(172, 52);
             this.bfinalizarvenda.TabIndex = 8;
             this.bfinalizarvenda.Text = "Enviar pedido";
             this.bfinalizarvenda.UseVisualStyleBackColor = false;
@@ -202,10 +198,10 @@
             this.bremoveritem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bremoveritem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bremoveritem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bremoveritem.Location = new System.Drawing.Point(1373, 62);
-            this.bremoveritem.Margin = new System.Windows.Forms.Padding(2);
+            this.bremoveritem.Location = new System.Drawing.Point(1831, 76);
+            this.bremoveritem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bremoveritem.Name = "bremoveritem";
-            this.bremoveritem.Size = new System.Drawing.Size(129, 42);
+            this.bremoveritem.Size = new System.Drawing.Size(172, 52);
             this.bremoveritem.TabIndex = 9;
             this.bremoveritem.Text = "Remover item";
             this.bremoveritem.UseVisualStyleBackColor = false;
@@ -215,10 +211,9 @@
             // 
             this.lnumeromesa.AutoSize = true;
             this.lnumeromesa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lnumeromesa.Location = new System.Drawing.Point(464, 52);
-            this.lnumeromesa.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lnumeromesa.Location = new System.Drawing.Point(619, 64);
             this.lnumeromesa.Name = "lnumeromesa";
-            this.lnumeromesa.Size = new System.Drawing.Size(44, 17);
+            this.lnumeromesa.Size = new System.Drawing.Size(54, 21);
             this.lnumeromesa.TabIndex = 19;
             this.lnumeromesa.Text = "Mesa:";
             this.lnumeromesa.Click += new System.EventHandler(this.lnumeromesa_Click);
@@ -226,15 +221,15 @@
             // nudnumeromesa
             // 
             this.nudnumeromesa.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.nudnumeromesa.Location = new System.Drawing.Point(467, 72);
-            this.nudnumeromesa.Margin = new System.Windows.Forms.Padding(2);
+            this.nudnumeromesa.Location = new System.Drawing.Point(623, 89);
+            this.nudnumeromesa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudnumeromesa.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
             this.nudnumeromesa.Name = "nudnumeromesa";
-            this.nudnumeromesa.Size = new System.Drawing.Size(41, 26);
+            this.nudnumeromesa.Size = new System.Drawing.Size(55, 30);
             this.nudnumeromesa.TabIndex = 20;
             this.nudnumeromesa.ThousandsSeparator = true;
             this.nudnumeromesa.ValueChanged += new System.EventHandler(this.nudnumeromesa_ValueChanged);
@@ -243,10 +238,9 @@
             // 
             this.lcliente.AutoSize = true;
             this.lcliente.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lcliente.Location = new System.Drawing.Point(585, 52);
-            this.lcliente.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lcliente.Location = new System.Drawing.Point(780, 64);
             this.lcliente.Name = "lcliente";
-            this.lcliente.Size = new System.Drawing.Size(55, 17);
+            this.lcliente.Size = new System.Drawing.Size(68, 21);
             this.lcliente.TabIndex = 27;
             this.lcliente.Text = "Cliente:";
             // 
@@ -255,10 +249,10 @@
             this.cbcliente.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbcliente.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbcliente.FormattingEnabled = true;
-            this.cbcliente.Location = new System.Drawing.Point(585, 72);
-            this.cbcliente.Margin = new System.Windows.Forms.Padding(2);
+            this.cbcliente.Location = new System.Drawing.Point(780, 89);
+            this.cbcliente.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbcliente.Name = "cbcliente";
-            this.cbcliente.Size = new System.Drawing.Size(210, 27);
+            this.cbcliente.Size = new System.Drawing.Size(279, 31);
             this.cbcliente.TabIndex = 28;
             this.cbcliente.SelectionChangeCommitted += new System.EventHandler(this.cbcliente_SelectionChangeCommitted);
             // 
@@ -266,10 +260,9 @@
             // 
             this.ltotalvenda.AutoSize = true;
             this.ltotalvenda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltotalvenda.Location = new System.Drawing.Point(250, 209);
-            this.ltotalvenda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.ltotalvenda.Location = new System.Drawing.Point(333, 257);
             this.ltotalvenda.Name = "ltotalvenda";
-            this.ltotalvenda.Size = new System.Drawing.Size(192, 21);
+            this.ltotalvenda.Size = new System.Drawing.Size(243, 28);
             this.ltotalvenda.TabIndex = 29;
             this.ltotalvenda.Text = "Total do pedido: R$ 0,00";
             // 
@@ -277,10 +270,9 @@
             // 
             this.lcomandamesa.AutoSize = true;
             this.lcomandamesa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lcomandamesa.Location = new System.Drawing.Point(919, 209);
-            this.lcomandamesa.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lcomandamesa.Location = new System.Drawing.Point(1225, 257);
             this.lcomandamesa.Name = "lcomandamesa";
-            this.lcomandamesa.Size = new System.Drawing.Size(150, 21);
+            this.lcomandamesa.Size = new System.Drawing.Size(188, 28);
             this.lcomandamesa.TabIndex = 30;
             this.lcomandamesa.Text = "Comanda - Mesa 1";
             // 
@@ -290,8 +282,7 @@
             this.dgvitenscomanda.AllowUserToDeleteRows = false;
             this.dgvitenscomanda.AllowUserToResizeColumns = false;
             this.dgvitenscomanda.AllowUserToResizeRows = false;
-            this.dgvitenscomanda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvitenscomanda.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvitenscomanda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvitenscomanda.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
@@ -310,24 +301,23 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvitenscomanda.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvitenscomanda.Location = new System.Drawing.Point(922, 232);
-            this.dgvitenscomanda.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvitenscomanda.Location = new System.Drawing.Point(1229, 286);
+            this.dgvitenscomanda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvitenscomanda.Name = "dgvitenscomanda";
             this.dgvitenscomanda.ReadOnly = true;
             this.dgvitenscomanda.RowHeadersWidth = 51;
             this.dgvitenscomanda.RowTemplate.Height = 24;
             this.dgvitenscomanda.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvitenscomanda.Size = new System.Drawing.Size(886, 562);
+            this.dgvitenscomanda.Size = new System.Drawing.Size(1181, 692);
             this.dgvitenscomanda.TabIndex = 31;
             // 
             // lsemcomanda
             // 
             this.lsemcomanda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lsemcomanda.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemcomanda.Location = new System.Drawing.Point(922, 232);
-            this.lsemcomanda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lsemcomanda.Location = new System.Drawing.Point(1230, 286);
             this.lsemcomanda.Name = "lsemcomanda";
-            this.lsemcomanda.Size = new System.Drawing.Size(886, 667);
+            this.lsemcomanda.Size = new System.Drawing.Size(1181, 820);
             this.lsemcomanda.TabIndex = 32;
             this.lsemcomanda.Text = "Mesa sem comanda aberta";
             this.lsemcomanda.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -336,10 +326,9 @@
             // 
             this.ltotalcomanda.AutoSize = true;
             this.ltotalcomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltotalcomanda.Location = new System.Drawing.Point(1427, 796);
-            this.ltotalcomanda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.ltotalcomanda.Location = new System.Drawing.Point(1903, 980);
             this.ltotalcomanda.Name = "ltotalcomanda";
-            this.ltotalcomanda.Size = new System.Drawing.Size(110, 21);
+            this.ltotalcomanda.Size = new System.Drawing.Size(142, 28);
             this.ltotalcomanda.TabIndex = 33;
             this.ltotalcomanda.Text = "Total: R$ 0,00";
             // 
@@ -349,10 +338,10 @@
             this.bcobrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcobrar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bcobrar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.bcobrar.Location = new System.Drawing.Point(940, 815);
-            this.bcobrar.Margin = new System.Windows.Forms.Padding(2);
+            this.bcobrar.Location = new System.Drawing.Point(1253, 1003);
+            this.bcobrar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bcobrar.Name = "bcobrar";
-            this.bcobrar.Size = new System.Drawing.Size(129, 57);
+            this.bcobrar.Size = new System.Drawing.Size(172, 70);
             this.bcobrar.TabIndex = 34;
             this.bcobrar.Text = "Cobrar comanda";
             this.bcobrar.UseVisualStyleBackColor = true;
@@ -364,10 +353,10 @@
             this.bcancelarcomanda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcancelarcomanda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bcancelarcomanda.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bcancelarcomanda.Location = new System.Drawing.Point(1084, 815);
-            this.bcancelarcomanda.Margin = new System.Windows.Forms.Padding(2);
+            this.bcancelarcomanda.Location = new System.Drawing.Point(1445, 1003);
+            this.bcancelarcomanda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bcancelarcomanda.Name = "bcancelarcomanda";
-            this.bcancelarcomanda.Size = new System.Drawing.Size(129, 57);
+            this.bcancelarcomanda.Size = new System.Drawing.Size(172, 70);
             this.bcancelarcomanda.TabIndex = 35;
             this.bcancelarcomanda.Text = "Cancelar comanda";
             this.bcancelarcomanda.UseVisualStyleBackColor = true;
@@ -377,10 +366,9 @@
             // 
             this.lfaltacomanda.AutoSize = true;
             this.lfaltacomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lfaltacomanda.Location = new System.Drawing.Point(1660, 796);
-            this.lfaltacomanda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lfaltacomanda.Location = new System.Drawing.Point(2213, 980);
             this.lfaltacomanda.Name = "lfaltacomanda";
-            this.lfaltacomanda.Size = new System.Drawing.Size(109, 21);
+            this.lfaltacomanda.Size = new System.Drawing.Size(140, 28);
             this.lfaltacomanda.TabIndex = 36;
             this.lfaltacomanda.Text = "Falta: R$ 0,00";
             // 
@@ -388,10 +376,9 @@
             // 
             this.lpagocomanda.AutoSize = true;
             this.lpagocomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lpagocomanda.Location = new System.Drawing.Point(1545, 796);
-            this.lpagocomanda.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lpagocomanda.Location = new System.Drawing.Point(2060, 980);
             this.lpagocomanda.Name = "lpagocomanda";
-            this.lpagocomanda.Size = new System.Drawing.Size(111, 21);
+            this.lpagocomanda.Size = new System.Drawing.Size(142, 28);
             this.lpagocomanda.TabIndex = 37;
             this.lpagocomanda.Text = "Pago: R$ 0,00";
             // 
@@ -401,10 +388,10 @@
             this.bmesasabertas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bmesasabertas.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bmesasabertas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.bmesasabertas.Location = new System.Drawing.Point(1693, 965);
-            this.bmesasabertas.Margin = new System.Windows.Forms.Padding(2);
+            this.bmesasabertas.Location = new System.Drawing.Point(2257, 1188);
+            this.bmesasabertas.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bmesasabertas.Name = "bmesasabertas";
-            this.bmesasabertas.Size = new System.Drawing.Size(129, 57);
+            this.bmesasabertas.Size = new System.Drawing.Size(172, 70);
             this.bmesasabertas.TabIndex = 38;
             this.bmesasabertas.Text = "Mesas abertas";
             this.bmesasabertas.UseVisualStyleBackColor = true;
@@ -412,12 +399,12 @@
             // 
             // lavisocaixa
             // 
+            this.lavisocaixa.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lavisocaixa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lavisocaixa.ForeColor = System.Drawing.Color.Firebrick;
             this.lavisocaixa.Location = new System.Drawing.Point(0, 0);
-            this.lavisocaixa.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lavisocaixa.Name = "lavisocaixa";
-            this.lavisocaixa.Size = new System.Drawing.Size(1834, 145);
+            this.lavisocaixa.Size = new System.Drawing.Size(2445, 178);
             this.lavisocaixa.TabIndex = 39;
             this.lavisocaixa.Text = "O caixa ainda não foi aberto. Abra o caixa para registrar vendas.";
             this.lavisocaixa.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -438,13 +425,14 @@
             this.panel2.Controls.Add(this.bfinalizarvenda);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1834, 145);
+            this.panel2.Size = new System.Drawing.Size(2445, 178);
             this.panel2.TabIndex = 41;
             // 
             // ucvendas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.lavisocaixa);
@@ -461,9 +449,9 @@
             this.Controls.Add(this.ltotalvenda);
             this.Controls.Add(this.dgvitensvenda);
             this.Controls.Add(this.litensdavenda);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "ucvendas";
-            this.Size = new System.Drawing.Size(1834, 1082);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.nudquantidade)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvitensvenda)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudnumeromesa)).EndInit();

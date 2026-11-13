@@ -13,5 +13,7 @@ namespace erp_salgados_e_cia
         public DateTime DataHora { get; set; }
 
         public decimal Valor { get; set; }
+
+        public string Unidade { get; set; }
     }
 }

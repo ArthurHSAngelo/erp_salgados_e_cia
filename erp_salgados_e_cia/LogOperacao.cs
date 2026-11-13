@@ -21,7 +21,8 @@ namespace erp_salgados_e_cia
             TipoOperacaoLog operacao,
             string tabela,
             string registro,
-            string detalhes)
+            string detalhes,
+            string unidade = null)
         {
             IdLog = idLog;
             DataHora = dataHora;
@@ -30,6 +31,7 @@ namespace erp_salgados_e_cia
             Tabela = tabela;
             Registro = registro;
             Detalhes = detalhes;
+            Unidade = unidade;
         }
 
         [Browsable(false)]
@@ -71,5 +73,8 @@ namespace erp_salgados_e_cia
         public string Registro { get; private set; }
 
         public string Detalhes { get; private set; }
+
+        [Browsable(false)]
+        public string Unidade { get; private set; }
     }
 }

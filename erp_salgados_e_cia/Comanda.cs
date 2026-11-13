@@ -8,6 +8,8 @@ namespace erp_salgados_e_cia
     {
         public int NumeroMesa { get; set; }
 
+        public string Unidade { get; set; }
+
         public int? IdCliente { get; set; }
 
         public BindingList<ItemVenda> Itens { get; set; } =

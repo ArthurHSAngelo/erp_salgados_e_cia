@@ -25,7 +25,11 @@ namespace erp_salgados_e_cia
         private void AtualizarTabela()
         {
             dgvmovimentacoes.DataSource = null;
-            dgvmovimentacoes.DataSource = movimentacoes;
+            dgvmovimentacoes.DataSource =
+                movimentacoes
+                .Where(m => m.Unidade == dadossistema.UnidadeAtual)
+                .OrderByDescending(m => m.DataEntrada)
+                .ToList();
 
             if (dgvmovimentacoes.Columns.Count > 0)
             {
@@ -41,7 +45,7 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "N2";
 
                 dgvmovimentacoes.Columns["CustoUnitario"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvmovimentacoes.Columns["DataEntrada"]
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
@@ -66,7 +70,7 @@ namespace erp_salgados_e_cia
                 .DefaultCellStyle.Format = "N2";
 
             dgvitensentrada.Columns["CustoUnitario"]
-                .DefaultCellStyle.Format = "N2";
+                .DefaultCellStyle.Format = "C2";
 
             dgvitensentrada.Columns["DataEntrada"]
                 .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";

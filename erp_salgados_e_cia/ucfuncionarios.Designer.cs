@@ -52,10 +52,9 @@
             this.lnomefuncionario.AutoSize = true;
             this.lnomefuncionario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.lnomefuncionario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lnomefuncionario.Location = new System.Drawing.Point(80, 54);
-            this.lnomefuncionario.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lnomefuncionario.Location = new System.Drawing.Point(107, 66);
             this.lnomefuncionario.Name = "lnomefuncionario";
-            this.lnomefuncionario.Size = new System.Drawing.Size(144, 17);
+            this.lnomefuncionario.Size = new System.Drawing.Size(178, 21);
             this.lnomefuncionario.TabIndex = 10;
             this.lnomefuncionario.Text = "Nome do funcionário:";
             // 
@@ -63,10 +62,10 @@
             // 
             this.tbnomefuncionario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbnomefuncionario.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.tbnomefuncionario.Location = new System.Drawing.Point(83, 72);
-            this.tbnomefuncionario.Margin = new System.Windows.Forms.Padding(2);
+            this.tbnomefuncionario.Location = new System.Drawing.Point(111, 89);
+            this.tbnomefuncionario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbnomefuncionario.Name = "tbnomefuncionario";
-            this.tbnomefuncionario.Size = new System.Drawing.Size(198, 26);
+            this.tbnomefuncionario.Size = new System.Drawing.Size(263, 30);
             this.tbnomefuncionario.TabIndex = 12;
             // 
             // lunidadefuncionario
@@ -74,10 +73,9 @@
             this.lunidadefuncionario.AutoSize = true;
             this.lunidadefuncionario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.lunidadefuncionario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lunidadefuncionario.Location = new System.Drawing.Point(369, 52);
-            this.lunidadefuncionario.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lunidadefuncionario.Location = new System.Drawing.Point(492, 64);
             this.lunidadefuncionario.Name = "lunidadefuncionario";
-            this.lunidadefuncionario.Size = new System.Drawing.Size(63, 17);
+            this.lunidadefuncionario.Size = new System.Drawing.Size(79, 21);
             this.lunidadefuncionario.TabIndex = 13;
             this.lunidadefuncionario.Text = "Unidade:";
             // 
@@ -85,10 +83,10 @@
             // 
             this.cbunidadefuncionario.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbunidadefuncionario.FormattingEnabled = true;
-            this.cbunidadefuncionario.Location = new System.Drawing.Point(372, 72);
-            this.cbunidadefuncionario.Margin = new System.Windows.Forms.Padding(2);
+            this.cbunidadefuncionario.Location = new System.Drawing.Point(496, 89);
+            this.cbunidadefuncionario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbunidadefuncionario.Name = "cbunidadefuncionario";
-            this.cbunidadefuncionario.Size = new System.Drawing.Size(171, 27);
+            this.cbunidadefuncionario.Size = new System.Drawing.Size(227, 31);
             this.cbunidadefuncionario.TabIndex = 21;
             // 
             // cbativo
@@ -97,10 +95,10 @@
             this.cbativo.Checked = true;
             this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbativo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.cbativo.Location = new System.Drawing.Point(614, 74);
-            this.cbativo.Margin = new System.Windows.Forms.Padding(2);
+            this.cbativo.Location = new System.Drawing.Point(819, 91);
+            this.cbativo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbativo.Name = "cbativo";
-            this.cbativo.Size = new System.Drawing.Size(60, 21);
+            this.cbativo.Size = new System.Drawing.Size(73, 25);
             this.cbativo.TabIndex = 22;
             this.cbativo.Text = "Ativo";
             this.cbativo.UseVisualStyleBackColor = true;
@@ -112,10 +110,10 @@
             this.bsalvarfuncionario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bsalvarfuncionario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bsalvarfuncionario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.bsalvarfuncionario.Location = new System.Drawing.Point(1226, 62);
-            this.bsalvarfuncionario.Margin = new System.Windows.Forms.Padding(2);
+            this.bsalvarfuncionario.Location = new System.Drawing.Point(1635, 76);
+            this.bsalvarfuncionario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bsalvarfuncionario.Name = "bsalvarfuncionario";
-            this.bsalvarfuncionario.Size = new System.Drawing.Size(129, 42);
+            this.bsalvarfuncionario.Size = new System.Drawing.Size(172, 52);
             this.bsalvarfuncionario.TabIndex = 23;
             this.bsalvarfuncionario.Text = "Salvar";
             this.bsalvarfuncionario.UseVisualStyleBackColor = true;
@@ -126,10 +124,10 @@
             this.bexcluirfuncionario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bexcluirfuncionario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bexcluirfuncionario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bexcluirfuncionario.Location = new System.Drawing.Point(1516, 62);
-            this.bexcluirfuncionario.Margin = new System.Windows.Forms.Padding(2);
+            this.bexcluirfuncionario.Location = new System.Drawing.Point(2021, 76);
+            this.bexcluirfuncionario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bexcluirfuncionario.Name = "bexcluirfuncionario";
-            this.bexcluirfuncionario.Size = new System.Drawing.Size(129, 42);
+            this.bexcluirfuncionario.Size = new System.Drawing.Size(172, 52);
             this.bexcluirfuncionario.TabIndex = 24;
             this.bexcluirfuncionario.Text = "Excluir";
             this.bexcluirfuncionario.UseVisualStyleBackColor = true;
@@ -140,10 +138,10 @@
             this.beditarfuncionario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.beditarfuncionario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.beditarfuncionario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.beditarfuncionario.Location = new System.Drawing.Point(1373, 62);
-            this.beditarfuncionario.Margin = new System.Windows.Forms.Padding(2);
+            this.beditarfuncionario.Location = new System.Drawing.Point(1831, 76);
+            this.beditarfuncionario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.beditarfuncionario.Name = "beditarfuncionario";
-            this.beditarfuncionario.Size = new System.Drawing.Size(129, 42);
+            this.beditarfuncionario.Size = new System.Drawing.Size(172, 52);
             this.beditarfuncionario.TabIndex = 25;
             this.beditarfuncionario.Text = "Editar";
             this.beditarfuncionario.UseVisualStyleBackColor = true;
@@ -154,10 +152,10 @@
             this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbfiltrostatus.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbfiltrostatus.FormattingEnabled = true;
-            this.cbfiltrostatus.Location = new System.Drawing.Point(1684, 204);
-            this.cbfiltrostatus.Margin = new System.Windows.Forms.Padding(2);
+            this.cbfiltrostatus.Location = new System.Drawing.Point(2245, 251);
+            this.cbfiltrostatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbfiltrostatus.Name = "cbfiltrostatus";
-            this.cbfiltrostatus.Size = new System.Drawing.Size(122, 27);
+            this.cbfiltrostatus.Size = new System.Drawing.Size(161, 31);
             this.cbfiltrostatus.TabIndex = 26;
             // 
             // dgvfuncionarios
@@ -166,8 +164,7 @@
             this.dgvfuncionarios.AllowUserToDeleteRows = false;
             this.dgvfuncionarios.AllowUserToResizeColumns = false;
             this.dgvfuncionarios.AllowUserToResizeRows = false;
-            this.dgvfuncionarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvfuncionarios.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvfuncionarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvfuncionarios.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -186,15 +183,15 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvfuncionarios.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvfuncionarios.Location = new System.Drawing.Point(34, 232);
-            this.dgvfuncionarios.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvfuncionarios.Location = new System.Drawing.Point(45, 286);
+            this.dgvfuncionarios.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvfuncionarios.MultiSelect = false;
             this.dgvfuncionarios.Name = "dgvfuncionarios";
             this.dgvfuncionarios.ReadOnly = true;
             this.dgvfuncionarios.RowHeadersWidth = 51;
             this.dgvfuncionarios.RowTemplate.Height = 24;
             this.dgvfuncionarios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvfuncionarios.Size = new System.Drawing.Size(1778, 807);
+            this.dgvfuncionarios.Size = new System.Drawing.Size(2371, 993);
             this.dgvfuncionarios.TabIndex = 27;
             // 
             // ldicaedicao
@@ -202,10 +199,9 @@
             this.ldicaedicao.AutoSize = true;
             this.ldicaedicao.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.ldicaedicao.ForeColor = System.Drawing.Color.Firebrick;
-            this.ldicaedicao.Location = new System.Drawing.Point(23, 170);
-            this.ldicaedicao.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.ldicaedicao.Location = new System.Drawing.Point(40, 205);
             this.ldicaedicao.Name = "ldicaedicao";
-            this.ldicaedicao.Size = new System.Drawing.Size(366, 21);
+            this.ldicaedicao.Size = new System.Drawing.Size(456, 28);
             this.ldicaedicao.TabIndex = 28;
             this.ldicaedicao.Text = "Editando: pressione Esc para cancelar a edição.";
             this.ldicaedicao.Visible = false;
@@ -218,25 +214,24 @@
             this.pfuncionarios.Controls.Add(this.lunidadefuncionario);
             this.pfuncionarios.Dock = System.Windows.Forms.DockStyle.Top;
             this.pfuncionarios.Location = new System.Drawing.Point(0, 0);
-            this.pfuncionarios.Margin = new System.Windows.Forms.Padding(2);
+            this.pfuncionarios.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pfuncionarios.Name = "pfuncionarios";
-            this.pfuncionarios.Size = new System.Drawing.Size(1834, 145);
+            this.pfuncionarios.Size = new System.Drawing.Size(2445, 178);
             this.pfuncionarios.TabIndex = 29;
             // 
             // lregistrodefuncionarios
             // 
             this.lregistrodefuncionarios.AutoSize = true;
             this.lregistrodefuncionarios.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lregistrodefuncionarios.Location = new System.Drawing.Point(23, 207);
-            this.lregistrodefuncionarios.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lregistrodefuncionarios.Location = new System.Drawing.Point(40, 249);
             this.lregistrodefuncionarios.Name = "lregistrodefuncionarios";
-            this.lregistrodefuncionarios.Size = new System.Drawing.Size(200, 21);
+            this.lregistrodefuncionarios.Size = new System.Drawing.Size(249, 28);
             this.lregistrodefuncionarios.TabIndex = 32;
             this.lregistrodefuncionarios.Text = "Registro de funcionários:";
             // 
             // ucfuncionarios
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.lregistrodefuncionarios);
@@ -249,9 +244,9 @@
             this.Controls.Add(this.tbnomefuncionario);
             this.Controls.Add(this.lnomefuncionario);
             this.Controls.Add(this.pfuncionarios);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "ucfuncionarios";
-            this.Size = new System.Drawing.Size(1834, 1082);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.dgvfuncionarios)).EndInit();
             this.pfuncionarios.ResumeLayout(false);
             this.pfuncionarios.PerformLayout();

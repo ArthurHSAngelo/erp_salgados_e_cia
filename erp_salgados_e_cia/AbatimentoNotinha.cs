@@ -15,5 +15,7 @@ namespace erp_salgados_e_cia
         public string FormaPagamento { get; set; }
 
         public int IdCaixa { get; set; }
+
+        public string Unidade { get; set; }
     }
 }

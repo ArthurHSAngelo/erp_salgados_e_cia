@@ -222,6 +222,7 @@
     <Compile Include="Funcionario.cs" />
     <Compile Include="LogOperacao.cs" />
     <Compile Include="Perda.cs" />
+    <Compile Include="SaldoEstoque.cs" />
     <Compile Include="Inventario.cs" />
     <Compile Include="DadosPainel.cs" />
     <Compile Include="RelatorioPdf.cs" />

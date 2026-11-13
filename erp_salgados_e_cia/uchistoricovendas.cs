@@ -38,14 +38,11 @@ namespace erp_salgados_e_cia
                     vendas.Where(v => v.Status == "Cancelada");
             }
 
-            if (dadossistema.LoginEhDeAtendente)
-            {
-                vendasFiltradas =
-                    vendasFiltradas.Where(v =>
-                        dadossistema.caixas.Any(c =>
-                            c.IdCaixa == v.IdCaixa &&
-                            c.Unidade == dadossistema.UnidadeAtual));
-            }
+            vendasFiltradas =
+                vendasFiltradas.Where(v =>
+                    dadossistema.caixas.Any(c =>
+                        c.IdCaixa == v.IdCaixa &&
+                        c.Unidade == dadossistema.UnidadeAtual));
 
             fonteVendas.DataSource = vendasFiltradas.ToList();
 
@@ -113,13 +110,13 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
 
                 dgvhistoricovendas.Columns["ValorTotal"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvhistoricovendas.Columns["ValorRecebido"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvhistoricovendas.Columns["Troco"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
             }
         }
 
@@ -143,7 +140,8 @@ namespace erp_salgados_e_cia
 
             if (vendaLinha.Status == "Cancelada")
             {
-                e.CellStyle.ForeColor = Color.Gray;
+                e.CellStyle.BackColor = Color.FromArgb(255, 224, 224);
+                e.CellStyle.ForeColor = Color.Firebrick;
             }
 
             if (dgvhistoricovendas.Columns[e.ColumnIndex].Name == "NumeroMesa" &&

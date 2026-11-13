@@ -43,8 +43,7 @@
             this.dgvhistoricovendas.AllowUserToDeleteRows = false;
             this.dgvhistoricovendas.AllowUserToResizeColumns = false;
             this.dgvhistoricovendas.AllowUserToResizeRows = false;
-            this.dgvhistoricovendas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvhistoricovendas.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvhistoricovendas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvhistoricovendas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -63,24 +62,23 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvhistoricovendas.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvhistoricovendas.Location = new System.Drawing.Point(51, 91);
-            this.dgvhistoricovendas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvhistoricovendas.Location = new System.Drawing.Point(68, 112);
+            this.dgvhistoricovendas.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvhistoricovendas.Name = "dgvhistoricovendas";
             this.dgvhistoricovendas.ReadOnly = true;
             this.dgvhistoricovendas.RowHeadersWidth = 51;
             this.dgvhistoricovendas.RowTemplate.Height = 24;
             this.dgvhistoricovendas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvhistoricovendas.Size = new System.Drawing.Size(1735, 909);
+            this.dgvhistoricovendas.Size = new System.Drawing.Size(2313, 1119);
             this.dgvhistoricovendas.TabIndex = 0;
             // 
             // lhistoricovendas
             // 
             this.lhistoricovendas.AutoSize = true;
             this.lhistoricovendas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lhistoricovendas.Location = new System.Drawing.Point(47, 66);
-            this.lhistoricovendas.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lhistoricovendas.Location = new System.Drawing.Point(63, 81);
             this.lhistoricovendas.Name = "lhistoricovendas";
-            this.lhistoricovendas.Size = new System.Drawing.Size(164, 21);
+            this.lhistoricovendas.Size = new System.Drawing.Size(204, 28);
             this.lhistoricovendas.TabIndex = 1;
             this.lhistoricovendas.Text = "Histórico de vendas:";
             // 
@@ -90,10 +88,10 @@
             this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbfiltrostatus.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbfiltrostatus.FormattingEnabled = true;
-            this.cbfiltrostatus.Location = new System.Drawing.Point(1664, 65);
-            this.cbfiltrostatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbfiltrostatus.Location = new System.Drawing.Point(2219, 80);
+            this.cbfiltrostatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbfiltrostatus.Name = "cbfiltrostatus";
-            this.cbfiltrostatus.Size = new System.Drawing.Size(122, 27);
+            this.cbfiltrostatus.Size = new System.Drawing.Size(161, 31);
             this.cbfiltrostatus.TabIndex = 2;
             // 
             // bcancelarvenda
@@ -103,26 +101,26 @@
             this.bcancelarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcancelarvenda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bcancelarvenda.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bcancelarvenda.Location = new System.Drawing.Point(352, 33);
-            this.bcancelarvenda.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bcancelarvenda.Location = new System.Drawing.Point(469, 41);
+            this.bcancelarvenda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bcancelarvenda.Name = "bcancelarvenda";
-            this.bcancelarvenda.Size = new System.Drawing.Size(127, 42);
+            this.bcancelarvenda.Size = new System.Drawing.Size(169, 52);
             this.bcancelarvenda.TabIndex = 3;
             this.bcancelarvenda.Text = "Cancelar venda";
             this.bcancelarvenda.UseVisualStyleBackColor = false;
             // 
             // uchistoricovendas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.Controls.Add(this.bcancelarvenda);
             this.Controls.Add(this.cbfiltrostatus);
             this.Controls.Add(this.lhistoricovendas);
             this.Controls.Add(this.dgvhistoricovendas);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "uchistoricovendas";
-            this.Size = new System.Drawing.Size(1834, 1082);
+            this.Size = new System.Drawing.Size(2445, 1332);
             ((System.ComponentModel.ISupportInitialize)(this.dgvhistoricovendas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

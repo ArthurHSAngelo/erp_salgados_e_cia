@@ -181,6 +181,18 @@ namespace erp_salgados_e_cia
                     .DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.MiddleRight;
             }
+
+            foreach (string nomeColuna in new[]
+            {
+                "PrecoVenda",
+                "UltimoCusto",
+                "ValorACusto",
+                "ValorAPrecoVenda"
+            })
+            {
+                dgvestoquecompleto.Columns[nomeColuna]
+                    .DefaultCellStyle.Format = "C2";
+            }
         }
 
         private void AtualizarTotais(List<LinhaEstoque> linhas)

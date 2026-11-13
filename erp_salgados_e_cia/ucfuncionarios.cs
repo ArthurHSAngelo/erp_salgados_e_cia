@@ -30,18 +30,19 @@ namespace erp_salgados_e_cia
                 : cbfiltrostatus.SelectedItem.ToString();
 
             IEnumerable<Funcionario> funcionariosFiltrados =
-                funcionarios;
+                funcionarios.Where(f =>
+                    f.Unidade == dadossistema.UnidadeAtual);
 
             if (filtro == "Ativos")
             {
                 funcionariosFiltrados =
-                    funcionarios.Where(f =>
+                    funcionariosFiltrados.Where(f =>
                         f.Status == StatusCadastro.Ativo);
             }
             else if (filtro == "Inativos")
             {
                 funcionariosFiltrados =
-                    funcionarios.Where(f =>
+                    funcionariosFiltrados.Where(f =>
                         f.Status == StatusCadastro.Inativo);
             }
 

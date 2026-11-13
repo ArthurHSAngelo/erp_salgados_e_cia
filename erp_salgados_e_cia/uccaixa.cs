@@ -15,6 +15,8 @@ namespace erp_salgados_e_cia
         private BindingSource fonteCaixas =
             new BindingSource();
 
+        private bool editandoCaixa;
+
         public uccaixa()
         {
             InitializeComponent();
@@ -22,7 +24,190 @@ namespace erp_salgados_e_cia
             dgvcaixas.DataSource =
                 fonteCaixas;
 
+            beditarcaixa.Click += beditarcaixa_Click;
+            tbvalormaquininha.TextChanged += tbvalormaquininha_TextChanged;
+
             AtualizarTela();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape && editandoCaixa)
+            {
+                SairModoEdicao();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private Color CorDaDiferenca(decimal diferenca)
+        {
+            return diferenca == 0
+                ? Color.SeaGreen
+                : diferenca > 0
+                ? Color.RoyalBlue
+                : Color.Firebrick;
+        }
+
+        private void EntrarModoEdicao()
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            editandoCaixa = true;
+
+            CarregarResponsaveis();
+
+            cbresponsavel.SelectedItem = caixa.Responsavel;
+            tbvalorinicial.Text = caixa.ValorInicial.ToString("N2");
+            tbmotivoedicao.Clear();
+
+            labrircaixa.Text = "Editando abertura (ESC para cancelar)";
+            babrircaixa.Text = "Salvar edição";
+
+            AtualizarTela();
+
+            tbvalorinicial.Focus();
+        }
+
+        private void SairModoEdicao()
+        {
+            editandoCaixa = false;
+
+            tbmotivoedicao.Clear();
+            tbvalorinicial.Clear();
+            cbresponsavel.SelectedIndex = -1;
+
+            labrircaixa.Text = "Abrir caixa";
+            babrircaixa.Text = "Abrir caixa";
+
+            AtualizarTela();
+        }
+
+        private void beditarcaixa_Click(object sender, EventArgs e)
+        {
+            EntrarModoEdicao();
+        }
+
+        private void SalvarEdicaoCaixa()
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                SairModoEdicao();
+                return;
+            }
+
+            if (cbresponsavel.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Selecione o responsável.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                cbresponsavel.Focus();
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorinicial.Text,
+                    out decimal novoValorInicial)
+                || novoValorInicial < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor inicial válido (zero ou maior).",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorinicial.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbmotivoedicao.Text))
+            {
+                MessageBox.Show(
+                    "Informe o motivo da edição.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbmotivoedicao.Focus();
+                return;
+            }
+
+            if (novoValorInicial == caixa.ValorInicial &&
+                cbresponsavel.Text == caixa.Responsavel)
+            {
+                MessageBox.Show(
+                    "Nenhuma alteração foi feita.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            string autorizadoPor;
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                using (frmlogin autorizacao = new frmlogin(true))
+                {
+                    if (autorizacao.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    autorizadoPor = autorizacao.LoginAutorizador;
+                }
+            }
+            else
+            {
+                autorizadoPor = dadossistema.UsuarioLogado.Login;
+            }
+
+            string mensagem;
+
+            if (!dadossistema.EditarCaixa(
+                    caixa,
+                    novoValorInicial,
+                    cbresponsavel.Text,
+                    tbmotivoedicao.Text,
+                    autorizadoPor,
+                    out mensagem))
+            {
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            SairModoEdicao();
+
+            MessageBox.Show(
+                "Caixa editado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void CarregarResponsaveis()
@@ -57,8 +242,16 @@ namespace erp_salgados_e_cia
             Caixa caixa =
                 dadossistema.CaixaAberto();
 
-            pabertura.Visible = caixa == null;
-            presumo.Visible = caixa != null;
+            if (caixa == null)
+            {
+                editandoCaixa = false;
+            }
+
+            pabertura.Visible = caixa == null || editandoCaixa;
+            presumo.Visible = caixa != null && !editandoCaixa;
+
+            lmotivoedicao.Visible = editandoCaixa;
+            tbmotivoedicao.Visible = editandoCaixa;
 
             if (caixa != null)
             {
@@ -92,7 +285,11 @@ namespace erp_salgados_e_cia
                 ldinheiroesperado.Text =
                     $"Dinheiro esperado: R$ {caixa.DinheiroEsperado:N2}";
 
+                lmaquininhaesperada.Text =
+                    $"Maquininha esperada: R$ {caixa.MaquininhaEsperada:N2}";
+
                 AtualizarDiferenca();
+                AtualizarDiferencaMaquininha();
             }
 
             AtualizarHistorico();
@@ -102,6 +299,7 @@ namespace erp_salgados_e_cia
         {
             fonteCaixas.DataSource =
                 dadossistema.caixas
+                .Where(c => c.Unidade == dadossistema.UnidadeAtual)
                 .OrderByDescending(c => c.DataAbertura)
                 .ToList();
 
@@ -116,6 +314,9 @@ namespace erp_salgados_e_cia
                 dgvcaixas.Columns["DinheiroEsperado"].HeaderText = "Dinheiro esperado";
                 dgvcaixas.Columns["ValorContado"].HeaderText = "Contado";
                 dgvcaixas.Columns["Diferenca"].HeaderText = "Diferença";
+                dgvcaixas.Columns["MaquininhaEsperada"].HeaderText = "Maquininha esperada";
+                dgvcaixas.Columns["ValorMaquininha"].HeaderText = "Maquininha informada";
+                dgvcaixas.Columns["DiferencaMaquininha"].HeaderText = "Diferença maquininha";
 
                 dgvcaixas.Columns["DataAbertura"]
                     .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
@@ -131,11 +332,14 @@ namespace erp_salgados_e_cia
                     "TotalAbatimentos",
                     "DinheiroEsperado",
                     "ValorContado",
-                    "Diferenca"
+                    "Diferenca",
+                    "MaquininhaEsperada",
+                    "ValorMaquininha",
+                    "DiferencaMaquininha"
                 })
                 {
                     dgvcaixas.Columns[coluna]
-                        .DefaultCellStyle.Format = "N2";
+                        .DefaultCellStyle.Format = "C2";
                 }
             }
         }
@@ -166,9 +370,40 @@ namespace erp_salgados_e_cia
                 $"Diferença: R$ {diferenca:N2}";
 
             ldiferenca.ForeColor =
-                diferenca == 0
-                ? SystemColors.ControlText
-                : Color.Firebrick;
+                CorDaDiferenca(diferenca);
+        }
+
+        private void AtualizarDiferencaMaquininha()
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalormaquininha.Text,
+                    out decimal valorMaquininha))
+            {
+                ldiferencamaquininha.Text =
+                    "Diferença da maquininha: R$ 0,00";
+
+                ldiferencamaquininha.ForeColor =
+                    SystemColors.ControlText;
+
+                return;
+            }
+
+            decimal diferenca =
+                valorMaquininha - caixa.MaquininhaEsperada;
+
+            ldiferencamaquininha.Text =
+                $"Diferença da maquininha: R$ {diferenca:N2}";
+
+            ldiferencamaquininha.ForeColor =
+                CorDaDiferenca(diferenca);
         }
 
         private void tbvalorcontado_TextChanged(object sender, EventArgs e)
@@ -176,8 +411,19 @@ namespace erp_salgados_e_cia
             AtualizarDiferenca();
         }
 
+        private void tbvalormaquininha_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarDiferencaMaquininha();
+        }
+
         private void babrircaixa_Click(object sender, EventArgs e)
         {
+            if (editandoCaixa)
+            {
+                SalvarEdicaoCaixa();
+                return;
+            }
+
             if (dadossistema.CaixaAberto() != null)
             {
                 AtualizarTela();
@@ -278,7 +524,7 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            if (dadossistema.comandas.Count > 0)
+            if (dadossistema.ComandasDaUnidade().Count > 0)
             {
                 MessageBox.Show(
                     "Fechamento bloqueado: existem comandas abertas.",
@@ -306,13 +552,63 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            decimal valorMaquininha;
+
+            if (string.IsNullOrWhiteSpace(tbvalormaquininha.Text))
+            {
+                if (caixa.MaquininhaEsperada != 0)
+                {
+                    MessageBox.Show(
+                        "Informe o valor da maquininha (Crédito + Débito).",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbvalormaquininha.Focus();
+                    return;
+                }
+
+                valorMaquininha = 0m;
+            }
+            else if (!decimal.TryParse(
+                         tbvalormaquininha.Text,
+                         out valorMaquininha)
+                     || valorMaquininha < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor válido para a maquininha.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalormaquininha.Focus();
+                return;
+            }
+
             decimal diferenca =
                 valorContado - caixa.DinheiroEsperado;
 
+            decimal diferencaMaquininha =
+                valorMaquininha - caixa.MaquininhaEsperada;
+
+            string aviso = "";
+
+            if (diferenca != 0)
+            {
+                aviso += $"Diferença no dinheiro: R$ {diferenca:N2}. ";
+            }
+
+            if (diferencaMaquininha != 0)
+            {
+                aviso += $"Diferença na maquininha: R$ {diferencaMaquininha:N2}. ";
+            }
+
             DialogResult resposta = MessageBox.Show(
-                diferenca == 0
+                aviso == ""
                 ? "Deseja realmente fechar o caixa?"
-                : $"Há uma diferença de R$ {diferenca:N2} (contado menos esperado). Fechar o caixa mesmo assim?",
+                : aviso + "(informado menos esperado). Fechar o caixa mesmo assim?",
                 "Confirmar fechamento",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
@@ -324,6 +620,7 @@ namespace erp_salgados_e_cia
             }
 
             caixa.ValorContado = valorContado;
+            caixa.ValorMaquininha = valorMaquininha;
             caixa.DataFechamento = DateTime.Now;
             caixa.Status = "Fechado";
 
@@ -331,9 +628,10 @@ namespace erp_salgados_e_cia
                 TipoOperacaoLog.Alteracao,
                 "Caixa",
                 $"Caixa {caixa.IdCaixa}",
-                $"Status: Aberto → Fechado; Valor contado: {valorContado:N2}; Dinheiro esperado: {caixa.DinheiroEsperado:N2}; Diferença: {diferenca:N2}");
+                $"Status: Aberto → Fechado; Valor contado: {valorContado:N2}; Dinheiro esperado: {caixa.DinheiroEsperado:N2}; Diferença: {diferenca:N2}; Maquininha informada: {valorMaquininha:N2}; Maquininha esperada: {caixa.MaquininhaEsperada:N2}; Diferença maquininha: {diferencaMaquininha:N2}");
 
             tbvalorcontado.Clear();
+            tbvalormaquininha.Clear();
 
             AtualizarTela();
 

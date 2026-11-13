@@ -10,7 +10,11 @@ public class Produto
 
     public decimal EstoqueMinimo { get; set; }
 
-    public decimal EstoqueAtual { get; set; }
+    public decimal EstoqueAtual
+    {
+        get { return SaldoDoProduto(this, UnidadeAtual); }
+        set { DefinirSaldoDoProduto(this, UnidadeAtual, value); }
+    }
 
     public string UnidadeMedida { get; set; }
     public StatusCadastro Status { get; set; }

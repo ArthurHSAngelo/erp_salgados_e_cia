@@ -74,7 +74,7 @@ namespace erp_salgados_e_cia
                 dgvprodutos.Columns["EstoqueAtual"].DisplayIndex = 5;
 
                 dgvprodutos.Columns["Preco"]
-                    .DefaultCellStyle.Format = "N2";
+                    .DefaultCellStyle.Format = "C2";
 
                 dgvprodutos.Columns["EstoqueMinimo"]
                     .DefaultCellStyle.Format = "N2";
@@ -376,6 +376,8 @@ namespace erp_salgados_e_cia
             if (produtoSelecionado != null)
             {
                 string nomeExcluido = produtoSelecionado.Nome;
+
+                dadossistema.RemoverSaldosDoProduto(produtoSelecionado);
 
                 produtos.Remove(produtoSelecionado);
 

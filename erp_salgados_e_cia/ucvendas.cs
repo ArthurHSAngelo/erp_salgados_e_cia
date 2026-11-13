@@ -432,6 +432,7 @@ namespace erp_salgados_e_cia
                 comanda = new Comanda
                 {
                     NumeroMesa = numeroMesa,
+                    Unidade = dadossistema.UnidadeAtual,
                     IdCliente = idCliente
                 };
 

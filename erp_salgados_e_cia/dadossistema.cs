@@ -219,7 +219,8 @@ namespace erp_salgados_e_cia
                     operacao,
                     tabela,
                     registro,
-                    detalhes
+                    detalhes,
+                    UnidadeAtual
                 )
             );
         }
@@ -651,8 +652,13 @@ namespace erp_salgados_e_cia
         public static List<string> UsuariosDoLog()
         {
             return registrosLog
+                .Where(l => l.Unidade == UnidadeAtual)
                 .Select(l => l.Usuario)
-                .Concat(usuarios.Select(u => u.Login))
+                .Concat(usuarios
+                    .Where(u =>
+                        u.Unidade == null ||
+                        u.Unidade == UnidadeAtual)
+                    .Select(u => u.Login))
                 .Distinct()
                 .OrderBy(nome => nome)
                 .ToList();
@@ -661,6 +667,7 @@ namespace erp_salgados_e_cia
         public static List<string> TabelasDoLog()
         {
             return registrosLog
+                .Where(l => l.Unidade == UnidadeAtual)
                 .Select(l => l.Tabela)
                 .Distinct()
                 .OrderBy(nome => nome)
@@ -708,6 +715,7 @@ namespace erp_salgados_e_cia
 
             return registrosLog
                 .Where(l =>
+                    l.Unidade == UnidadeAtual &&
                     l.DataHora.Date >= dataInicial &&
                     l.DataHora.Date <= dataFinal &&
                     (string.IsNullOrEmpty(usuario) ||
@@ -783,6 +791,24 @@ namespace erp_salgados_e_cia
                 Status = StatusCadastro.Ativo
             });
 
+            usuarios.Add(new Usuario
+            {
+                IdUsuario = 5,
+                Login = "norte",
+                SenhaHash = GerarHashSenha(senhaCentro),
+                Perfil = PerfilUsuario.Atendente,
+                Unidade = "Lanchonete Norte",
+                Status = StatusCadastro.Ativo
+            });
+
+            funcionarios.Add(new Funcionario
+            {
+                IdFuncionario = 3,
+                Nome = "Bia Rocha",
+                Unidade = "Lanchonete Norte",
+                Status = StatusCadastro.Ativo
+            });
+
             funcionarios.Add(new Funcionario
             {
                 IdFuncionario = 1,
@@ -836,6 +862,86 @@ namespace erp_salgados_e_cia
             return caixas.FirstOrDefault(c =>
                 c.Unidade == UnidadeAtual &&
                 c.DataAbertura.Date == System.DateTime.Today);
+        }
+
+        public static bool EditarCaixa(
+            Caixa caixa,
+            decimal novoValorInicial,
+            string novoResponsavel,
+            string motivo,
+            string autorizadoPor,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (caixa == null)
+            {
+                mensagem = "Não há caixa aberto para editar.";
+                return false;
+            }
+
+            if (caixa.Status != "Aberto")
+            {
+                mensagem = "Somente um caixa aberto pode ser editado.";
+                return false;
+            }
+
+            if (caixa.Unidade != UnidadeAtual)
+            {
+                mensagem = "Este caixa pertence a outra unidade.";
+                return false;
+            }
+
+            if (novoValorInicial < 0)
+            {
+                mensagem = "O valor inicial não pode ser negativo.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(novoResponsavel) ||
+                !NomesFuncionariosAtivos(caixa.Unidade)
+                    .Contains(novoResponsavel))
+            {
+                mensagem = "Selecione um responsável ativo desta unidade.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo))
+            {
+                mensagem = "Informe o motivo da edição.";
+                return false;
+            }
+
+            if (novoValorInicial == caixa.ValorInicial &&
+                novoResponsavel == caixa.Responsavel)
+            {
+                mensagem = "Nenhuma alteração foi feita.";
+                return false;
+            }
+
+            string detalhes =
+                JuntarDetalhes(
+                    Alteracao(
+                        "Valor inicial",
+                        caixa.ValorInicial.ToString("N2"),
+                        novoValorInicial.ToString("N2")),
+                    Alteracao(
+                        "Responsável",
+                        caixa.Responsavel,
+                        novoResponsavel),
+                    $"Motivo: {motivo.Trim()}",
+                    $"Autorizado por: {autorizadoPor}");
+
+            caixa.ValorInicial = novoValorInicial;
+            caixa.Responsavel = novoResponsavel;
+
+            RegistrarLog(
+                TipoOperacaoLog.Alteracao,
+                "Caixa",
+                $"Caixa {caixa.IdCaixa}",
+                detalhes);
+
+            return true;
         }
 
         public static int ProximoIdCaixa()
@@ -906,9 +1012,68 @@ namespace erp_salgados_e_cia
                 .Sum(a => a.Valor);
         }
 
+        public static decimal SaldoDoProduto(
+            Produto produto,
+            string unidade)
+        {
+            SaldoEstoque saldo =
+                saldosestoque.FirstOrDefault(s =>
+                    s.Produto == produto &&
+                    s.Unidade == unidade);
+
+            return saldo == null
+                ? 0m
+                : saldo.Quantidade;
+        }
+
+        public static void DefinirSaldoDoProduto(
+            Produto produto,
+            string unidade,
+            decimal quantidade)
+        {
+            SaldoEstoque saldo =
+                saldosestoque.FirstOrDefault(s =>
+                    s.Produto == produto &&
+                    s.Unidade == unidade);
+
+            if (saldo == null)
+            {
+                saldosestoque.Add(
+                    new SaldoEstoque
+                    {
+                        Produto = produto,
+                        Unidade = unidade,
+                        Quantidade = quantidade
+                    });
+
+                return;
+            }
+
+            saldo.Quantidade = quantidade;
+        }
+
+        public static void RemoverSaldosDoProduto(Produto produto)
+        {
+            foreach (SaldoEstoque saldo in
+                saldosestoque
+                .Where(s => s.Produto == produto)
+                .ToList())
+            {
+                saldosestoque.Remove(saldo);
+            }
+        }
+
+        public static List<Comanda> ComandasDaUnidade()
+        {
+            return comandas
+                .Where(c => c.Unidade == UnidadeAtual)
+                .ToList();
+        }
+
         public static Comanda ComandaDaMesa(int numeroMesa)
         {
             return comandas.FirstOrDefault(c =>
+                c.Unidade == UnidadeAtual &&
                 c.NumeroMesa == numeroMesa);
         }
 
@@ -929,10 +1094,10 @@ namespace erp_salgados_e_cia
         public static decimal SaldoNotinha(int idCliente)
         {
             return notinhas
-                       .Where(n => n.IdCliente == idCliente)
+                       .Where(n => n.IdCliente == idCliente && n.Unidade == UnidadeAtual)
                        .Sum(n => n.Valor)
                    - abatimentos
-                       .Where(a => a.IdCliente == idCliente)
+                       .Where(a => a.IdCliente == idCliente && a.Unidade == UnidadeAtual)
                        .Sum(a => a.Valor);
         }
 
@@ -961,7 +1126,8 @@ namespace erp_salgados_e_cia
                     IdCliente = venda.IdCliente.Value,
                     IdVenda = venda.IdVenda,
                     DataHora = venda.DataHora,
-                    Valor = valorNotinha
+                    Valor = valorNotinha,
+                    Unidade = UnidadeAtual
                 }
             );
         }
@@ -1044,6 +1210,13 @@ namespace erp_salgados_e_cia
             {
                 mensagem =
                     "Cancelamento bloqueado: o caixa desta venda já foi fechado.";
+                return false;
+            }
+
+            if (caixaDaVenda.Unidade != UnidadeAtual)
+            {
+                mensagem =
+                    "Cancelamento bloqueado: esta venda pertence a outra unidade.";
                 return false;
             }
 
@@ -1429,6 +1602,9 @@ namespace erp_salgados_e_cia
         public static BindingList<Caixa> caixas =
             new BindingList<Caixa>();
 
+        public static BindingList<SaldoEstoque> saldosestoque =
+            new BindingList<SaldoEstoque>();
+
         public static BindingList<Usuario> usuarios =
             new BindingList<Usuario>();
 
@@ -1444,8 +1620,7 @@ namespace erp_salgados_e_cia
                 Preco = 5.00m,
                 Categoria = "Salgados",
                 UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10,
-                EstoqueAtual = 50
+                EstoqueMinimo = 10
             });
 
             produtos.Add(new Produto
@@ -1455,8 +1630,7 @@ namespace erp_salgados_e_cia
                 Preco = 4.50m,
                 Categoria = "Salgados",
                 UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10,
-                EstoqueAtual = 50
+                EstoqueMinimo = 10
             });
 
             produtos.Add(new Produto
@@ -1466,8 +1640,7 @@ namespace erp_salgados_e_cia
                 Preco = 6.00m,
                 Categoria = "Bebidas",
                 UnidadeMedida = "Unidade",
-                EstoqueMinimo = 5,
-                EstoqueAtual = 50
+                EstoqueMinimo = 5
             });
             produtos.Add(new Produto
             {
@@ -1476,8 +1649,7 @@ namespace erp_salgados_e_cia
                 Preco = 7.00m,
                 Categoria = "Salgados",
                 UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10,
-                EstoqueAtual = 30
+                EstoqueMinimo = 10
             });
 
             produtos.Add(new Produto
@@ -1487,9 +1659,20 @@ namespace erp_salgados_e_cia
                 Preco = 5.50m,
                 Categoria = "Bebidas",
                 UnidadeMedida = "Unidade",
-                EstoqueMinimo = 5,
-                EstoqueAtual = 20
+                EstoqueMinimo = 5
             });
+
+            // Saldos de teste por unidade (produto, Centro, Norte).
+            DefinirSaldoDoProduto(produtos[0], "Lanchonete Centro", 50);
+            DefinirSaldoDoProduto(produtos[0], "Lanchonete Norte", 20);
+            DefinirSaldoDoProduto(produtos[1], "Lanchonete Centro", 50);
+            DefinirSaldoDoProduto(produtos[1], "Lanchonete Norte", 15);
+            DefinirSaldoDoProduto(produtos[2], "Lanchonete Centro", 50);
+            DefinirSaldoDoProduto(produtos[2], "Lanchonete Norte", 30);
+            DefinirSaldoDoProduto(produtos[3], "Lanchonete Centro", 30);
+            DefinirSaldoDoProduto(produtos[3], "Lanchonete Norte", 10);
+            DefinirSaldoDoProduto(produtos[4], "Lanchonete Centro", 20);
+            DefinirSaldoDoProduto(produtos[4], "Lanchonete Norte", 12);
 
             fornecedores.Add(new Fornecedor
             {
@@ -1513,6 +1696,15 @@ namespace erp_salgados_e_cia
                 Cnpj = "11.222.333/0001-44",
                 Endereco = "Rua Principal",
                 Numero = "100"
+            });
+
+            unidades.Add(new Unidade
+            {
+                Status = StatusCadastro.Ativo,
+                Nome = "Lanchonete Norte",
+                Cnpj = "22.333.444/0001-55",
+                Endereco = "Avenida Norte",
+                Numero = "200"
             });
 
             clientes.Add(new Cliente
