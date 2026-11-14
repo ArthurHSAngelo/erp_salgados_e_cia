@@ -203,9 +203,28 @@ namespace erp_salgados_e_cia
             fonteItensComanda.DataSource = itensComandaVazia;
             dgvitenscomanda.DataSource = fonteItensComanda;
 
+            ConfigurarColunas(dgvitensvenda);
+            ConfigurarColunas(dgvitenscomanda);
+
             AtualizarTotalVenda();
 
             AtualizarCombos();
+        }
+
+        private void ConfigurarColunas(DataGridView grade)
+        {
+            if (grade.Columns.Count == 0)
+            {
+                return;
+            }
+
+            grade.Columns["Produto"].HeaderText = "Produto";
+            grade.Columns["Quantidade"].HeaderText = "Quantidade";
+            grade.Columns["PrecoUnitario"].HeaderText = "Preço unitário";
+            grade.Columns["Total"].HeaderText = "Total";
+
+            grade.Columns["PrecoUnitario"].DefaultCellStyle.Format = "C2";
+            grade.Columns["Total"].DefaultCellStyle.Format = "C2";
         }
 
         private void badicionaritem_Click(object sender, EventArgs e)

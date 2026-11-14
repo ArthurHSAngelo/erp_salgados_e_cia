@@ -35,14 +35,17 @@ namespace erp_salgados_e_cia
         private static readonly string[] Descricoes =
         {
             "Receita (vendas concluídas)",
-            "     Recebido (sem Notinha)",
-            "     Vendido em Notinha",
+            "Recebido (sem Notinha)",
+            "Vendido em Notinha",
             "(−) Despesas: compras de estoque",
-            "     Perdas (já incluídas nas compras)",
+            "Perdas (já incluídas nas compras)",
             "(=) Resultado",
             "Notinha: abatimentos recebidos no período",
             "Notinha a receber (vendido menos abatimentos)"
         };
+
+        private static readonly Color FundoResultado =
+            Color.FromArgb(255, 244, 230);
 
         private static decimal Valor(DreUnidade dre, int linha)
         {
@@ -276,8 +279,8 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            if (e.RowIndex == LinhaResultado ||
-                e.RowIndex == LinhaReceita)
+            if (e.RowIndex == LinhaReceita &&
+                e.ColumnIndex == 0)
             {
                 e.CellStyle.Font =
                     new Font(
@@ -292,18 +295,36 @@ namespace erp_salgados_e_cia
                 e.RowIndex == LinhaAReceber)
             {
                 e.CellStyle.ForeColor = Color.DimGray;
+
+                if (e.ColumnIndex == 0)
+                {
+                    e.CellStyle.Padding =
+                        new Padding(24, 0, 0, 0);
+                }
             }
 
-            if (e.RowIndex == LinhaResultado &&
-                e.ColumnIndex > 0 &&
-                e.Value is decimal)
+            if (e.RowIndex == LinhaResultado)
             {
-                decimal resultado = (decimal)e.Value;
+                e.CellStyle.BackColor = FundoResultado;
 
-                e.CellStyle.ForeColor =
-                    resultado < 0
-                    ? Color.Firebrick
-                    : Color.SeaGreen;
+                if (e.ColumnIndex == 0)
+                {
+                    e.CellStyle.Font =
+                        new Font(
+                            dgvdre.Font,
+                            FontStyle.Bold);
+                }
+
+                if (e.ColumnIndex > 0 &&
+                    e.Value is decimal)
+                {
+                    decimal resultado = (decimal)e.Value;
+
+                    e.CellStyle.ForeColor =
+                        resultado < 0
+                        ? Color.Firebrick
+                        : Color.SeaGreen;
+                }
             }
         }
 

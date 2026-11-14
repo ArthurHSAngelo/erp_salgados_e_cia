@@ -69,7 +69,7 @@
             this.cbprodutoperda.Location = new System.Drawing.Point(111, 89);
             this.cbprodutoperda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbprodutoperda.Name = "cbprodutoperda";
-            this.cbprodutoperda.Size = new System.Drawing.Size(207, 31);
+            this.cbprodutoperda.Size = new System.Drawing.Size(263, 31);
             this.cbprodutoperda.TabIndex = 7;
             // 
             // lsaldoperda
@@ -77,7 +77,7 @@
             this.lsaldoperda.AutoSize = true;
             this.lsaldoperda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.lsaldoperda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lsaldoperda.Location = new System.Drawing.Point(1383, 91);
+            this.lsaldoperda.Location = new System.Drawing.Point(1392, 92);
             this.lsaldoperda.Name = "lsaldoperda";
             this.lsaldoperda.Size = new System.Drawing.Size(151, 21);
             this.lsaldoperda.TabIndex = 8;
@@ -87,7 +87,7 @@
             // 
             this.lquantidadeperda.AutoSize = true;
             this.lquantidadeperda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lquantidadeperda.Location = new System.Drawing.Point(409, 64);
+            this.lquantidadeperda.Location = new System.Drawing.Point(447, 64);
             this.lquantidadeperda.Name = "lquantidadeperda";
             this.lquantidadeperda.Size = new System.Drawing.Size(104, 21);
             this.lquantidadeperda.TabIndex = 9;
@@ -97,7 +97,7 @@
             // 
             this.nudquantidadeperda.DecimalPlaces = 2;
             this.nudquantidadeperda.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.nudquantidadeperda.Location = new System.Drawing.Point(413, 89);
+            this.nudquantidadeperda.Location = new System.Drawing.Point(451, 89);
             this.nudquantidadeperda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudquantidadeperda.Minimum = new decimal(new int[] {
             1,
@@ -105,7 +105,7 @@
             0,
             0});
             this.nudquantidadeperda.Name = "nudquantidadeperda";
-            this.nudquantidadeperda.Size = new System.Drawing.Size(108, 30);
+            this.nudquantidadeperda.Size = new System.Drawing.Size(79, 30);
             this.nudquantidadeperda.TabIndex = 10;
             this.nudquantidadeperda.Value = new decimal(new int[] {
             1,
@@ -118,7 +118,7 @@
             this.lmotivoperda.AutoSize = true;
             this.lmotivoperda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.lmotivoperda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lmotivoperda.Location = new System.Drawing.Point(619, 64);
+            this.lmotivoperda.Location = new System.Drawing.Point(628, 65);
             this.lmotivoperda.Name = "lmotivoperda";
             this.lmotivoperda.Size = new System.Drawing.Size(69, 21);
             this.lmotivoperda.TabIndex = 11;
@@ -129,7 +129,7 @@
             this.cbmotivoperda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbmotivoperda.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbmotivoperda.FormattingEnabled = true;
-            this.cbmotivoperda.Location = new System.Drawing.Point(623, 89);
+            this.cbmotivoperda.Location = new System.Drawing.Point(632, 90);
             this.cbmotivoperda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbmotivoperda.Name = "cbmotivoperda";
             this.cbmotivoperda.Size = new System.Drawing.Size(207, 31);
@@ -140,7 +140,7 @@
             this.ldataperda.AutoSize = true;
             this.ldataperda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.ldataperda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.ldataperda.Location = new System.Drawing.Point(880, 64);
+            this.ldataperda.Location = new System.Drawing.Point(897, 64);
             this.ldataperda.Name = "ldataperda";
             this.ldataperda.Size = new System.Drawing.Size(121, 21);
             this.ldataperda.TabIndex = 13;
@@ -150,7 +150,7 @@
             // 
             this.dtpdataperda.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.dtpdataperda.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpdataperda.Location = new System.Drawing.Point(884, 89);
+            this.dtpdataperda.Location = new System.Drawing.Point(901, 89);
             this.dtpdataperda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dtpdataperda.Name = "dtpdataperda";
             this.dtpdataperda.Size = new System.Drawing.Size(173, 30);
@@ -161,7 +161,7 @@
             this.lresponsavelperda.AutoSize = true;
             this.lresponsavelperda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.lresponsavelperda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lresponsavelperda.Location = new System.Drawing.Point(1153, 64);
+            this.lresponsavelperda.Location = new System.Drawing.Point(1162, 65);
             this.lresponsavelperda.Name = "lresponsavelperda";
             this.lresponsavelperda.Size = new System.Drawing.Size(109, 21);
             this.lresponsavelperda.TabIndex = 15;
@@ -172,7 +172,7 @@
             this.cbresponsavelperda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbresponsavelperda.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.cbresponsavelperda.FormattingEnabled = true;
-            this.cbresponsavelperda.Location = new System.Drawing.Point(1157, 89);
+            this.cbresponsavelperda.Location = new System.Drawing.Point(1166, 88);
             this.cbresponsavelperda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbresponsavelperda.Name = "cbresponsavelperda";
             this.cbresponsavelperda.Size = new System.Drawing.Size(121, 31);
@@ -245,9 +245,15 @@
             this.pperdas.Controls.Add(this.nudquantidadeperda);
             this.pperdas.Controls.Add(this.lquantidadeperda);
             this.pperdas.Controls.Add(this.cbresponsavelperda);
+            this.pperdas.Controls.Add(this.lresponsavelperda);
+            this.pperdas.Controls.Add(this.dtpdataperda);
+            this.pperdas.Controls.Add(this.lsaldoperda);
+            this.pperdas.Controls.Add(this.ldataperda);
+            this.pperdas.Controls.Add(this.lmotivoperda);
+            this.pperdas.Controls.Add(this.cbmotivoperda);
             this.pperdas.Dock = System.Windows.Forms.DockStyle.Top;
             this.pperdas.Location = new System.Drawing.Point(0, 0);
-            this.pperdas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pperdas.Margin = new System.Windows.Forms.Padding(4);
             this.pperdas.Name = "pperdas";
             this.pperdas.Size = new System.Drawing.Size(2445, 178);
             this.pperdas.TabIndex = 23;
@@ -260,12 +266,6 @@
             this.Controls.Add(this.dgvperdas);
             this.Controls.Add(this.lperdasrecentes);
             this.Controls.Add(this.bregistrarperda);
-            this.Controls.Add(this.lresponsavelperda);
-            this.Controls.Add(this.dtpdataperda);
-            this.Controls.Add(this.ldataperda);
-            this.Controls.Add(this.cbmotivoperda);
-            this.Controls.Add(this.lmotivoperda);
-            this.Controls.Add(this.lsaldoperda);
             this.Controls.Add(this.cbprodutoperda);
             this.Controls.Add(this.lprodutoperda);
             this.Controls.Add(this.pperdas);

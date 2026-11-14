@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lfiltroproduto = new System.Windows.Forms.Label();
             this.lfiltrocategoria = new System.Windows.Forms.Label();
             this.tbfiltroproduto = new System.Windows.Forms.TextBox();
@@ -120,7 +122,7 @@
             // 
             this.cbfiltrocriticos.AutoSize = true;
             this.cbfiltrocriticos.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.cbfiltrocriticos.Location = new System.Drawing.Point(1096, 89);
+            this.cbfiltrocriticos.Location = new System.Drawing.Point(1159, 89);
             this.cbfiltrocriticos.Name = "cbfiltrocriticos";
             this.cbfiltrocriticos.Size = new System.Drawing.Size(217, 25);
             this.cbfiltrocriticos.TabIndex = 6;
@@ -145,7 +147,23 @@
             this.dgvestoquecompleto.AllowUserToDeleteRows = false;
             this.dgvestoquecompleto.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvestoquecompleto.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvestoquecompleto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvestoquecompleto.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvestoquecompleto.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvestoquecompleto.Location = new System.Drawing.Point(36, 286);
             this.dgvestoquecompleto.MultiSelect = false;
             this.dgvestoquecompleto.Name = "dgvestoquecompleto";
@@ -205,7 +223,7 @@
             this.cbfiltrounidade.FormattingEnabled = true;
             this.cbfiltrounidade.Location = new System.Drawing.Point(891, 89);
             this.cbfiltrounidade.Name = "cbfiltrounidade";
-            this.cbfiltrounidade.Size = new System.Drawing.Size(121, 31);
+            this.cbfiltrounidade.Size = new System.Drawing.Size(182, 31);
             this.cbfiltrounidade.TabIndex = 14;
             // 
             // lfiltrounidade
