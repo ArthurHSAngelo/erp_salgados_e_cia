@@ -446,7 +446,7 @@
             this.dgvcaixas.AllowUserToDeleteRows = false;
             this.dgvcaixas.AllowUserToResizeColumns = false;
             this.dgvcaixas.AllowUserToResizeRows = false;
-            this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvcaixas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
