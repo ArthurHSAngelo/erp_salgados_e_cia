@@ -163,9 +163,10 @@
             // lresultadolog
             // 
             this.lresultadolog.AutoSize = true;
-            this.lresultadolog.Location = new System.Drawing.Point(725, 105);
+            this.lresultadolog.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold);
+            this.lresultadolog.Location = new System.Drawing.Point(108, 222);
             this.lresultadolog.Name = "lresultadolog";
-            this.lresultadolog.Size = new System.Drawing.Size(0, 16);
+            this.lresultadolog.Size = new System.Drawing.Size(0, 25);
             this.lresultadolog.TabIndex = 23;
             // 
             // panel1
@@ -174,7 +175,6 @@
             this.panel1.Controls.Add(this.cbfiltrousuario);
             this.panel1.Controls.Add(this.lfiltroinicio);
             this.panel1.Controls.Add(this.lfiltrotabela);
-            this.panel1.Controls.Add(this.lresultadolog);
             this.panel1.Controls.Add(this.cbfiltrotabela);
             this.panel1.Controls.Add(this.lfiltrofim);
             this.panel1.Controls.Add(this.lperiodoaplicado);
@@ -232,12 +232,14 @@
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.dgvlog);
+            this.Controls.Add(this.lresultadolog);
             this.Name = "uclogoperacoes";
             this.Size = new System.Drawing.Size(2445, 1332);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvlog)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
