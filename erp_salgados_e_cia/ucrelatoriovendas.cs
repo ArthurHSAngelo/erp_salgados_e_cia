@@ -131,21 +131,35 @@ namespace erp_salgados_e_cia
             serieFormas = chartformas.Series[0];
         }
 
+        private bool semDadosDia;
+
+        private bool semDadosProdutos;
+
+        private bool semDadosFormas;
+
         private void AtualizarGraficos()
         {
             serieDia.Points.Clear();
 
-            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
-            {
-                int indice = serieDia.Points.AddXY(
-                    linha.Dia.ToString("dd/MM"),
-                    (double)linha.Faturamento);
+            bool semVendas =
+                ultimoRelatorio.Resumo.QuantidadeVendas == 0;
 
-                serieDia.Points[indice].ToolTip =
-                    $"{linha.Dia:dd/MM/yyyy}\n" +
-                    $"Faturamento: R$ {linha.Faturamento:N2}\n" +
-                    $"Vendas: {linha.QuantidadeVendas}";
+            if (!semVendas)
+            {
+                foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+                {
+                    int indice = serieDia.Points.AddXY(
+                        linha.Dia.ToString("dd/MM"),
+                        (double)linha.Faturamento);
+
+                    serieDia.Points[indice].ToolTip =
+                        $"{linha.Dia:dd/MM/yyyy}\n" +
+                        $"Faturamento: R$ {linha.Faturamento:N2}\n" +
+                        $"Vendas: {linha.QuantidadeVendas}";
+                }
             }
+
+            semDadosDia = serieDia.Points.Count == 0;
 
             serieProdutos.Points.Clear();
 
@@ -164,6 +178,8 @@ namespace erp_salgados_e_cia
                     $"Quantidade: {linha.Quantidade:0.##}\n" +
                     $"Receita: R$ {linha.Receita:N2}";
             }
+
+            semDadosProdutos = serieProdutos.Points.Count == 0;
 
             serieFormas.Points.Clear();
 
@@ -188,6 +204,19 @@ namespace erp_salgados_e_cia
 
                 DataPoint ponto = serieFormas.Points[indice];
 
+                decimal percentual =
+                    totalFormas == 0
+                    ? 0
+                    : linha.Valor / totalFormas;
+
+                ponto.Label =
+                    percentual >= 0.08m
+                    ? linha.Forma
+                    : " ";
+
+                ponto.Font =
+                    new Font("Segoe UI", 8.5f, FontStyle.Regular);
+
                 ponto.LegendText =
                     $"{linha.Forma}: R$ {linha.Valor:N2}";
 
@@ -196,12 +225,17 @@ namespace erp_salgados_e_cia
                     $"R$ {linha.Valor:N2} " +
                     $"({linha.Valor / totalFormas:P0})";
             }
+
+            semDadosFormas = serieFormas.Points.Count == 0;
         }
 
         private void AtualizarGrades()
         {
             dgvdia.DataSource = null;
-            dgvdia.DataSource = ultimoRelatorio.PorDia;
+            dgvdia.DataSource =
+                ultimoRelatorio.PorDia
+                .Where(linha => linha.QuantidadeVendas > 0)
+                .ToList();
 
             if (dgvdia.Columns.Count > 0)
             {
@@ -248,15 +282,18 @@ namespace erp_salgados_e_cia
         private void AtualizarVisualizacoes()
         {
             bool graficoDia = cbvisualizacaodia.SelectedIndex != 1;
-            chartdia.Visible = graficoDia;
+            chartdia.Visible = graficoDia && !semDadosDia;
+            lsemdadosprodutos.Visible = graficoDia && semDadosDia;
             dgvdia.Visible = !graficoDia;
 
             bool graficoProdutos = cbvisualizacaoprodutos.SelectedIndex != 1;
-            chartprodutos.Visible = graficoProdutos;
+            chartprodutos.Visible = graficoProdutos && !semDadosProdutos;
+            lsemdadosproduto.Visible = graficoProdutos && semDadosProdutos;
             dgvprodutos.Visible = !graficoProdutos;
 
             bool graficoFormas = cbvisualizacaoformas.SelectedIndex != 1;
-            chartformas.Visible = graficoFormas;
+            chartformas.Visible = graficoFormas && !semDadosFormas;
+            lsemdadosformas.Visible = graficoFormas && semDadosFormas;
             dgvformas.Visible = !graficoFormas;
         }
 
@@ -309,6 +346,7 @@ namespace erp_salgados_e_cia
                 AtualizarResumo();
                 AtualizarGraficos();
                 AtualizarGrades();
+                AtualizarVisualizacoes();
 
                 lperiodoaplicado.Text =
                     "Período: -";
@@ -359,6 +397,7 @@ namespace erp_salgados_e_cia
             AtualizarResumo();
             AtualizarGraficos();
             AtualizarGrades();
+            AtualizarVisualizacoes();
 
             lperiodoaplicado.Text =
                 $"Período: {periodoAplicado}";
@@ -550,7 +589,8 @@ namespace erp_salgados_e_cia
 
             List<string[]> linhasDias = new List<string[]>();
 
-            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+            foreach (LinhaFaturamentoDia linha in
+                ultimoRelatorio.PorDia.Where(d => d.QuantidadeVendas > 0))
             {
                 linhasDias.Add(
                     new string[]
@@ -637,7 +677,8 @@ namespace erp_salgados_e_cia
             csv.AppendLine("Faturamento por dia");
             csv.AppendLine("Dia;Vendas;Faturamento");
 
-            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+            foreach (LinhaFaturamentoDia linha in
+                ultimoRelatorio.PorDia.Where(d => d.QuantidadeVendas > 0))
             {
                 csv.AppendLine(
                     string.Join(

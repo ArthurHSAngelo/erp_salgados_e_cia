@@ -43,7 +43,7 @@
             this.lcancelamentovenda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lcancelamentovenda.Location = new System.Drawing.Point(8, 9);
             this.lcancelamentovenda.Name = "lcancelamentovenda";
-            this.lcancelamentovenda.Size = new System.Drawing.Size(92, 21);
+            this.lcancelamentovenda.Size = new System.Drawing.Size(115, 28);
             this.lcancelamentovenda.TabIndex = 0;
             this.lcancelamentovenda.Text = "Venda nº 0";
             // 
@@ -53,7 +53,7 @@
             this.lcancelamentototal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lcancelamentototal.Location = new System.Drawing.Point(8, 58);
             this.lcancelamentototal.Name = "lcancelamentototal";
-            this.lcancelamentototal.Size = new System.Drawing.Size(110, 21);
+            this.lcancelamentototal.Size = new System.Drawing.Size(142, 28);
             this.lcancelamentototal.TabIndex = 1;
             this.lcancelamentototal.Text = "Total: R$ 0,00";
             // 
@@ -61,9 +61,9 @@
             // 
             this.lmotivo.AutoSize = true;
             this.lmotivo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lmotivo.Location = new System.Drawing.Point(12, 120);
+            this.lmotivo.Location = new System.Drawing.Point(12, 113);
             this.lmotivo.Name = "lmotivo";
-            this.lmotivo.Size = new System.Drawing.Size(205, 21);
+            this.lmotivo.Size = new System.Drawing.Size(253, 28);
             this.lmotivo.TabIndex = 2;
             this.lmotivo.Text = "Motivo do cancelamento:";
             // 
@@ -85,9 +85,9 @@
             this.laviso.AutoSize = true;
             this.laviso.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.laviso.ForeColor = System.Drawing.Color.Firebrick;
-            this.laviso.Location = new System.Drawing.Point(8, 298);
+            this.laviso.Location = new System.Drawing.Point(7, 291);
             this.laviso.Name = "laviso";
-            this.laviso.Size = new System.Drawing.Size(508, 21);
+            this.laviso.Size = new System.Drawing.Size(637, 28);
             this.laviso.TabIndex = 4;
             this.laviso.Text = "Os produtos voltarão ao estoque. Esta ação não pode ser desfeita.\t";
             // 
@@ -122,7 +122,7 @@
             // 
             // frmcancelarvenda
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.CancelButton = this.bvoltar;

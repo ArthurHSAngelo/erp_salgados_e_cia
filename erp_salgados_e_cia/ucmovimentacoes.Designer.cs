@@ -205,6 +205,8 @@
             // 
             this.dgvmovimentacoes.AllowUserToAddRows = false;
             this.dgvmovimentacoes.AllowUserToDeleteRows = false;
+            this.dgvmovimentacoes.AllowUserToResizeColumns = false;
+            this.dgvmovimentacoes.AllowUserToResizeRows = false;
             this.dgvmovimentacoes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvmovimentacoes.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;

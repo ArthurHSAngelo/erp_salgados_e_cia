@@ -101,7 +101,7 @@
             this.bcancelarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcancelarvenda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bcancelarvenda.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bcancelarvenda.Location = new System.Drawing.Point(469, 41);
+            this.bcancelarvenda.Location = new System.Drawing.Point(83, 1247);
             this.bcancelarvenda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bcancelarvenda.Name = "bcancelarvenda";
             this.bcancelarvenda.Size = new System.Drawing.Size(169, 52);

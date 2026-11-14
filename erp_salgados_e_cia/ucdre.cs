@@ -45,7 +45,7 @@ namespace erp_salgados_e_cia
         };
 
         private static readonly Color FundoResultado =
-            Color.FromArgb(255, 244, 230);
+            Color.FromArgb(232, 245, 233);
 
         private static decimal Valor(DreUnidade dre, int linha)
         {
@@ -279,15 +279,6 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            if (e.RowIndex == LinhaReceita &&
-                e.ColumnIndex == 0)
-            {
-                e.CellStyle.Font =
-                    new Font(
-                        dgvdre.Font,
-                        FontStyle.Bold);
-            }
-
             if (e.RowIndex == LinhaRecebido ||
                 e.RowIndex == LinhaVendidoNotinha ||
                 e.RowIndex == LinhaPerdas ||
@@ -306,14 +297,6 @@ namespace erp_salgados_e_cia
             if (e.RowIndex == LinhaResultado)
             {
                 e.CellStyle.BackColor = FundoResultado;
-
-                if (e.ColumnIndex == 0)
-                {
-                    e.CellStyle.Font =
-                        new Font(
-                            dgvdre.Font,
-                            FontStyle.Bold);
-                }
 
                 if (e.ColumnIndex > 0 &&
                     e.Value is decimal)

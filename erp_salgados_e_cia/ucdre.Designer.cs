@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvdre = new System.Windows.Forms.DataGridView();
             this.pfiltrosdre = new System.Windows.Forms.Panel();
-            this.bexportardre = new System.Windows.Forms.Button();
+            this.lperiododre = new System.Windows.Forms.Label();
+            this.ldreaviso = new System.Windows.Forms.Label();
+            this.cbdreunidade = new System.Windows.Forms.ComboBox();
+            this.ldreunidade = new System.Windows.Forms.Label();
             this.dtpdrefim = new System.Windows.Forms.DateTimePicker();
             this.dtpdreinicio = new System.Windows.Forms.DateTimePicker();
             this.ldrefim = new System.Windows.Forms.Label();
             this.ldreinicio = new System.Windows.Forms.Label();
-            this.cbdreunidade = new System.Windows.Forms.ComboBox();
-            this.ldreunidade = new System.Windows.Forms.Label();
-            this.ldreaviso = new System.Windows.Forms.Label();
-            this.lperiododre = new System.Windows.Forms.Label();
+            this.bexportardre = new System.Windows.Forms.Button();
             this.ldrenota = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvdre)).BeginInit();
             this.pfiltrosdre.SuspendLayout();
@@ -54,24 +54,24 @@
             this.dgvdre.AllowUserToResizeRows = false;
             this.dgvdre.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvdre.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvdre.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvdre.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvdre.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvdre.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvdre.Location = new System.Drawing.Point(36, 313);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvdre.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvdre.Location = new System.Drawing.Point(36, 286);
             this.dgvdre.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvdre.MultiSelect = false;
             this.dgvdre.Name = "dgvdre";
@@ -85,7 +85,6 @@
             // pfiltrosdre
             // 
             this.pfiltrosdre.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
-            this.pfiltrosdre.Controls.Add(this.ldrenota);
             this.pfiltrosdre.Controls.Add(this.lperiododre);
             this.pfiltrosdre.Controls.Add(this.ldreaviso);
             this.pfiltrosdre.Controls.Add(this.cbdreunidade);
@@ -102,13 +101,94 @@
             this.pfiltrosdre.Size = new System.Drawing.Size(2445, 176);
             this.pfiltrosdre.TabIndex = 42;
             // 
+            // lperiododre
+            // 
+            this.lperiododre.AutoSize = true;
+            this.lperiododre.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold);
+            this.lperiododre.Location = new System.Drawing.Point(838, 88);
+            this.lperiododre.Name = "lperiododre";
+            this.lperiododre.Size = new System.Drawing.Size(94, 25);
+            this.lperiododre.TabIndex = 46;
+            this.lperiododre.Text = "Período: -";
+            // 
+            // ldreaviso
+            // 
+            this.ldreaviso.AutoSize = true;
+            this.ldreaviso.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.ldreaviso.Location = new System.Drawing.Point(1201, 92);
+            this.ldreaviso.Name = "ldreaviso";
+            this.ldreaviso.Size = new System.Drawing.Size(0, 21);
+            this.ldreaviso.TabIndex = 45;
+            // 
+            // cbdreunidade
+            // 
+            this.cbdreunidade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbdreunidade.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.cbdreunidade.FormattingEnabled = true;
+            this.cbdreunidade.Location = new System.Drawing.Point(573, 88);
+            this.cbdreunidade.Name = "cbdreunidade";
+            this.cbdreunidade.Size = new System.Drawing.Size(182, 31);
+            this.cbdreunidade.TabIndex = 44;
+            // 
+            // ldreunidade
+            // 
+            this.ldreunidade.AutoSize = true;
+            this.ldreunidade.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.ldreunidade.Location = new System.Drawing.Point(569, 64);
+            this.ldreunidade.Name = "ldreunidade";
+            this.ldreunidade.Size = new System.Drawing.Size(79, 21);
+            this.ldreunidade.TabIndex = 43;
+            this.ldreunidade.Text = "Unidade:";
+            // 
+            // dtpdrefim
+            // 
+            this.dtpdrefim.Checked = false;
+            this.dtpdrefim.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dtpdrefim.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpdrefim.Location = new System.Drawing.Point(345, 88);
+            this.dtpdrefim.Name = "dtpdrefim";
+            this.dtpdrefim.ShowCheckBox = true;
+            this.dtpdrefim.Size = new System.Drawing.Size(136, 27);
+            this.dtpdrefim.TabIndex = 42;
+            // 
+            // dtpdreinicio
+            // 
+            this.dtpdreinicio.Checked = false;
+            this.dtpdreinicio.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dtpdreinicio.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpdreinicio.Location = new System.Drawing.Point(111, 88);
+            this.dtpdreinicio.Name = "dtpdreinicio";
+            this.dtpdreinicio.ShowCheckBox = true;
+            this.dtpdreinicio.Size = new System.Drawing.Size(130, 27);
+            this.dtpdreinicio.TabIndex = 41;
+            // 
+            // ldrefim
+            // 
+            this.ldrefim.AutoSize = true;
+            this.ldrefim.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.ldrefim.Location = new System.Drawing.Point(341, 64);
+            this.ldrefim.Name = "ldrefim";
+            this.ldrefim.Size = new System.Drawing.Size(113, 21);
+            this.ldrefim.TabIndex = 40;
+            this.ldrefim.Text = "Período final:";
+            // 
+            // ldreinicio
+            // 
+            this.ldreinicio.AutoSize = true;
+            this.ldreinicio.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.ldreinicio.Location = new System.Drawing.Point(107, 64);
+            this.ldreinicio.Name = "ldreinicio";
+            this.ldreinicio.Size = new System.Drawing.Size(125, 21);
+            this.ldreinicio.TabIndex = 39;
+            this.ldreinicio.Text = "Período inicial:";
+            // 
             // bexportardre
             // 
             this.bexportardre.BackColor = System.Drawing.Color.White;
             this.bexportardre.FlatAppearance.BorderSize = 2;
             this.bexportardre.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bexportardre.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.bexportardre.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
+            this.bexportardre.ForeColor = System.Drawing.SystemColors.ControlText;
             this.bexportardre.Location = new System.Drawing.Point(1639, 76);
             this.bexportardre.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bexportardre.Name = "bexportardre";
@@ -117,85 +197,13 @@
             this.bexportardre.Text = "Exportar";
             this.bexportardre.UseVisualStyleBackColor = false;
             // 
-            // dtpdrefim
-            // 
-            this.dtpdrefim.Checked = false;
-            this.dtpdrefim.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpdrefim.Location = new System.Drawing.Point(523, 89);
-            this.dtpdrefim.Name = "dtpdrefim";
-            this.dtpdrefim.ShowCheckBox = true;
-            this.dtpdrefim.Size = new System.Drawing.Size(136, 22);
-            this.dtpdrefim.TabIndex = 42;
-            // 
-            // dtpdreinicio
-            // 
-            this.dtpdreinicio.Checked = false;
-            this.dtpdreinicio.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpdreinicio.Location = new System.Drawing.Point(257, 89);
-            this.dtpdreinicio.Name = "dtpdreinicio";
-            this.dtpdreinicio.ShowCheckBox = true;
-            this.dtpdreinicio.Size = new System.Drawing.Size(130, 22);
-            this.dtpdreinicio.TabIndex = 41;
-            // 
-            // ldrefim
-            // 
-            this.ldrefim.AutoSize = true;
-            this.ldrefim.Location = new System.Drawing.Point(418, 94);
-            this.ldrefim.Name = "ldrefim";
-            this.ldrefim.Size = new System.Drawing.Size(85, 16);
-            this.ldrefim.TabIndex = 40;
-            this.ldrefim.Text = "Período final:";
-            // 
-            // ldreinicio
-            // 
-            this.ldreinicio.AutoSize = true;
-            this.ldreinicio.Location = new System.Drawing.Point(139, 89);
-            this.ldreinicio.Name = "ldreinicio";
-            this.ldreinicio.Size = new System.Drawing.Size(95, 16);
-            this.ldreinicio.TabIndex = 39;
-            this.ldreinicio.Text = "Período inicial:";
-            // 
-            // cbdreunidade
-            // 
-            this.cbdreunidade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbdreunidade.FormattingEnabled = true;
-            this.cbdreunidade.Location = new System.Drawing.Point(830, 89);
-            this.cbdreunidade.Name = "cbdreunidade";
-            this.cbdreunidade.Size = new System.Drawing.Size(121, 24);
-            this.cbdreunidade.TabIndex = 44;
-            // 
-            // ldreunidade
-            // 
-            this.ldreunidade.AutoSize = true;
-            this.ldreunidade.Location = new System.Drawing.Point(746, 89);
-            this.ldreunidade.Name = "ldreunidade";
-            this.ldreunidade.Size = new System.Drawing.Size(62, 16);
-            this.ldreunidade.TabIndex = 43;
-            this.ldreunidade.Text = "Unidade:";
-            // 
-            // ldreaviso
-            // 
-            this.ldreaviso.AutoSize = true;
-            this.ldreaviso.Location = new System.Drawing.Point(1059, 89);
-            this.ldreaviso.Name = "ldreaviso";
-            this.ldreaviso.Size = new System.Drawing.Size(0, 16);
-            this.ldreaviso.TabIndex = 45;
-            // 
-            // lperiododre
-            // 
-            this.lperiododre.AutoSize = true;
-            this.lperiododre.Location = new System.Drawing.Point(1196, 96);
-            this.lperiododre.Name = "lperiododre";
-            this.lperiododre.Size = new System.Drawing.Size(65, 16);
-            this.lperiododre.TabIndex = 46;
-            this.lperiododre.Text = "Período: -";
-            // 
             // ldrenota
             // 
             this.ldrenota.AutoSize = true;
-            this.ldrenota.Location = new System.Drawing.Point(1144, 145);
+            this.ldrenota.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ldrenota.Location = new System.Drawing.Point(51, 226);
             this.ldrenota.Name = "ldrenota";
-            this.ldrenota.Size = new System.Drawing.Size(1101, 16);
+            this.ldrenota.Size = new System.Drawing.Size(1542, 25);
             this.ldrenota.TabIndex = 47;
             this.ldrenota.Text = "Receita = vendas concluídas (a Notinha conta na data da venda). Despesas = entrad" +
     "as de estoque do período. As perdas já estão incluídas nas compras e não são som" +
@@ -206,6 +214,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.ldrenota);
             this.Controls.Add(this.dgvdre);
             this.Controls.Add(this.pfiltrosdre);
             this.Name = "ucdre";
@@ -214,6 +223,7 @@
             this.pfiltrosdre.ResumeLayout(false);
             this.pfiltrosdre.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

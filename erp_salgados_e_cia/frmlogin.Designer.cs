@@ -41,24 +41,24 @@
             // llogin
             // 
             this.llogin.AutoSize = true;
-            this.llogin.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.llogin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.llogin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.llogin.Location = new System.Drawing.Point(207, 107);
             this.llogin.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.llogin.Name = "llogin";
-            this.llogin.Size = new System.Drawing.Size(57, 21);
+            this.llogin.Size = new System.Drawing.Size(69, 28);
             this.llogin.TabIndex = 1;
             this.llogin.Text = "Login:";
             // 
             // lsenha
             // 
             this.lsenha.AutoSize = true;
-            this.lsenha.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.lsenha.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lsenha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lsenha.Location = new System.Drawing.Point(207, 193);
             this.lsenha.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lsenha.Name = "lsenha";
-            this.lsenha.Size = new System.Drawing.Size(61, 21);
+            this.lsenha.Size = new System.Drawing.Size(74, 28);
             this.lsenha.TabIndex = 2;
             this.lsenha.Text = "Senha:";
             // 
@@ -76,29 +76,29 @@
             // 
             this.tblogin.BackColor = System.Drawing.Color.White;
             this.tblogin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tblogin.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.tblogin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tblogin.Location = new System.Drawing.Point(207, 138);
             this.tblogin.Margin = new System.Windows.Forms.Padding(4);
             this.tblogin.Name = "tblogin";
-            this.tblogin.Size = new System.Drawing.Size(302, 30);
+            this.tblogin.Size = new System.Drawing.Size(302, 34);
             this.tblogin.TabIndex = 5;
             // 
             // tbsenha
             // 
             this.tbsenha.BackColor = System.Drawing.Color.White;
             this.tbsenha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbsenha.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.tbsenha.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbsenha.Location = new System.Drawing.Point(207, 223);
             this.tbsenha.Margin = new System.Windows.Forms.Padding(4);
             this.tbsenha.Name = "tbsenha";
-            this.tbsenha.Size = new System.Drawing.Size(302, 30);
+            this.tbsenha.Size = new System.Drawing.Size(302, 34);
             this.tbsenha.TabIndex = 6;
             this.tbsenha.UseSystemPasswordChar = true;
             // 
             // bentrar
             // 
             this.bentrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bentrar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.bentrar.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bentrar.Location = new System.Drawing.Point(613, 353);
             this.bentrar.Margin = new System.Windows.Forms.Padding(4);
             this.bentrar.Name = "bentrar";
@@ -112,7 +112,7 @@
             this.bsairlogin.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.bsairlogin.FlatAppearance.BorderSize = 2;
             this.bsairlogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bsairlogin.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.bsairlogin.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bsairlogin.Location = new System.Drawing.Point(504, 353);
             this.bsairlogin.Margin = new System.Windows.Forms.Padding(4);
             this.bsairlogin.Name = "bsairlogin";
