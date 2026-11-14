@@ -1351,7 +1351,7 @@ namespace erp_salgados_e_cia
                         EstoqueAtual = saldo,
                         EstoqueMinimo = minimo,
                         Situacao =
-                            saldo < minimo
+                            saldo <= minimo
                                 ? "Crítico"
                                 : "Normal",
                         PrecoVenda = produto.Preco,

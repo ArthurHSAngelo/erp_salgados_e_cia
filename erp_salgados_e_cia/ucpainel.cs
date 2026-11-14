@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace erp_salgados_e_cia
 {
@@ -99,6 +100,27 @@ namespace erp_salgados_e_cia
                 : "Ver relatório";
         }
 
+        private Series serieCriticosSaldo;
+
+        private Series serieCriticosMinimo;
+
+        private void ConfigurarGraficoCriticos()
+        {
+            chartcriticos.Series.Clear();
+
+            serieCriticosSaldo = new Series("Saldo");
+            serieCriticosSaldo.ChartType = SeriesChartType.Column;
+            serieCriticosSaldo.Color = Color.Firebrick;
+            chartcriticos.Series.Add(serieCriticosSaldo);
+
+            serieCriticosMinimo = new Series("Mínimo");
+            serieCriticosMinimo.ChartType = SeriesChartType.Column;
+            serieCriticosMinimo.Color = Color.Gray;
+            chartcriticos.Series.Add(serieCriticosMinimo);
+
+            chartcriticos.ChartAreas[0].AxisY.LabelStyle.Format = "0.##";
+        }
+
         private void AtualizarEstoque(DadosPainel dados)
         {
             ltotalcriticos.Text =
@@ -106,20 +128,26 @@ namespace erp_salgados_e_cia
                 ? "Nenhum produto em estoque crítico."
                 : $"Em estoque crítico: {dados.TotalCriticos}";
 
-            dgvcriticos.DataSource = null;
-            dgvcriticos.DataSource = dados.Criticos;
+            serieCriticosSaldo.Points.Clear();
+            serieCriticosMinimo.Points.Clear();
 
-            if (dgvcriticos.Columns.Count > 0)
+            foreach (LinhaCriticoPainel linha in dados.Criticos)
             {
-                dgvcriticos.Columns["Produto"].HeaderText = "Produto";
-                dgvcriticos.Columns["Saldo"].HeaderText = "Saldo";
-                dgvcriticos.Columns["Minimo"].HeaderText = "Mínimo";
+                int indiceSaldo =
+                    serieCriticosSaldo.Points.AddXY(
+                        linha.Produto,
+                        (double)linha.Saldo);
 
-                dgvcriticos.Columns["Saldo"]
-                    .DefaultCellStyle.Format = "N2";
+                serieCriticosSaldo.Points[indiceSaldo].ToolTip =
+                    $"{linha.Produto}\nSaldo: {linha.Saldo:0.##}";
 
-                dgvcriticos.Columns["Minimo"]
-                    .DefaultCellStyle.Format = "N2";
+                int indiceMinimo =
+                    serieCriticosMinimo.Points.AddXY(
+                        linha.Produto,
+                        (double)linha.Minimo);
+
+                serieCriticosMinimo.Points[indiceMinimo].ToolTip =
+                    $"{linha.Produto}\nMínimo: {linha.Minimo:0.##}";
             }
         }
 
@@ -180,7 +208,7 @@ namespace erp_salgados_e_cia
         {
             InitializeComponent();
 
-            ConfigurarGrade(dgvcriticos);
+            ConfigurarGraficoCriticos();
             ConfigurarGrade(dgvultimasvendas);
             ConfigurarGrade(dgvatividade);
 

@@ -88,6 +88,12 @@ namespace erp_salgados_e_cia
                 {
                     cbfiltrounidade.SelectedItem = unidadeSelecionada;
                 }
+                else if (cbfiltrounidade.Items.Contains(
+                    dadossistema.UnidadeAtual))
+                {
+                    cbfiltrounidade.SelectedItem =
+                        dadossistema.UnidadeAtual;
+                }
                 else
                 {
                     cbfiltrounidade.SelectedIndex = 0;
@@ -380,6 +386,7 @@ namespace erp_salgados_e_cia
 
             if (linha.Situacao == "Crítico")
             {
+                e.CellStyle.BackColor = Color.FromArgb(255, 224, 224);
                 e.CellStyle.ForeColor = Color.Firebrick;
             }
 

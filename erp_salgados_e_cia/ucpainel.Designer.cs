@@ -32,8 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.ppaineltopo = new System.Windows.Forms.Panel();
             this.lunidadepainel = new System.Windows.Forms.Label();
             this.latualizacaopainel = new System.Windows.Forms.Label();
@@ -52,7 +53,6 @@
             this.ltitulonotinha = new System.Windows.Forms.Label();
             this.lnotinhatotal = new System.Windows.Forms.Label();
             this.pcartaoestoque = new System.Windows.Forms.Panel();
-            this.dgvcriticos = new System.Windows.Forms.DataGridView();
             this.llinkestoque = new System.Windows.Forms.LinkLabel();
             this.ltituloestoque = new System.Windows.Forms.Label();
             this.ltotalcriticos = new System.Windows.Forms.Label();
@@ -71,6 +71,7 @@
             this.lresponsavelcaixa = new System.Windows.Forms.Label();
             this.linicialcaixa = new System.Windows.Forms.Label();
             this.ltitulocaixa = new System.Windows.Forms.Label();
+            this.chartcriticos = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.ppaineltopo.SuspendLayout();
             this.tlppainel.SuspendLayout();
             this.pcartaoatividade.SuspendLayout();
@@ -79,9 +80,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvultimasvendas)).BeginInit();
             this.pcartaonotinha.SuspendLayout();
             this.pcartaoestoque.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvcriticos)).BeginInit();
             this.pcartaovendas.SuspendLayout();
             this.pcartaocaixa.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartcriticos)).BeginInit();
             this.SuspendLayout();
             // 
             // ppaineltopo
@@ -203,7 +204,7 @@
             // 
             this.ltituloatividade.AutoSize = true;
             this.ltituloatividade.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ltituloatividade.Location = new System.Drawing.Point(-1, -1);
+            this.ltituloatividade.Location = new System.Drawing.Point(13, 10);
             this.ltituloatividade.Name = "ltituloatividade";
             this.ltituloatividade.Size = new System.Drawing.Size(180, 28);
             this.ltituloatividade.TabIndex = 32;
@@ -273,7 +274,7 @@
             // 
             this.ltituloultimas.AutoSize = true;
             this.ltituloultimas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltituloultimas.Location = new System.Drawing.Point(-1, 0);
+            this.ltituloultimas.Location = new System.Drawing.Point(15, 10);
             this.ltituloultimas.Name = "ltituloultimas";
             this.ltituloultimas.Size = new System.Drawing.Size(156, 28);
             this.ltituloultimas.TabIndex = 29;
@@ -319,11 +320,11 @@
             // 
             this.ltitulonotinha.AutoSize = true;
             this.ltitulonotinha.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltitulonotinha.Location = new System.Drawing.Point(-1, 0);
+            this.ltitulonotinha.Location = new System.Drawing.Point(12, 10);
             this.ltitulonotinha.Name = "ltitulonotinha";
-            this.ltitulonotinha.Size = new System.Drawing.Size(255, 28);
+            this.ltitulonotinha.Size = new System.Drawing.Size(199, 28);
             this.ltitulonotinha.TabIndex = 21;
-            this.ltitulonotinha.Text = "Notinha em aberto (rede)";
+            this.ltitulonotinha.Text = "Notinha em aberto ";
             // 
             // lnotinhatotal
             // 
@@ -338,7 +339,7 @@
             // pcartaoestoque
             // 
             this.pcartaoestoque.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pcartaoestoque.Controls.Add(this.dgvcriticos);
+            this.pcartaoestoque.Controls.Add(this.chartcriticos);
             this.pcartaoestoque.Controls.Add(this.llinkestoque);
             this.pcartaoestoque.Controls.Add(this.ltituloestoque);
             this.pcartaoestoque.Controls.Add(this.ltotalcriticos);
@@ -348,41 +349,6 @@
             this.pcartaoestoque.Name = "pcartaoestoque";
             this.pcartaoestoque.Size = new System.Drawing.Size(803, 545);
             this.pcartaoestoque.TabIndex = 2;
-            // 
-            // dgvcriticos
-            // 
-            this.dgvcriticos.AllowUserToAddRows = false;
-            this.dgvcriticos.AllowUserToDeleteRows = false;
-            this.dgvcriticos.AllowUserToResizeColumns = false;
-            this.dgvcriticos.AllowUserToResizeRows = false;
-            this.dgvcriticos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvcriticos.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcriticos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvcriticos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcriticos.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvcriticos.Location = new System.Drawing.Point(32, 77);
-            this.dgvcriticos.MultiSelect = false;
-            this.dgvcriticos.Name = "dgvcriticos";
-            this.dgvcriticos.ReadOnly = true;
-            this.dgvcriticos.RowHeadersWidth = 51;
-            this.dgvcriticos.RowTemplate.Height = 24;
-            this.dgvcriticos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvcriticos.Size = new System.Drawing.Size(749, 403);
-            this.dgvcriticos.TabIndex = 28;
             // 
             // llinkestoque
             // 
@@ -400,11 +366,11 @@
             // 
             this.ltituloestoque.AutoSize = true;
             this.ltituloestoque.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltituloestoque.Location = new System.Drawing.Point(-1, 0);
+            this.ltituloestoque.Location = new System.Drawing.Point(13, 10);
             this.ltituloestoque.Name = "ltituloestoque";
-            this.ltituloestoque.Size = new System.Drawing.Size(215, 28);
+            this.ltituloestoque.Size = new System.Drawing.Size(153, 28);
             this.ltituloestoque.TabIndex = 22;
-            this.ltituloestoque.Text = "Estoque crítico (rede)";
+            this.ltituloestoque.Text = "Estoque crítico";
             // 
             // ltotalcriticos
             // 
@@ -488,7 +454,7 @@
             // 
             this.ltitulovendas.AutoSize = true;
             this.ltitulovendas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltitulovendas.Location = new System.Drawing.Point(-1, 0);
+            this.ltitulovendas.Location = new System.Drawing.Point(15, 10);
             this.ltitulovendas.Name = "ltitulovendas";
             this.ltitulovendas.Size = new System.Drawing.Size(155, 28);
             this.ltitulovendas.TabIndex = 20;
@@ -577,11 +543,30 @@
             // 
             this.ltitulocaixa.AutoSize = true;
             this.ltitulocaixa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.ltitulocaixa.Location = new System.Drawing.Point(3, 0);
+            this.ltitulocaixa.Location = new System.Drawing.Point(12, 10);
             this.ltitulocaixa.Name = "ltitulocaixa";
             this.ltitulocaixa.Size = new System.Drawing.Size(139, 28);
             this.ltitulocaixa.TabIndex = 14;
             this.ltitulocaixa.Text = "Caixa de hoje";
+            // 
+            // chartcriticos
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chartcriticos.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartcriticos.Legends.Add(legend1);
+            this.chartcriticos.Location = new System.Drawing.Point(32, 77);
+            this.chartcriticos.Name = "chartcriticos";
+            this.chartcriticos.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            this.chartcriticos.PaletteCustomColors = new System.Drawing.Color[] {
+        System.Drawing.Color.DarkOrange};
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartcriticos.Series.Add(series1);
+            this.chartcriticos.Size = new System.Drawing.Size(749, 403);
+            this.chartcriticos.TabIndex = 29;
+            this.chartcriticos.Text = "chart1";
             // 
             // ucpainel
             // 
@@ -604,11 +589,11 @@
             this.pcartaonotinha.PerformLayout();
             this.pcartaoestoque.ResumeLayout(false);
             this.pcartaoestoque.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvcriticos)).EndInit();
             this.pcartaovendas.ResumeLayout(false);
             this.pcartaovendas.PerformLayout();
             this.pcartaocaixa.ResumeLayout(false);
             this.pcartaocaixa.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartcriticos)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -649,7 +634,7 @@
         private System.Windows.Forms.Label lnotinhaclientes;
         private System.Windows.Forms.Label ltitulonotinha;
         private System.Windows.Forms.Label lnotinhatotal;
-        private System.Windows.Forms.DataGridView dgvcriticos;
         private System.Windows.Forms.Label laberturacaixa;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartcriticos;
     }
 }
