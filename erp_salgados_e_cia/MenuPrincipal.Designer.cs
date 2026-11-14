@@ -51,6 +51,7 @@
             this.bfuncionarios = new System.Windows.Forms.Button();
             this.barelatorios = new erp_salgados_e_cia.botaoarredondado();
             this.panelrelatorios = new System.Windows.Forms.Panel();
+            this.bdre = new System.Windows.Forms.Button();
             this.brelatoriovendas = new System.Windows.Forms.Button();
             this.bestoquecompleto = new System.Windows.Forms.Button();
             this.bmovimentacoes = new System.Windows.Forms.Button();
@@ -66,7 +67,6 @@
             this.tsmunidade = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmsair = new System.Windows.Forms.ToolStripMenuItem();
-            this.bdre = new System.Windows.Forms.Button();
             this.pnlmenu.SuspendLayout();
             this.flpmenu.SuspendLayout();
             this.pvendas.SuspendLayout();
@@ -468,6 +468,21 @@
             this.panelrelatorios.TabIndex = 19;
             this.panelrelatorios.Visible = false;
             // 
+            // bdre
+            // 
+            this.bdre.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bdre.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.bdre.ForeColor = System.Drawing.Color.DarkOrange;
+            this.bdre.Location = new System.Drawing.Point(3, 129);
+            this.bdre.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bdre.Name = "bdre";
+            this.bdre.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.bdre.Size = new System.Drawing.Size(251, 34);
+            this.bdre.TabIndex = 3;
+            this.bdre.Text = "● DRE";
+            this.bdre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.bdre.UseVisualStyleBackColor = true;
+            // 
             // brelatoriovendas
             // 
             this.brelatoriovendas.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -668,21 +683,6 @@
             this.tsmsair.Name = "tsmsair";
             this.tsmsair.Size = new System.Drawing.Size(215, 24);
             this.tsmsair.Text = "Sair";
-            // 
-            // bdre
-            // 
-            this.bdre.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bdre.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
-            this.bdre.ForeColor = System.Drawing.Color.DarkOrange;
-            this.bdre.Location = new System.Drawing.Point(3, 129);
-            this.bdre.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.bdre.Name = "bdre";
-            this.bdre.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.bdre.Size = new System.Drawing.Size(251, 34);
-            this.bdre.TabIndex = 3;
-            this.bdre.Text = "● DRE";
-            this.bdre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bdre.UseVisualStyleBackColor = true;
             // 
             // MenuPrincipal
             // 

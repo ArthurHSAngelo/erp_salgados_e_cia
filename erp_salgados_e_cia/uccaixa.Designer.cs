@@ -28,16 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.labrircaixa = new System.Windows.Forms.Label();
             this.lvalorinicial = new System.Windows.Forms.Label();
             this.lresponsavel = new System.Windows.Forms.Label();
             this.pabertura = new System.Windows.Forms.Panel();
+            this.tbmotivoedicao = new System.Windows.Forms.TextBox();
+            this.lmotivoedicao = new System.Windows.Forms.Label();
             this.babrircaixa = new System.Windows.Forms.Button();
             this.cbresponsavel = new System.Windows.Forms.ComboBox();
             this.tbvalorinicial = new System.Windows.Forms.TextBox();
             this.presumo = new System.Windows.Forms.Panel();
+            this.beditarcaixa = new System.Windows.Forms.Button();
+            this.tbvalormaquininha = new System.Windows.Forms.TextBox();
+            this.ldiferencamaquininha = new System.Windows.Forms.Label();
+            this.lvalormaquininha = new System.Windows.Forms.Label();
+            this.lmaquininhaesperada = new System.Windows.Forms.Label();
             this.ldebito = new System.Windows.Forms.Label();
             this.bfecharcaixa = new System.Windows.Forms.Button();
             this.tbvalorcontado = new System.Windows.Forms.TextBox();
@@ -56,13 +63,6 @@
             this.ltotalvendas = new System.Windows.Forms.Label();
             this.lhistoricocaixas = new System.Windows.Forms.Label();
             this.dgvcaixas = new System.Windows.Forms.DataGridView();
-            this.lmotivoedicao = new System.Windows.Forms.Label();
-            this.tbmotivoedicao = new System.Windows.Forms.TextBox();
-            this.lmaquininhaesperada = new System.Windows.Forms.Label();
-            this.lvalormaquininha = new System.Windows.Forms.Label();
-            this.ldiferencamaquininha = new System.Windows.Forms.Label();
-            this.tbvalormaquininha = new System.Windows.Forms.TextBox();
-            this.beditarcaixa = new System.Windows.Forms.Button();
             this.pabertura.SuspendLayout();
             this.presumo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvcaixas)).BeginInit();
@@ -115,6 +115,28 @@
             this.pabertura.Name = "pabertura";
             this.pabertura.Size = new System.Drawing.Size(585, 280);
             this.pabertura.TabIndex = 4;
+            // 
+            // tbmotivoedicao
+            // 
+            this.tbmotivoedicao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbmotivoedicao.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.tbmotivoedicao.Location = new System.Drawing.Point(102, 131);
+            this.tbmotivoedicao.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbmotivoedicao.Name = "tbmotivoedicao";
+            this.tbmotivoedicao.Size = new System.Drawing.Size(277, 30);
+            this.tbmotivoedicao.TabIndex = 8;
+            this.tbmotivoedicao.Visible = false;
+            // 
+            // lmotivoedicao
+            // 
+            this.lmotivoedicao.AutoSize = true;
+            this.lmotivoedicao.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lmotivoedicao.Location = new System.Drawing.Point(15, 131);
+            this.lmotivoedicao.Name = "lmotivoedicao";
+            this.lmotivoedicao.Size = new System.Drawing.Size(81, 25);
+            this.lmotivoedicao.TabIndex = 7;
+            this.lmotivoedicao.Text = "Motivo:";
+            this.lmotivoedicao.Visible = false;
             // 
             // babrircaixa
             // 
@@ -184,6 +206,61 @@
             this.presumo.Name = "presumo";
             this.presumo.Size = new System.Drawing.Size(721, 737);
             this.presumo.TabIndex = 5;
+            // 
+            // beditarcaixa
+            // 
+            this.beditarcaixa.BackColor = System.Drawing.Color.White;
+            this.beditarcaixa.FlatAppearance.BorderSize = 2;
+            this.beditarcaixa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.beditarcaixa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.beditarcaixa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
+            this.beditarcaixa.Location = new System.Drawing.Point(346, 671);
+            this.beditarcaixa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.beditarcaixa.Name = "beditarcaixa";
+            this.beditarcaixa.Size = new System.Drawing.Size(172, 52);
+            this.beditarcaixa.TabIndex = 27;
+            this.beditarcaixa.Text = "Editar abertura";
+            this.beditarcaixa.UseVisualStyleBackColor = false;
+            // 
+            // tbvalormaquininha
+            // 
+            this.tbvalormaquininha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.tbvalormaquininha.Location = new System.Drawing.Point(228, 553);
+            this.tbvalormaquininha.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbvalormaquininha.Name = "tbvalormaquininha";
+            this.tbvalormaquininha.Size = new System.Drawing.Size(141, 30);
+            this.tbvalormaquininha.TabIndex = 26;
+            // 
+            // ldiferencamaquininha
+            // 
+            this.ldiferencamaquininha.AutoSize = true;
+            this.ldiferencamaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.ldiferencamaquininha.Location = new System.Drawing.Point(20, 590);
+            this.ldiferencamaquininha.Name = "ldiferencamaquininha";
+            this.ldiferencamaquininha.Size = new System.Drawing.Size(311, 25);
+            this.ldiferencamaquininha.TabIndex = 25;
+            this.ldiferencamaquininha.Text = "Diferença da maquininha: R$ 0,00";
+            // 
+            // lvalormaquininha
+            // 
+            this.lvalormaquininha.AutoSize = true;
+            this.lvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lvalormaquininha.Location = new System.Drawing.Point(20, 553);
+            this.lvalormaquininha.Name = "lvalormaquininha";
+            this.lvalormaquininha.Size = new System.Drawing.Size(202, 25);
+            this.lvalormaquininha.TabIndex = 24;
+            this.lvalormaquininha.Text = "Valor da maquininha:";
+            // 
+            // lmaquininhaesperada
+            // 
+            this.lmaquininhaesperada.AutoSize = true;
+            this.lmaquininhaesperada.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lmaquininhaesperada.Location = new System.Drawing.Point(20, 518);
+            this.lmaquininhaesperada.Name = "lmaquininhaesperada";
+            this.lmaquininhaesperada.Size = new System.Drawing.Size(280, 25);
+            this.lmaquininhaesperada.TabIndex = 23;
+            this.lmaquininhaesperada.Text = "Maquininha esperada: R$ 0,00";
             // 
             // ldebito
             // 
@@ -369,26 +446,25 @@
             this.dgvcaixas.AllowUserToDeleteRows = false;
             this.dgvcaixas.AllowUserToResizeColumns = false;
             this.dgvcaixas.AllowUserToResizeRows = false;
-            this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvcaixas.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvcaixas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvcaixas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvcaixas.Location = new System.Drawing.Point(840, 50);
             this.dgvcaixas.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvcaixas.MultiSelect = false;
@@ -399,83 +475,6 @@
             this.dgvcaixas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvcaixas.Size = new System.Drawing.Size(1491, 1212);
             this.dgvcaixas.TabIndex = 23;
-            // 
-            // lmotivoedicao
-            // 
-            this.lmotivoedicao.AutoSize = true;
-            this.lmotivoedicao.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lmotivoedicao.Location = new System.Drawing.Point(15, 131);
-            this.lmotivoedicao.Name = "lmotivoedicao";
-            this.lmotivoedicao.Size = new System.Drawing.Size(81, 25);
-            this.lmotivoedicao.TabIndex = 7;
-            this.lmotivoedicao.Text = "Motivo:";
-            this.lmotivoedicao.Visible = false;
-            // 
-            // tbmotivoedicao
-            // 
-            this.tbmotivoedicao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbmotivoedicao.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.tbmotivoedicao.Location = new System.Drawing.Point(102, 131);
-            this.tbmotivoedicao.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbmotivoedicao.Name = "tbmotivoedicao";
-            this.tbmotivoedicao.Size = new System.Drawing.Size(277, 30);
-            this.tbmotivoedicao.TabIndex = 8;
-            this.tbmotivoedicao.Visible = false;
-            // 
-            // lmaquininhaesperada
-            // 
-            this.lmaquininhaesperada.AutoSize = true;
-            this.lmaquininhaesperada.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lmaquininhaesperada.Location = new System.Drawing.Point(20, 518);
-            this.lmaquininhaesperada.Name = "lmaquininhaesperada";
-            this.lmaquininhaesperada.Size = new System.Drawing.Size(280, 25);
-            this.lmaquininhaesperada.TabIndex = 23;
-            this.lmaquininhaesperada.Text = "Maquininha esperada: R$ 0,00";
-            // 
-            // lvalormaquininha
-            // 
-            this.lvalormaquininha.AutoSize = true;
-            this.lvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lvalormaquininha.Location = new System.Drawing.Point(20, 553);
-            this.lvalormaquininha.Name = "lvalormaquininha";
-            this.lvalormaquininha.Size = new System.Drawing.Size(202, 25);
-            this.lvalormaquininha.TabIndex = 24;
-            this.lvalormaquininha.Text = "Valor da maquininha:";
-            // 
-            // ldiferencamaquininha
-            // 
-            this.ldiferencamaquininha.AutoSize = true;
-            this.ldiferencamaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldiferencamaquininha.Location = new System.Drawing.Point(20, 590);
-            this.ldiferencamaquininha.Name = "ldiferencamaquininha";
-            this.ldiferencamaquininha.Size = new System.Drawing.Size(311, 25);
-            this.ldiferencamaquininha.TabIndex = 25;
-            this.ldiferencamaquininha.Text = "Diferença da maquininha: R$ 0,00";
-            // 
-            // tbvalormaquininha
-            // 
-            this.tbvalormaquininha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.tbvalormaquininha.Location = new System.Drawing.Point(228, 553);
-            this.tbvalormaquininha.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbvalormaquininha.Name = "tbvalormaquininha";
-            this.tbvalormaquininha.Size = new System.Drawing.Size(141, 30);
-            this.tbvalormaquininha.TabIndex = 26;
-            // 
-            // beditarcaixa
-            // 
-            this.beditarcaixa.BackColor = System.Drawing.Color.White;
-            this.beditarcaixa.FlatAppearance.BorderSize = 2;
-            this.beditarcaixa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.beditarcaixa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.beditarcaixa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.beditarcaixa.Location = new System.Drawing.Point(346, 671);
-            this.beditarcaixa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.beditarcaixa.Name = "beditarcaixa";
-            this.beditarcaixa.Size = new System.Drawing.Size(172, 52);
-            this.beditarcaixa.TabIndex = 27;
-            this.beditarcaixa.Text = "Editar abertura";
-            this.beditarcaixa.UseVisualStyleBackColor = false;
             // 
             // uccaixa
             // 

@@ -40,7 +40,6 @@
             this.cbativo = new System.Windows.Forms.CheckBox();
             this.bsalvarusuario = new System.Windows.Forms.Button();
             this.beditarusuario = new System.Windows.Forms.Button();
-            this.bcancelarusuario = new System.Windows.Forms.Button();
             this.cbfiltrostatus = new System.Windows.Forms.ComboBox();
             this.dgvusuarios = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvusuarios)).BeginInit();
@@ -58,7 +57,7 @@
             // tbconfirmarsenha
             // 
             this.tbconfirmarsenha.Location = new System.Drawing.Point(966, 225);
-            this.tbconfirmarsenha.MaxLength = 10;
+            this.tbconfirmarsenha.MaxLength = 30;
             this.tbconfirmarsenha.Name = "tbconfirmarsenha";
             this.tbconfirmarsenha.Size = new System.Drawing.Size(100, 22);
             this.tbconfirmarsenha.TabIndex = 13;
@@ -93,7 +92,7 @@
             // tbsenha
             // 
             this.tbsenha.Location = new System.Drawing.Point(907, 193);
-            this.tbsenha.MaxLength = 10;
+            this.tbsenha.MaxLength = 30;
             this.tbsenha.Name = "tbsenha";
             this.tbsenha.Size = new System.Drawing.Size(100, 22);
             this.tbsenha.TabIndex = 17;
@@ -158,15 +157,6 @@
             this.beditarusuario.Text = "Editar";
             this.beditarusuario.UseVisualStyleBackColor = true;
             // 
-            // bcancelarusuario
-            // 
-            this.bcancelarusuario.Location = new System.Drawing.Point(1276, 344);
-            this.bcancelarusuario.Name = "bcancelarusuario";
-            this.bcancelarusuario.Size = new System.Drawing.Size(75, 23);
-            this.bcancelarusuario.TabIndex = 31;
-            this.bcancelarusuario.Text = "Excluir";
-            this.bcancelarusuario.UseVisualStyleBackColor = true;
-            // 
             // cbfiltrostatus
             // 
             this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -197,7 +187,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvusuarios);
             this.Controls.Add(this.cbfiltrostatus);
-            this.Controls.Add(this.bcancelarusuario);
             this.Controls.Add(this.beditarusuario);
             this.Controls.Add(this.bsalvarusuario);
             this.Controls.Add(this.cbativo);
@@ -232,7 +221,6 @@
         private System.Windows.Forms.CheckBox cbativo;
         private System.Windows.Forms.Button bsalvarusuario;
         private System.Windows.Forms.Button beditarusuario;
-        private System.Windows.Forms.Button bcancelarusuario;
         private System.Windows.Forms.ComboBox cbfiltrostatus;
         private System.Windows.Forms.DataGridView dgvusuarios;
     }

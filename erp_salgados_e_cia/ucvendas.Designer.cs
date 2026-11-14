@@ -165,7 +165,7 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvitensvenda.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvitensvenda.Location = new System.Drawing.Point(36, 286);
+            this.dgvitensvenda.Location = new System.Drawing.Point(36, 287);
             this.dgvitensvenda.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvitensvenda.Name = "dgvitensvenda";
             this.dgvitensvenda.ReadOnly = true;
@@ -216,7 +216,6 @@
             this.lnumeromesa.Size = new System.Drawing.Size(54, 21);
             this.lnumeromesa.TabIndex = 19;
             this.lnumeromesa.Text = "Mesa:";
-            this.lnumeromesa.Click += new System.EventHandler(this.lnumeromesa_Click);
             // 
             // nudnumeromesa
             // 
@@ -315,7 +314,7 @@
             // 
             this.lsemcomanda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lsemcomanda.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemcomanda.Location = new System.Drawing.Point(1230, 286);
+            this.lsemcomanda.Location = new System.Drawing.Point(1229, 286);
             this.lsemcomanda.Name = "lsemcomanda";
             this.lsemcomanda.Size = new System.Drawing.Size(1181, 820);
             this.lsemcomanda.TabIndex = 32;
