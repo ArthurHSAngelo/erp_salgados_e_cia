@@ -13,9 +13,6 @@ namespace erp_salgados_e_cia
 {
     public partial class ucmovimentoestoque : UserControl
     {
-        private BindingList<movimentoestoque> movimentacoes =
-            dadossistema.movimentacoes;
-
         private BindingList<movimentoestoque> itensEntrada =
              new BindingList<movimentoestoque>();
 
@@ -26,10 +23,7 @@ namespace erp_salgados_e_cia
         {
             dgvmovimentacoes.DataSource = null;
             dgvmovimentacoes.DataSource =
-                movimentacoes
-                .Where(m => m.Unidade == dadossistema.UnidadeAtual)
-                .OrderByDescending(m => m.DataEntrada)
-                .ToList();
+                dadossistema.EntradasDaUnidade();
 
             if (dgvmovimentacoes.Columns.Count > 0)
             {
@@ -321,32 +315,20 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            foreach (movimentoestoque item in itensEntrada.ToList())
+            string mensagem;
+
+            if (!dadossistema.RegistrarEntradaEstoque(
+                    itensEntrada.ToList(),
+                    out mensagem))
             {
-                movimentacoes.Add(item);
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-                dadossistema.RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "MovimentoEstoque",
-                    $"Entrada: {item.Produto}",
-                    $"Quantidade: {item.Quantidade:N2}; Custo unitário: {item.CustoUnitario:N2}; Fornecedor: {item.Fornecedor}; Responsável: {item.Responsavel}; Unidade: {item.Unidade}");
-
-                Produto produto =
-                    dadossistema.produtos.FirstOrDefault(p =>
-                        p.Nome == item.Produto);
-
-                if (produto != null)
-                {
-                    produto.EstoqueAtual += item.Quantidade;
-
-                    dadossistema.RegistrarHistoricoEstoque(
-                        produto,
-                        TipoMovimentoEstoque.Entrada,
-                        item.Quantidade,
-                        item.Responsavel,
-                        "Fornecedor " + item.Fornecedor
-                    );
-                }
+                return;
             }
 
             itensEntrada.Clear();

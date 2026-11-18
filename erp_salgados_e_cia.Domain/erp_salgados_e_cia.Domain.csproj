@@ -36,6 +36,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ItemContagemInventario.cs" />
+    <Compile Include="Entities\ItemEntradaEstoque.cs" />
     <Compile Include="Entities\UnidadeResumo.cs" />
     <Compile Include="Entities\UsuarioAcesso.cs" />
     <Compile Include="Exceptions\RegraNegocioException.cs" />

@@ -112,6 +112,8 @@ namespace erp_salgados_e_cia
             CarregarFuncionarios();
             CarregarUsuarios();
             CarregarSaldos();
+            CarregarEntradas();
+            CarregarPerdas();
         }
 
         public static void CarregarUnidades()
@@ -530,20 +532,238 @@ namespace erp_salgados_e_cia
             );
         }
 
+        // ---- Estoque (entradas, perdas, inventário) ----
+        // Entradas e perdas ficam no banco; estas listas são só um espelho, recarregado
+        // do banco no login e sempre que uma tela de estoque consulta. O DRE (Bloco 8)
+        // ainda lê daqui.
+
         public static BindingList<Perda> perdas =
             new BindingList<Perda>();
 
-        public static int ProximoIdPerda()
+        private static Unidade UnidadeDeTrabalho()
         {
-            return perdas.Any()
-                ? perdas.Max(p => p.IdPerda) + 1
-                : 1;
+            Unidade unidade =
+                unidades.FirstOrDefault(u => u.Nome == UnidadeAtual);
+
+            if (unidade == null)
+            {
+                throw new RegraNegocioException(
+                    "Unidade de trabalho não encontrada. Entre no sistema novamente.");
+            }
+
+            return unidade;
+        }
+
+        private static uint IdDoUsuarioLogado()
+        {
+            if (UsuarioLogado == null)
+            {
+                throw new RegraNegocioException(
+                    "Entre no sistema para continuar.");
+            }
+
+            return (uint)UsuarioLogado.IdUsuario;
+        }
+
+        private static uint IdDoFuncionario(string nome, string nomeUnidade)
+        {
+            Funcionario funcionario =
+                funcionarios.FirstOrDefault(f =>
+                    f.Nome == nome &&
+                    f.Unidade == nomeUnidade &&
+                    f.Status == StatusCadastro.Ativo);
+
+            if (funcionario == null)
+            {
+                throw new RegraNegocioException(
+                    "Funcionário não encontrado ou inativo nesta unidade.");
+            }
+
+            return (uint)funcionario.IdFuncionario;
+        }
+
+        /// <summary>Saldo do produto na unidade de trabalho, lido do banco.</summary>
+        public static decimal SaldoNoBanco(Produto produto)
+        {
+            return EstoqueRepositorio.SaldoDe(
+                UnidadeDeTrabalho().Id,
+                produto.Id);
+        }
+
+        /// <summary>
+        /// Saldo de todos os produtos da unidade de trabalho, lido do banco
+        /// (chave = id do produto; produto sem linha tem saldo 0).
+        /// </summary>
+        public static Dictionary<uint, decimal> SaldosNoBanco()
+        {
+            return EstoqueRepositorio.SaldosDaUnidade(
+                UnidadeDeTrabalho().Id);
+        }
+
+        // PROVISÓRIO até o Bloco 7: a venda ainda usa o saldo em memória; depois de gravar
+        // no banco, o saldo daquele produto na memória volta a ser o do banco.
+        private static void SincronizarSaldoDaMemoria(
+            Produto produto,
+            Unidade unidade)
+        {
+            DefinirSaldoDoProduto(
+                produto,
+                unidade.Nome,
+                EstoqueRepositorio.SaldoDe(unidade.Id, produto.Id));
+        }
+
+        public static void CarregarEntradas()
+        {
+            movimentacoes.Clear();
+
+            foreach (System.Data.DataRow linha in
+                EstoqueRepositorio.ListarEntradas().Rows)
+            {
+                movimentacoes.Add(
+                    new movimentoestoque
+                    {
+                        Produto = System.Convert.ToString(linha["produto"]),
+                        Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
+                        CustoUnitario = System.Convert.ToDecimal(linha["custo_unitario"]),
+                        Fornecedor = TextoOuNulo(linha["fornecedor"]),
+                        Responsavel = System.Convert.ToString(linha["responsavel"]),
+                        Unidade = System.Convert.ToString(linha["unidade"]),
+                        DataEntrada = System.Convert.ToDateTime(linha["data_hora"])
+                    });
+            }
+        }
+
+        public static List<movimentoestoque> EntradasDaUnidade()
+        {
+            CarregarEntradas();
+
+            return movimentacoes
+                .Where(m => m.Unidade == UnidadeAtual)
+                .OrderByDescending(m => m.DataEntrada)
+                .ToList();
+        }
+
+        public static bool RegistrarEntradaEstoque(
+            List<movimentoestoque> itens,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (itens == null || itens.Count == 0)
+            {
+                mensagem = "Adicione pelo menos um item à entrada.";
+                return false;
+            }
+
+            try
+            {
+                Unidade unidade = UnidadeDeTrabalho();
+
+                string nomeFornecedor = itens[0].Fornecedor;
+                string nomeResponsavel = itens[0].Responsavel;
+
+                Fornecedor fornecedor =
+                    fornecedores.FirstOrDefault(f =>
+                        f.Nome == nomeFornecedor);
+
+                if (fornecedor == null)
+                {
+                    mensagem = "Fornecedor não encontrado.";
+                    return false;
+                }
+
+                List<ItemEntradaEstoque> linhas =
+                    new List<ItemEntradaEstoque>();
+
+                List<Produto> afetados = new List<Produto>();
+
+                foreach (movimentoestoque item in itens)
+                {
+                    Produto produto =
+                        produtos.FirstOrDefault(p =>
+                            p.Nome == item.Produto);
+
+                    if (produto == null)
+                    {
+                        mensagem = $"Produto não encontrado: {item.Produto}.";
+                        return false;
+                    }
+
+                    afetados.Add(produto);
+
+                    linhas.Add(
+                        new ItemEntradaEstoque
+                        {
+                            ProdutoId = produto.Id,
+                            Quantidade = item.Quantidade,
+                            CustoUnitario = item.CustoUnitario
+                        });
+                }
+
+                EstoqueRepositorio.InserirEntrada(
+                    unidade.Id,
+                    IdDoUsuarioLogado(),
+                    fornecedor.Id,
+                    IdDoFuncionario(nomeResponsavel, unidade.Nome),
+                    System.DateTime.Now,
+                    linhas);
+
+                foreach (Produto produto in afetados.Distinct())
+                {
+                    SincronizarSaldoDaMemoria(produto, unidade);
+                }
+
+                CarregarEntradas();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            foreach (movimentoestoque item in itens)
+            {
+                RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "MovimentoEstoque",
+                    $"Entrada: {item.Produto}",
+                    $"Quantidade: {item.Quantidade:N2}; Custo unitário: {item.CustoUnitario:N2}; Fornecedor: {item.Fornecedor}; Responsável: {item.Responsavel}; Unidade: {item.Unidade}");
+            }
+
+            return true;
+        }
+
+        public static void CarregarPerdas()
+        {
+            perdas.Clear();
+
+            foreach (System.Data.DataRow linha in
+                EstoqueRepositorio.ListarPerdas().Rows)
+            {
+                perdas.Add(
+                    new Perda
+                    {
+                        IdPerda = System.Convert.ToInt32(linha["id"]),
+                        Data = System.Convert.ToDateTime(linha["data"]),
+                        Unidade = System.Convert.ToString(linha["unidade"]),
+                        Produto = System.Convert.ToString(linha["produto"]),
+                        Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
+                        Motivo = (MotivoPerda)System.Enum.Parse(
+                            typeof(MotivoPerda),
+                            System.Convert.ToString(linha["motivo"])),
+                        Responsavel = System.Convert.ToString(linha["responsavel"]),
+                        Usuario = System.Convert.ToString(linha["usuario"]),
+                        DataHoraRegistro = System.Convert.ToDateTime(linha["data_hora"])
+                    });
+            }
         }
 
         public static List<Perda> PerdasDaUnidade(
             string unidade,
             int dias)
         {
+            CarregarPerdas();
+
             System.DateTime inicio =
                 System.DateTime.Today.AddDays(-dias);
 
@@ -589,76 +809,86 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            if (quantidade > produto.EstoqueAtual)
-            {
-                mensagem =
-                    $"Quantidade acima do saldo disponível ({produto.EstoqueAtual:N2}).";
-                return false;
-            }
-
             if (data.Date > System.DateTime.Today)
             {
                 mensagem = "A data da perda não pode ser futura.";
                 return false;
             }
 
-            decimal saldoAnterior = produto.EstoqueAtual;
+            decimal saldoAnterior;
+            decimal saldoAtual;
 
-            produto.EstoqueAtual -= quantidade;
-
-            Perda perda = new Perda
+            try
             {
-                IdPerda = ProximoIdPerda(),
-                Data = data.Date,
-                Unidade = UnidadeAtual,
-                Produto = produto.Nome,
-                Quantidade = quantidade,
-                Motivo = motivo,
-                Responsavel = responsavel,
-                Usuario = UsuarioLogado == null
-                    ? "sistema"
-                    : UsuarioLogado.Login,
-                DataHoraRegistro = System.DateTime.Now
-            };
+                Unidade unidade = UnidadeDeTrabalho();
 
-            perdas.Add(perda);
+                saldoAnterior = EstoqueRepositorio.SaldoDe(unidade.Id, produto.Id);
 
-            RegistrarHistoricoEstoque(
-                produto,
-                TipoMovimentoEstoque.Perda,
-                quantidade,
-                responsavel,
-                $"Perda ({perda.MotivoTexto})"
-            );
+                if (quantidade > saldoAnterior)
+                {
+                    mensagem =
+                        $"Quantidade acima do saldo disponível ({saldoAnterior:N2}).";
+                    return false;
+                }
+
+                EstoqueRepositorio.InserirPerda(
+                    unidade.Id,
+                    produto.Id,
+                    quantidade,
+                    motivo.ToString(),
+                    data.Date,
+                    IdDoUsuarioLogado(),
+                    IdDoFuncionario(responsavel, unidade.Nome));
+
+                SincronizarSaldoDaMemoria(produto, unidade);
+
+                saldoAtual = produto.EstoqueAtual;
+
+                CarregarPerdas();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            Perda perda =
+                perdas
+                .OrderByDescending(p => p.IdPerda)
+                .FirstOrDefault(p =>
+                    p.Produto == produto.Nome &&
+                    p.Unidade == UnidadeAtual);
+
+            string textoMotivo =
+                perda == null
+                ? motivo.ToString()
+                : perda.MotivoTexto;
 
             RegistrarLog(
                 TipoOperacaoLog.Inclusao,
                 "Perda",
-                $"Perda {perda.IdPerda}: {produto.Nome}",
-                $"Quantidade: {quantidade:N2}; Motivo: {perda.MotivoTexto}; Data: {perda.Data:dd/MM/yyyy}; Responsável: {responsavel}; Unidade: {perda.Unidade}; Saldo: {saldoAnterior:N2} → {produto.EstoqueAtual:N2}");
+                perda == null
+                    ? $"Perda: {produto.Nome}"
+                    : $"Perda {perda.IdPerda}: {produto.Nome}",
+                $"Quantidade: {quantidade:N2}; Motivo: {textoMotivo}; Data: {data.Date:dd/MM/yyyy}; Responsável: {responsavel}; Unidade: {UnidadeAtual}; Saldo: {saldoAnterior:N2} → {saldoAtual:N2}");
 
             return true;
         }
 
-        public static BindingList<Inventario> inventarios =
-            new BindingList<Inventario>();
-
-        public static int ProximoIdInventario()
-        {
-            return inventarios.Any()
-                ? inventarios.Max(i => i.IdInventario) + 1
-                : 1;
-        }
-
         public static List<ItemInventario> MontarItensInventario()
         {
+            Dictionary<uint, decimal> saldos = SaldosNoBanco();
+
             return produtos
                 .Where(p => p.Status == StatusCadastro.Ativo)
                 .OrderBy(p => p.Nome)
                 .Select(p => new ItemInventario
                 {
                     Produto = p.Nome,
-                    SaldoSistema = p.EstoqueAtual,
+                    SaldoSistema =
+                        saldos.ContainsKey(p.Id)
+                        ? saldos[p.Id]
+                        : 0m,
                     QuantidadeContada = null,
                     Motivo = null
                 })
@@ -694,117 +924,119 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            foreach (ItemInventario item in contados)
-            {
-                Produto produto =
-                    produtos.FirstOrDefault(p =>
-                        p.Nome == item.Produto &&
-                        p.Status == StatusCadastro.Ativo);
-
-                if (produto == null)
-                {
-                    mensagem = $"Produto não encontrado: {item.Produto}.";
-                    return false;
-                }
-
-                if (item.QuantidadeContada.Value < 0)
-                {
-                    mensagem =
-                        $"A contagem de {item.Produto} não pode ser negativa.";
-                    return false;
-                }
-
-                decimal diferencaItem =
-                    item.QuantidadeContada.Value - produto.EstoqueAtual;
-
-                if (diferencaItem != 0 &&
-                    string.IsNullOrWhiteSpace(item.Motivo))
-                {
-                    mensagem =
-                        $"Informe o motivo da divergência de {item.Produto}.";
-                    return false;
-                }
-            }
-
             string responsavelEfetivo =
                 string.IsNullOrWhiteSpace(responsavel)
                 ? UsuarioLogado.Login
                 : responsavel.Trim();
 
-            Inventario inventario = new Inventario
-            {
-                IdInventario = ProximoIdInventario(),
-                DataHora = System.DateTime.Now,
-                Unidade = UnidadeAtual,
-                Usuario = UsuarioLogado.Login,
-                Responsavel = responsavelEfetivo,
-                Observacao =
-                    string.IsNullOrWhiteSpace(observacao)
-                    ? null
-                    : observacao.Trim()
-            };
-
             List<string> linhasLog = new List<string>();
+            List<Produto> afetados = new List<Produto>();
+            uint inventarioId;
+            Unidade unidade;
 
-            foreach (ItemInventario item in contados)
+            try
             {
-                Produto produto =
-                    produtos.First(p =>
-                        p.Nome == item.Produto &&
-                        p.Status == StatusCadastro.Ativo);
+                unidade = UnidadeDeTrabalho();
 
-                decimal saldoAnterior = produto.EstoqueAtual;
-                decimal contada = item.QuantidadeContada.Value;
-                decimal diferenca = contada - saldoAnterior;
+                Dictionary<uint, decimal> saldos = SaldosNoBanco();
 
-                string motivo =
-                    diferenca == 0
-                    ? null
-                    : item.Motivo.Trim();
+                List<ItemContagemInventario> linhas =
+                    new List<ItemContagemInventario>();
 
-                inventario.Itens.Add(
-                    new ItemInventario
-                    {
-                        Produto = produto.Nome,
-                        SaldoSistema = saldoAnterior,
-                        QuantidadeContada = contada,
-                        Motivo = motivo
-                    }
-                );
-
-                if (diferenca != 0)
+                foreach (ItemInventario item in contados)
                 {
-                    produto.EstoqueAtual = contada;
+                    Produto produto =
+                        produtos.FirstOrDefault(p =>
+                            p.Nome == item.Produto &&
+                            p.Status == StatusCadastro.Ativo);
 
-                    RegistrarHistoricoEstoque(
-                        produto,
-                        TipoMovimentoEstoque.Ajuste,
-                        diferenca,
-                        responsavelEfetivo,
-                        $"Inventário {inventario.IdInventario}: {motivo}"
-                    );
+                    if (produto == null)
+                    {
+                        mensagem = $"Produto não encontrado: {item.Produto}.";
+                        return false;
+                    }
 
-                    quantidadeAjustes++;
+                    if (item.QuantidadeContada.Value < 0)
+                    {
+                        mensagem =
+                            $"A contagem de {item.Produto} não pode ser negativa.";
+                        return false;
+                    }
 
-                    linhasLog.Add(
-                        $"{produto.Nome}: {saldoAnterior:N2} → {contada:N2} ({motivo})");
+                    decimal saldoAtual =
+                        saldos.ContainsKey(produto.Id)
+                        ? saldos[produto.Id]
+                        : 0m;
+
+                    decimal diferenca =
+                        item.QuantidadeContada.Value - saldoAtual;
+
+                    if (diferenca != 0 &&
+                        string.IsNullOrWhiteSpace(item.Motivo))
+                    {
+                        mensagem =
+                            $"Informe o motivo da divergência de {item.Produto}.";
+                        return false;
+                    }
+
+                    if (diferenca != 0)
+                    {
+                        quantidadeAjustes++;
+
+                        linhasLog.Add(
+                            $"{produto.Nome}: {saldoAtual:N2} → {item.QuantidadeContada.Value:N2} ({item.Motivo.Trim()})");
+                    }
+
+                    afetados.Add(produto);
+
+                    linhas.Add(
+                        new ItemContagemInventario
+                        {
+                            ProdutoId = produto.Id,
+                            SaldoSistema = saldoAtual,
+                            QuantidadeContada = item.QuantidadeContada.Value,
+                            Motivo = diferenca == 0
+                                ? null
+                                : item.Motivo.Trim()
+                        });
+                }
+
+                inventarioId = EstoqueRepositorio.EfetivarInventario(
+                    unidade.Id,
+                    IdDoFuncionario(responsavelEfetivo, unidade.Nome),
+                    IdDoUsuarioLogado(),
+                    observacao,
+                    linhas);
+
+                foreach (Produto produto in afetados)
+                {
+                    SincronizarSaldoDaMemoria(produto, unidade);
                 }
             }
+            catch (RegraNegocioException ex)
+            {
+                quantidadeAjustes = 0;
+                mensagem = ex.Message;
+                return false;
+            }
 
-            inventarios.Add(inventario);
+            string observacaoLimpa =
+                string.IsNullOrWhiteSpace(observacao)
+                ? null
+                : observacao.Trim();
 
             RegistrarLog(
                 TipoOperacaoLog.Inclusao,
                 "Inventario",
-                $"Inventário {inventario.IdInventario}",
+                $"Inventário {inventarioId}",
                 JuntarDetalhes(
-                    $"Unidade: {inventario.Unidade}",
+                    $"Unidade: {unidade.Nome}",
                     $"Responsável: {responsavelEfetivo}",
                     $"Produtos contados: {contados.Count}",
                     $"Ajustes: {quantidadeAjustes}",
-                    inventario.Observacao == null
+                    observacaoLimpa == null
                         ? null
-                        : $"Observação: {inventario.Observacao}",
+                        : $"Observação: {observacaoLimpa}",
                     linhasLog.Count == 0
                         ? null
                         : string.Join(" | ", linhasLog)
@@ -1461,46 +1693,12 @@ namespace erp_salgados_e_cia
             return true;
         }
 
-        public static decimal? UltimoCustoDoProduto(string nomeProduto)
-        {
-            var ultima = movimentacoes
-                .Select((m, posicao) => new { m, posicao })
-                .Where(x => x.m.Produto == nomeProduto)
-                .OrderByDescending(x => x.m.DataEntrada)
-                .ThenByDescending(x => x.posicao)
-                .FirstOrDefault();
-
-            if (ultima == null)
-            {
-                return null;
-            }
-
-            return ultima.m.CustoUnitario;
-        }
-
-        public static decimal? UltimoCustoDoProduto(
-            string nomeProduto,
-            string unidade)
-        {
-            var ultima = movimentacoes
-                .Select((m, posicao) => new { m, posicao })
-                .Where(x =>
-                    x.m.Produto == nomeProduto &&
-                    x.m.Unidade == unidade)
-                .OrderByDescending(x => x.m.DataEntrada)
-                .ThenByDescending(x => x.posicao)
-                .FirstOrDefault();
-
-            return ultima == null
-                ? UltimoCustoDoProduto(nomeProduto)
-                : ultima.m.CustoUnitario;
-        }
-
         public static List<LinhaEstoque> MontarRelatorioEstoque()
         {
             return MontarRelatorioEstoque(UnidadeAtual);
         }
 
+        // Saldos e custos vêm do banco. Com unidade vazia, soma todas as unidades.
         public static List<LinhaEstoque> MontarRelatorioEstoque(
             string unidade)
         {
@@ -1511,23 +1709,63 @@ namespace erp_salgados_e_cia
             int quantidadeUnidades =
                 System.Math.Max(1, unidades.Count);
 
+            Unidade unidadeEscolhida =
+                todas
+                ? null
+                : unidades.FirstOrDefault(u => u.Nome == unidade);
+
+            Dictionary<string, decimal> saldos =
+                new Dictionary<string, decimal>();
+
+            foreach (System.Data.DataRow linha in
+                EstoqueRepositorio.Listar().Rows)
+            {
+                saldos[
+                    System.Convert.ToString(linha["unidade_id"]) + ":" +
+                    System.Convert.ToString(linha["produto_id"])] =
+                    System.Convert.ToDecimal(linha["quantidade"]);
+            }
+
+            Dictionary<uint, decimal> custosGerais =
+                EstoqueRepositorio.UltimosCustos(null);
+
+            Dictionary<uint, decimal> custosDaUnidade =
+                unidadeEscolhida == null
+                ? new Dictionary<uint, decimal>()
+                : EstoqueRepositorio.UltimosCustos(unidadeEscolhida.Id);
+
             foreach (Produto produto in produtos)
             {
-                decimal saldo =
-                    todas
-                    ? unidades.Sum(u =>
-                        SaldoDoProduto(produto, u.Nome))
-                    : SaldoDoProduto(produto, unidade);
+                decimal saldo = 0m;
+
+                foreach (Unidade u in unidades)
+                {
+                    if (!todas && u != unidadeEscolhida)
+                    {
+                        continue;
+                    }
+
+                    decimal saldoDaUnidade;
+
+                    if (saldos.TryGetValue(u.Id + ":" + produto.Id, out saldoDaUnidade))
+                    {
+                        saldo += saldoDaUnidade;
+                    }
+                }
 
                 decimal minimo =
                     todas
                     ? produto.EstoqueMinimo * quantidadeUnidades
                     : produto.EstoqueMinimo;
 
+                decimal custo;
+
                 decimal? ultimoCusto =
-                    todas
-                    ? UltimoCustoDoProduto(produto.Nome)
-                    : UltimoCustoDoProduto(produto.Nome, unidade);
+                    custosDaUnidade.TryGetValue(produto.Id, out custo)
+                        ? custo
+                        : (custosGerais.TryGetValue(produto.Id, out custo)
+                            ? custo
+                            : (decimal?)null);
 
                 linhas.Add(
                     new LinhaEstoque
@@ -1745,17 +1983,109 @@ namespace erp_salgados_e_cia
                 out dataFinal
             );
 
-            return historicoestoque
+            uint? unidadeId = null;
+            uint? produtoId = null;
+
+            if (!string.IsNullOrEmpty(unidade))
+            {
+                Unidade encontrada =
+                    unidades.FirstOrDefault(u => u.Nome == unidade);
+
+                if (encontrada == null)
+                {
+                    return new List<HistoricoEstoque>();
+                }
+
+                unidadeId = encontrada.Id;
+            }
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                Produto encontrado =
+                    produtos.FirstOrDefault(p => p.Nome == produto);
+
+                if (encontrado == null)
+                {
+                    return new List<HistoricoEstoque>();
+                }
+
+                produtoId = encontrado.Id;
+            }
+
+            List<HistoricoEstoque> resultado = new List<HistoricoEstoque>();
+
+            foreach (System.Data.DataRow linha in
+                EstoqueRepositorio.ConsultarMovimentacoes(
+                    dataInicial,
+                    dataFinal,
+                    unidadeId,
+                    produtoId,
+                    tipo == null ? null : tipo.ToString()).Rows)
+            {
+                TipoMovimentoEstoque tipoLinha =
+                    (TipoMovimentoEstoque)System.Enum.Parse(
+                        typeof(TipoMovimentoEstoque),
+                        System.Convert.ToString(linha["tipo"]));
+
+                decimal quantidade =
+                    System.Convert.ToDecimal(linha["quantidade"]);
+
+                resultado.Add(
+                    new HistoricoEstoque
+                    {
+                        Data = System.Convert.ToDateTime(linha["data_hora"]),
+                        Produto = System.Convert.ToString(linha["produto"]),
+                        Tipo = tipoLinha,
+                        // No extrato do banco a saída vem negativa; aqui só o ajuste mostra o sinal.
+                        Quantidade =
+                            tipoLinha == TipoMovimentoEstoque.Ajuste
+                            ? quantidade
+                            : System.Math.Abs(quantidade),
+                        SaldoApos = System.Convert.ToDecimal(linha["saldo_apos"]),
+                        Unidade = System.Convert.ToString(linha["unidade"]),
+                        Responsavel = TextoOuNulo(linha["login"]),
+                        Origem = OrigemDoMovimento(tipoLinha)
+                    });
+            }
+
+            // PROVISÓRIO até o Bloco 7: vendas e estornos ainda são anotados em memória.
+            resultado.AddRange(
+                historicoestoque
                 .Where(h =>
+                    (h.Tipo == TipoMovimentoEstoque.Venda ||
+                     h.Tipo == TipoMovimentoEstoque.Estorno) &&
                     h.Data.Date >= dataInicial &&
                     h.Data.Date <= dataFinal &&
                     (string.IsNullOrEmpty(unidade) ||
                         h.Unidade == unidade) &&
                     (string.IsNullOrEmpty(produto) ||
                         h.Produto == produto) &&
-                    (tipo == null || h.Tipo == tipo))
+                    (tipo == null || h.Tipo == tipo)));
+
+            return resultado
                 .OrderByDescending(h => h.Data)
                 .ToList();
+        }
+
+        private static string OrigemDoMovimento(TipoMovimentoEstoque tipo)
+        {
+            switch (tipo)
+            {
+                case TipoMovimentoEstoque.Entrada:
+                    return "Entrada de estoque";
+
+                case TipoMovimentoEstoque.Perda:
+                    return "Perda";
+
+                case TipoMovimentoEstoque.Ajuste:
+                    return "Inventário";
+
+                case TipoMovimentoEstoque.Estorno:
+                    return "Cancelamento de venda";
+
+                default:
+                    return "Venda";
+            }
         }
         public static string SomenteDigitos(string texto)
         {

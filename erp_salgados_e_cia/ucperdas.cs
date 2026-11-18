@@ -30,11 +30,15 @@ namespace erp_salgados_e_cia
 
             cbprodutoperda.Items.Clear();
 
+            Dictionary<uint, decimal> saldos =
+                dadossistema.SaldosNoBanco();
+
             foreach (Produto produto in
                 dadossistema.produtos
                 .Where(p =>
                     p.Status == StatusCadastro.Ativo &&
-                    p.EstoqueAtual > 0)
+                    saldos.ContainsKey(p.Id) &&
+                    saldos[p.Id] > 0)
                 .OrderBy(p => p.Nome))
             {
                 cbprodutoperda.Items.Add(produto.Nome);
@@ -89,7 +93,7 @@ namespace erp_salgados_e_cia
             lsaldoperda.Text =
                 produto == null
                 ? "Saldo disponível: -"
-                : $"Saldo disponível: {produto.EstoqueAtual:N2}";
+                : $"Saldo disponível: {dadossistema.SaldoNoBanco(produto):N2}";
         }
 
         private void AtualizarPerdas()
