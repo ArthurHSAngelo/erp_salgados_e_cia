@@ -428,12 +428,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            RegistrarLog(
-                TipoOperacaoLog.Login,
-                "Usuario",
-                usuario.Login,
-                $"Unidade de trabalho: {UnidadeAtual}");
-
             return true;
         }
 
@@ -441,12 +435,6 @@ namespace erp_salgados_e_cia
         {
             if (UsuarioLogado != null)
             {
-                RegistrarLog(
-                    TipoOperacaoLog.Logout,
-                    "Usuario",
-                    UsuarioLogado.Login,
-                    null);
-
                 try
                 {
                     LogRepositorio.RegistrarLogout(
@@ -461,57 +449,6 @@ namespace erp_salgados_e_cia
 
             UsuarioLogado = null;
             SessaoBanco.Limpar();
-        }
-
-        private static List<LogOperacao> registrosLog =
-            new List<LogOperacao>();
-
-        public static void RegistrarLog(
-            TipoOperacaoLog operacao,
-            string tabela,
-            string registro,
-            string detalhes)
-        {
-            registrosLog.Add(
-                new LogOperacao(
-                    registrosLog.Count + 1,
-                    System.DateTime.Now,
-                    UsuarioLogado == null
-                        ? "sistema"
-                        : UsuarioLogado.Login,
-                    operacao,
-                    tabela,
-                    registro,
-                    detalhes,
-                    UnidadeAtual
-                )
-            );
-        }
-
-        public static void RegistrarLogVenda(Venda venda)
-        {
-            Caixa caixaDaVenda =
-                caixas.FirstOrDefault(c =>
-                    c.IdCaixa == venda.IdCaixa);
-
-            RegistrarLog(
-                TipoOperacaoLog.Inclusao,
-                "Venda",
-                $"Venda {venda.IdVenda}",
-                JuntarDetalhes(
-                    $"Total: {venda.ValorTotal:N2}",
-                    $"Pagamento: {venda.FormaPagamento}",
-                    venda.NumeroMesa == 0
-                        ? "Balcão"
-                        : $"Mesa {venda.NumeroMesa}",
-                    venda.IdCliente == null
-                        ? null
-                        : $"Cliente {venda.IdCliente}",
-                    caixaDaVenda == null
-                        ? null
-                        : $"Caixa {caixaDaVenda.IdCaixa} (responsável: {caixaDaVenda.Responsavel})"
-                )
-            );
         }
 
         // ---- Estoque (entradas, perdas, inventário) ----
@@ -688,15 +625,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            foreach (movimentoestoque item in itens)
-            {
-                RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "MovimentoEstoque",
-                    $"Entrada: {item.Produto}",
-                    $"Quantidade: {item.Quantidade:N2}; Custo unitário: {item.CustoUnitario:N2}; Fornecedor: {item.Fornecedor}; Responsável: {item.Responsavel}; Unidade: {item.Unidade}");
-            }
-
             return true;
         }
 
@@ -819,26 +747,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            Perda perda =
-                perdas
-                .OrderByDescending(p => p.IdPerda)
-                .FirstOrDefault(p =>
-                    p.Produto == produto.Nome &&
-                    p.Unidade == UnidadeAtual);
-
-            string textoMotivo =
-                perda == null
-                ? motivo.ToString()
-                : perda.MotivoTexto;
-
-            RegistrarLog(
-                TipoOperacaoLog.Inclusao,
-                "Perda",
-                perda == null
-                    ? $"Perda: {produto.Nome}"
-                    : $"Perda {perda.IdPerda}: {produto.Nome}",
-                $"Quantidade: {quantidade:N2}; Motivo: {textoMotivo}; Data: {data.Date:dd/MM/yyyy}; Responsável: {responsavel}; Unidade: {UnidadeAtual}; Saldo: {saldoAnterior:N2} → {saldoAtual:N2}");
-
             return true;
         }
 
@@ -896,7 +804,6 @@ namespace erp_salgados_e_cia
                 ? UsuarioLogado.Login
                 : responsavel.Trim();
 
-            List<string> linhasLog = new List<string>();
             List<Produto> afetados = new List<Produto>();
             uint inventarioId;
             Unidade unidade;
@@ -949,9 +856,6 @@ namespace erp_salgados_e_cia
                     if (diferenca != 0)
                     {
                         quantidadeAjustes++;
-
-                        linhasLog.Add(
-                            $"{produto.Nome}: {saldoAtual:N2} → {item.QuantidadeContada.Value:N2} ({item.Motivo.Trim()})");
                     }
 
                     afetados.Add(produto);
@@ -984,29 +888,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            string observacaoLimpa =
-                string.IsNullOrWhiteSpace(observacao)
-                ? null
-                : observacao.Trim();
-
-            RegistrarLog(
-                TipoOperacaoLog.Inclusao,
-                "Inventario",
-                $"Inventário {inventarioId}",
-                JuntarDetalhes(
-                    $"Unidade: {unidade.Nome}",
-                    $"Responsável: {responsavelEfetivo}",
-                    $"Produtos contados: {contados.Count}",
-                    $"Ajustes: {quantidadeAjustes}",
-                    observacaoLimpa == null
-                        ? null
-                        : $"Observação: {observacaoLimpa}",
-                    linhasLog.Count == 0
-                        ? null
-                        : string.Join(" | ", linhasLog)
-                )
-            );
-
             return true;
         }
 
@@ -1018,6 +899,13 @@ namespace erp_salgados_e_cia
             {
                 Unidade = unidade
             };
+
+            // Caixa e vendas do dia vêm do banco.
+            CarregarCaixas();
+            CarregarVendas();
+
+            Unidade unidadeDoPainel =
+                unidades.FirstOrDefault(u => u.Nome == unidade);
 
             Caixa caixa =
                 caixas.FirstOrDefault(c =>
@@ -1077,40 +965,40 @@ namespace erp_salgados_e_cia
                 })
                 .ToList();
 
-            foreach (Cliente cliente in clientes)
+            if (unidadeDoPainel == null)
             {
-                decimal saldo = SaldoNotinha(cliente.IdCliente);
-
-                if (saldo > 0)
-                {
-                    painel.NotinhaTotal += saldo;
-                    painel.NotinhaClientes++;
-                }
+                return painel;
             }
 
+            System.Data.DataRow notinha =
+                RelatorioRepositorio.ResumoNotinha(unidadeDoPainel.Id).Rows[0];
+
+            painel.NotinhaClientes = System.Convert.ToInt32(notinha["clientes"]);
+            painel.NotinhaTotal = System.Convert.ToDecimal(notinha["total"]);
+
             painel.UltimasVendas =
-                vendas
-                .Where(v =>
-                    caixas.Any(c =>
-                        c.IdCaixa == v.IdCaixa &&
-                        c.Unidade == unidade))
-                .OrderByDescending(v => v.DataHora)
-                .ThenByDescending(v => v.IdVenda)
-                .Take(5)
+                RelatorioRepositorio.UltimasVendas(unidadeDoPainel.Id, 5)
+                .Rows
+                .Cast<System.Data.DataRow>()
                 .Select(v => new LinhaVendaPainel
                 {
-                    Venda = v.IdVenda,
-                    DataHora = v.DataHora,
-                    Total = v.ValorTotal,
-                    Status = v.Status
+                    Venda = System.Convert.ToInt32(v["id"]),
+                    DataHora = System.Convert.ToDateTime(v["data_hora"]),
+                    Total = System.Convert.ToDecimal(v["valor_total"]),
+                    Status =
+                        System.Convert.ToString(v["status"]) == "Concluida"
+                        ? "Concluída"
+                        : "Cancelada"
                 })
                 .ToList();
 
             if (incluirAtividade)
             {
                 painel.Atividade =
-                    ConsultarLog(null, null, null, null, null)
-                    .Take(5)
+                    LogRepositorio.Ultimos(unidadeDoPainel.Id, 5)
+                    .Rows
+                    .Cast<System.Data.DataRow>()
+                    .Select(ParaLogOperacao)
                     .Select(l => new LinhaAtividadePainel
                     {
                         DataHora = l.DataHora,
@@ -1124,51 +1012,72 @@ namespace erp_salgados_e_cia
             return painel;
         }
 
+        // ---- Log de operações (lido do banco) ----
+        // As triggers e procedures do banco gravam o log; aqui só se consulta.
+
+        private static TipoOperacaoLog OperacaoDoBanco(string operacao)
+        {
+            switch (operacao)
+            {
+                case "INSERT":
+                    return TipoOperacaoLog.Inclusao;
+
+                case "UPDATE":
+                    return TipoOperacaoLog.Alteracao;
+
+                case "DELETE":
+                    return TipoOperacaoLog.Exclusao;
+
+                case "LOGIN":
+                    return TipoOperacaoLog.Login;
+
+                default:
+                    return TipoOperacaoLog.Logout;
+            }
+        }
+
+        private static string OperacaoParaBanco(TipoOperacaoLog operacao)
+        {
+            switch (operacao)
+            {
+                case TipoOperacaoLog.Inclusao:
+                    return "INSERT";
+
+                case TipoOperacaoLog.Alteracao:
+                    return "UPDATE";
+
+                case TipoOperacaoLog.Exclusao:
+                    return "DELETE";
+
+                case TipoOperacaoLog.Login:
+                    return "LOGIN";
+
+                default:
+                    return "LOGOUT";
+            }
+        }
+
+        private static LogOperacao ParaLogOperacao(System.Data.DataRow linha)
+        {
+            return new LogOperacao(
+                System.Convert.ToInt32(linha["id"]),
+                System.Convert.ToDateTime(linha["data_hora"]),
+                TextoOuNulo(linha["usuario"]) ?? "sistema",
+                OperacaoDoBanco(System.Convert.ToString(linha["operacao"])),
+                System.Convert.ToString(linha["tabela"]),
+                TextoOuNulo(linha["registro"]),
+                TextoOuNulo(linha["detalhes"]),
+                TextoOuNulo(linha["unidade"]));
+        }
+
         public static List<string> UsuariosDoLog()
         {
-            return registrosLog
-                .Where(l => l.Unidade == UnidadeAtual)
-                .Select(l => l.Usuario)
-                .Concat(usuarios
-                    .Where(u =>
-                        u.Unidade == null ||
-                        u.Unidade == UnidadeAtual)
-                    .Select(u => u.Login))
-                .Distinct()
-                .OrderBy(nome => nome)
-                .ToList();
+            return LogRepositorio.Usuarios(UnidadeDeTrabalho().Id);
         }
 
         public static List<string> TabelasDoLog()
         {
-            return registrosLog
-                .Where(l => l.Unidade == UnidadeAtual)
-                .Select(l => l.Tabela)
-                .Distinct()
-                .OrderBy(nome => nome)
-                .ToList();
-        }
-
-        public static string Alteracao(
-            string campo,
-            string antes,
-            string depois)
-        {
-            return antes == depois
-                ? null
-                : $"{campo}: {antes} → {depois}";
-        }
-
-        public static string JuntarDetalhes(params string[] partes)
-        {
-            string[] preenchidas =
-                partes
-                .Where(parte => !string.IsNullOrWhiteSpace(parte))
-                .ToArray();
-
-            return preenchidas.Length == 0
-                ? null
-                : string.Join("; ", preenchidas);
+            return LogRepositorio.Tabelas(UnidadeDeTrabalho().Id);
         }
 
         public static List<LogOperacao> ConsultarLog(
@@ -1188,18 +1097,16 @@ namespace erp_salgados_e_cia
                 out dataFinal
             );
 
-            return registrosLog
-                .Where(l =>
-                    l.Unidade == UnidadeAtual &&
-                    l.DataHora.Date >= dataInicial &&
-                    l.DataHora.Date <= dataFinal &&
-                    (string.IsNullOrEmpty(usuario) ||
-                        l.Usuario == usuario) &&
-                    (operacao == null || l.Operacao == operacao) &&
-                    (string.IsNullOrEmpty(tabela) ||
-                        l.Tabela == tabela))
-                .OrderByDescending(l => l.DataHora)
-                .ThenByDescending(l => l.IdLog)
+            return LogRepositorio.Consultar(
+                    UnidadeDeTrabalho().Id,
+                    dataInicial,
+                    dataFinal,
+                    string.IsNullOrEmpty(usuario) ? null : usuario,
+                    operacao == null ? null : OperacaoParaBanco(operacao.Value),
+                    string.IsNullOrEmpty(tabela) ? null : tabela)
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .Select(ParaLogOperacao)
                 .ToList();
         }
 
@@ -1293,14 +1200,7 @@ namespace erp_salgados_e_cia
                     IdDoFuncionario(responsavel, unidade.Nome),
                     valorInicial);
 
-                CarregarCaixas();
-
-                RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "Caixa",
-                    $"Caixa {idCaixa}",
-                    $"Responsável: {responsavel}; Valor inicial: {valorInicial:N2}; Unidade: {unidade.Nome}");
-            }
+                CarregarCaixas();            }
             catch (RegraNegocioException ex)
             {
                 mensagem = ex.Message;
@@ -1324,9 +1224,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            decimal dinheiroEsperado = caixa.DinheiroEsperado;
-            decimal maquininhaEsperada = caixa.MaquininhaEsperada;
-
             try
             {
                 CaixaRepositorio.Fechar(
@@ -1341,12 +1238,6 @@ namespace erp_salgados_e_cia
                 mensagem = ex.Message;
                 return false;
             }
-
-            RegistrarLog(
-                TipoOperacaoLog.Alteracao,
-                "Caixa",
-                $"Caixa {caixa.IdCaixa}",
-                $"Status: Aberto → Fechado; Valor contado: {valorContado:N2}; Dinheiro esperado: {dinheiroEsperado:N2}; Diferença: {valorContado - dinheiroEsperado:N2}; Maquininha informada: {valorMaquininha:N2}; Maquininha esperada: {maquininhaEsperada:N2}; Diferença maquininha: {valorMaquininha - maquininhaEsperada:N2}");
 
             return true;
         }
@@ -1406,19 +1297,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            string detalhes =
-                JuntarDetalhes(
-                    Alteracao(
-                        "Valor inicial",
-                        caixa.ValorInicial.ToString("N2"),
-                        novoValorInicial.ToString("N2")),
-                    Alteracao(
-                        "Responsável",
-                        caixa.Responsavel,
-                        novoResponsavel),
-                    $"Motivo: {motivo.Trim()}",
-                    $"Autorizado por: {autorizadoPor}");
-
             try
             {
                 UsuarioAcesso autorizador =
@@ -1444,12 +1322,6 @@ namespace erp_salgados_e_cia
                 mensagem = ex.Message;
                 return false;
             }
-
-            RegistrarLog(
-                TipoOperacaoLog.Alteracao,
-                "Caixa",
-                $"Caixa {caixa.IdCaixa}",
-                detalhes);
 
             return true;
         }
@@ -1953,12 +1825,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            RegistrarLog(
-                TipoOperacaoLog.Alteracao,
-                "Comanda",
-                $"Comanda mesa {comanda.NumeroMesa}",
-                "Status: Aberta → Cancelada; itens devolvidos ao estoque");
-
             return true;
         }
 
@@ -2018,7 +1884,6 @@ namespace erp_salgados_e_cia
                     IdDoUsuarioLogado());
 
                 CarregarVendas();
-                RegistrarLogDaVenda((int)idVenda);
             }
             catch (RegraNegocioException ex)
             {
@@ -2070,7 +1935,6 @@ namespace erp_salgados_e_cia
 
                 CarregarProdutos();
                 CarregarVendas();
-                RegistrarLogDaVenda((int)idVenda);
             }
             catch (RegraNegocioException ex)
             {
@@ -2079,16 +1943,6 @@ namespace erp_salgados_e_cia
             }
 
             return true;
-        }
-
-        private static void RegistrarLogDaVenda(int idVenda)
-        {
-            Venda venda = vendas.FirstOrDefault(v => v.IdVenda == idVenda);
-
-            if (venda != null)
-            {
-                RegistrarLogVenda(venda);
-            }
         }
 
         // Abatimento da Notinha de um cliente na unidade de trabalho (o troco sai do dinheiro).
@@ -2141,15 +1995,6 @@ namespace erp_salgados_e_cia
                     abatimentosNovos);
 
                 CarregarVendas();
-
-                foreach (PagamentoNovo abatimento in abatimentosNovos)
-                {
-                    RegistrarLog(
-                        TipoOperacaoLog.Inclusao,
-                        "AbatimentoNotinha",
-                        $"Cliente {cliente.IdCliente}: {cliente.Nome}",
-                        $"Valor: {abatimento.Valor:N2}; Forma: {FormaDoBanco(abatimento.Forma)}; Caixa {caixa.IdCaixa}");
-                }
             }
             catch (RegraNegocioException ex)
             {
@@ -2258,12 +2103,6 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            RegistrarLog(
-                TipoOperacaoLog.Alteracao,
-                "Venda",
-                $"Venda {venda.IdVenda}",
-                $"Status: Concluída → Cancelada; Motivo: {motivo.Trim()}; Autorizado por: {autorizadoPor}; Total: {venda.ValorTotal:N2}");
-
             return true;
         }
 
@@ -2366,89 +2205,7 @@ namespace erp_salgados_e_cia
 
             return linhas;
         }
-        private static decimal? CustoDaPerda(Perda perda)
-        {
-            System.DateTime dia = perda.Data.Date;
-
-            var candidatas = movimentacoes
-                .Select((m, posicao) => new { m, posicao })
-                .Where(x =>
-                    x.m.Produto == perda.Produto &&
-                    x.m.DataEntrada.Date <= dia)
-                .ToList();
-
-            var daUnidade = candidatas
-                .Where(x => x.m.Unidade == perda.Unidade)
-                .OrderByDescending(x => x.m.DataEntrada)
-                .ThenByDescending(x => x.posicao)
-                .FirstOrDefault();
-
-            var escolhida = daUnidade ?? candidatas
-                .OrderByDescending(x => x.m.DataEntrada)
-                .ThenByDescending(x => x.posicao)
-                .FirstOrDefault();
-
-            return escolhida == null
-                ? (decimal?)null
-                : escolhida.m.CustoUnitario;
-        }
-
-        private static DreUnidade CalcularDreDaUnidade(
-            string unidade,
-            System.DateTime dataInicial,
-            System.DateTime dataFinal)
-        {
-            ResumoVendas resumo =
-                GerarRelatorioVendas(
-                    dataInicial,
-                    dataFinal,
-                    unidade,
-                    null,
-                    null).Resumo;
-
-            DreUnidade dre = new DreUnidade
-            {
-                Unidade = unidade,
-                Receita = resumo.Faturamento,
-                Recebido = resumo.Recebido,
-                VendidoEmNotinha = resumo.EmNotinha
-            };
-
-            dre.Abatimentos =
-                abatimentos
-                .Where(a =>
-                    a.Unidade == unidade &&
-                    a.DataHora.Date >= dataInicial &&
-                    a.DataHora.Date <= dataFinal)
-                .Sum(a => a.Valor);
-
-            dre.Despesas =
-                movimentacoes
-                .Where(m =>
-                    m.Unidade == unidade &&
-                    m.DataEntrada.Date >= dataInicial &&
-                    m.DataEntrada.Date <= dataFinal)
-                .Sum(m => m.Quantidade * m.CustoUnitario);
-
-            foreach (Perda perda in perdas.Where(p =>
-                p.Unidade == unidade &&
-                p.Data.Date >= dataInicial &&
-                p.Data.Date <= dataFinal))
-            {
-                decimal? custo = CustoDaPerda(perda);
-
-                if (custo == null)
-                {
-                    dre.PerdasSemCusto++;
-                    continue;
-                }
-
-                dre.Perdas += perda.Quantidade * custo.Value;
-            }
-
-            return dre;
-        }
-
+        // DRE calculado no banco (procedure sp_dre).
         public static RelatorioDre GerarDre(
             System.DateTime? inicio,
             System.DateTime? fim,
@@ -2482,15 +2239,48 @@ namespace erp_salgados_e_cia
                 Consolidado = string.IsNullOrEmpty(unidade)
             };
 
-            List<string> nomes =
-                relatorio.Consolidado
-                ? unidades.Select(u => u.Nome).OrderBy(n => n).ToList()
-                : new List<string> { unidade };
+            uint? unidadeId = null;
 
-            foreach (string nome in nomes)
+            if (!relatorio.Consolidado)
             {
-                relatorio.Unidades.Add(
-                    CalcularDreDaUnidade(nome, dataInicial, dataFinal));
+                Unidade escolhida =
+                    unidades.FirstOrDefault(u => u.Nome == unidade);
+
+                if (escolhida == null)
+                {
+                    mensagem = "Unidade não encontrada.";
+                    return null;
+                }
+
+                unidadeId = escolhida.Id;
+            }
+
+            try
+            {
+                foreach (System.Data.DataRow linha in
+                    RelatorioRepositorio.Dre(unidadeId, dataInicial, dataFinal)
+                    .Rows
+                    .Cast<System.Data.DataRow>()
+                    .OrderBy(l => System.Convert.ToString(l["unidade"])))
+                {
+                    relatorio.Unidades.Add(
+                        new DreUnidade
+                        {
+                            Unidade = System.Convert.ToString(linha["unidade"]),
+                            Receita = System.Convert.ToDecimal(linha["receita"]),
+                            Recebido = System.Convert.ToDecimal(linha["recebido"]),
+                            VendidoEmNotinha = System.Convert.ToDecimal(linha["vendido_notinha"]),
+                            Abatimentos = System.Convert.ToDecimal(linha["abatimentos"]),
+                            Despesas = System.Convert.ToDecimal(linha["despesa"]),
+                            Perdas = System.Convert.ToDecimal(linha["perdas"]),
+                            PerdasSemCusto = System.Convert.ToInt32(linha["perdas_sem_custo"])
+                        });
+                }
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return null;
             }
 
             DreUnidade total = relatorio.Total;
@@ -2747,6 +2537,8 @@ namespace erp_salgados_e_cia
             "Notinha"
         };
 
+        // Relatório de vendas calculado no banco. Com filtro de forma de pagamento ou de
+        // produto, entram as vendas que têm aquela forma / aquele produto.
         public static RelatorioVendas GerarRelatorioVendas(
             System.DateTime? inicio,
             System.DateTime? fim,
@@ -2755,9 +2547,6 @@ namespace erp_salgados_e_cia
             string produto
         )
         {
-            // As vendas vêm do banco (o Bloco 8 troca estes cálculos por consultas).
-            CarregarVendas();
-
             System.DateTime dataInicial;
             System.DateTime dataFinal;
 
@@ -2768,70 +2557,89 @@ namespace erp_salgados_e_cia
                 out dataFinal
             );
 
-            IEnumerable<Venda> vendasFiltradas =
-                vendas.Where(v =>
-                    v.Status == "Concluída" &&
-                    v.DataHora.Date >= dataInicial &&
-                    v.DataHora.Date <= dataFinal);
-
-            if (!string.IsNullOrEmpty(unidade))
-            {
-                vendasFiltradas =
-                    vendasFiltradas.Where(v =>
-                        caixas.Any(c =>
-                            c.IdCaixa == v.IdCaixa &&
-                            c.Unidade == unidade));
-            }
-
-            if (!string.IsNullOrEmpty(formaPagamento))
-            {
-                vendasFiltradas =
-                    vendasFiltradas.Where(v =>
-                        v.Pagamentos.Any(p =>
-                            p.FormaPagamento == formaPagamento));
-            }
-
-            if (!string.IsNullOrEmpty(produto))
-            {
-                vendasFiltradas =
-                    vendasFiltradas.Where(v =>
-                        v.Itens.Any(i => i.Produto == produto));
-            }
-
-            List<Venda> vendasDoRelatorio =
-                vendasFiltradas.ToList();
-
             RelatorioVendas relatorio = new RelatorioVendas
             {
                 DataInicial = dataInicial,
                 DataFinal = dataFinal
             };
 
-            decimal faturamento =
-                vendasDoRelatorio.Sum(v => v.ValorTotal);
+            uint? unidadeId = null;
+            uint? produtoId = null;
 
-            decimal emNotinha =
-                vendasDoRelatorio
-                .SelectMany(v => v.Pagamentos)
-                .Where(p => p.FormaPagamento == "Notinha")
-                .Sum(p => p.Valor);
+            if (!string.IsNullOrEmpty(unidade))
+            {
+                Unidade escolhida =
+                    unidades.FirstOrDefault(u => u.Nome == unidade);
+
+                if (escolhida == null)
+                {
+                    return relatorio;
+                }
+
+                unidadeId = escolhida.Id;
+            }
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                Produto escolhido =
+                    produtos.FirstOrDefault(p => p.Nome == produto);
+
+                if (escolhido == null)
+                {
+                    return relatorio;
+                }
+
+                produtoId = escolhido.Id;
+            }
+
+            string formaBanco =
+                string.IsNullOrEmpty(formaPagamento)
+                ? null
+                : FormaParaBanco(formaPagamento);
+
+            Dictionary<System.DateTime, System.Data.DataRow> porDia =
+                RelatorioRepositorio
+                .VendasPorDia(dataInicial, dataFinal, unidadeId, formaBanco, produtoId)
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .ToDictionary(l => System.Convert.ToDateTime(l["dia"]).Date);
+
+            int quantidadeVendas = porDia.Values.Sum(l => System.Convert.ToInt32(l["quantidade"]));
+            decimal faturamento = porDia.Values.Sum(l => System.Convert.ToDecimal(l["faturamento"]));
+            decimal troco = porDia.Values.Sum(l => System.Convert.ToDecimal(l["troco"]));
+
+            Dictionary<string, decimal> pagamentos =
+                RelatorioRepositorio
+                .PagamentosDasVendas(dataInicial, dataFinal, unidadeId, formaBanco, produtoId)
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .ToDictionary(
+                    l => FormaDoBanco(System.Convert.ToString(l["forma_pagamento"])),
+                    l => System.Convert.ToDecimal(l["valor"]));
+
+            System.Func<string, decimal> valorDaForma = forma =>
+            {
+                decimal valor;
+                return pagamentos.TryGetValue(forma, out valor) ? valor : 0m;
+            };
+
+            decimal emNotinha = valorDaForma("Notinha");
 
             decimal recebido =
-                vendasDoRelatorio
-                .SelectMany(v => v.Pagamentos)
-                .Where(p => p.FormaPagamento != "Notinha")
-                .Sum(p => p.Valor)
-                - vendasDoRelatorio.Sum(v => v.Troco);
+                pagamentos
+                .Where(p => p.Key != "Notinha")
+                .Sum(p => p.Value)
+                - troco;
 
             relatorio.Resumo = new ResumoVendas
             {
-                QuantidadeVendas = vendasDoRelatorio.Count,
+                QuantidadeVendas = quantidadeVendas,
                 Faturamento = faturamento,
                 Recebido = recebido,
                 EmNotinha = emNotinha,
                 TicketMedio =
-                    vendasDoRelatorio.Count > 0
-                    ? faturamento / vendasDoRelatorio.Count
+                    quantidadeVendas > 0
+                    ? faturamento / quantidadeVendas
                     : 0m
             };
 
@@ -2839,40 +2647,36 @@ namespace erp_salgados_e_cia
                 dia <= dataFinal;
                 dia = dia.AddDays(1))
             {
-                System.DateTime diaAtual = dia;
+                System.Data.DataRow linhaDoDia;
 
-                List<Venda> vendasDoDia =
-                    vendasDoRelatorio
-                    .Where(v => v.DataHora.Date == diaAtual)
-                    .ToList();
+                bool temVendas = porDia.TryGetValue(dia, out linhaDoDia);
 
                 relatorio.PorDia.Add(
                     new LinhaFaturamentoDia
                     {
-                        Dia = diaAtual,
-                        QuantidadeVendas = vendasDoDia.Count,
-                        Faturamento = vendasDoDia.Sum(v => v.ValorTotal)
+                        Dia = dia,
+                        QuantidadeVendas =
+                            temVendas
+                            ? System.Convert.ToInt32(linhaDoDia["quantidade"])
+                            : 0,
+                        Faturamento =
+                            temVendas
+                            ? System.Convert.ToDecimal(linhaDoDia["faturamento"])
+                            : 0m
                     }
                 );
             }
 
-            IEnumerable<ItemVenda> itensVendidos =
-                vendasDoRelatorio.SelectMany(v => v.Itens);
-
-            if (!string.IsNullOrEmpty(produto))
-            {
-                itensVendidos =
-                    itensVendidos.Where(i => i.Produto == produto);
-            }
-
             relatorio.Produtos =
-                itensVendidos
-                .GroupBy(i => i.Produto)
-                .Select(g => new LinhaProdutoVendido
+                RelatorioRepositorio
+                .ProdutosVendidos(dataInicial, dataFinal, unidadeId, formaBanco, produtoId)
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .Select(l => new LinhaProdutoVendido
                 {
-                    Produto = g.Key,
-                    Quantidade = g.Sum(i => i.Quantidade),
-                    Receita = g.Sum(i => i.Total)
+                    Produto = System.Convert.ToString(l["produto"]),
+                    Quantidade = System.Convert.ToDecimal(l["quantidade"]),
+                    Receita = System.Convert.ToDecimal(l["receita"])
                 })
                 .OrderByDescending(l => l.Quantidade)
                 .ThenByDescending(l => l.Receita)
@@ -2881,16 +2685,11 @@ namespace erp_salgados_e_cia
 
             foreach (string forma in FormasPagamento)
             {
-                decimal valorForma =
-                    vendasDoRelatorio
-                    .SelectMany(v => v.Pagamentos)
-                    .Where(p => p.FormaPagamento == forma)
-                    .Sum(p => p.Valor);
+                decimal valorForma = valorDaForma(forma);
 
                 if (forma == "Dinheiro")
                 {
-                    valorForma -=
-                        vendasDoRelatorio.Sum(v => v.Troco);
+                    valorForma -= troco;
                 }
 
                 relatorio.Formas.Add(

@@ -54,6 +54,7 @@
     <Compile Include="Repositories\FuncionarioRepositorio.cs" />
     <Compile Include="Repositories\LogRepositorio.cs" />
     <Compile Include="Repositories\ProdutoRepositorio.cs" />
+    <Compile Include="Repositories\RelatorioRepositorio.cs" />
     <Compile Include="Repositories\UnidadeRepositorio.cs" />
     <Compile Include="Repositories\UsuarioRepositorio.cs" />
     <Compile Include="Repositories\VendaRepositorio.cs" />

@@ -242,23 +242,6 @@ namespace erp_salgados_e_cia
                     }
                 }
 
-                string registroLog = $"Fornecedor: {fornecedorAtual.Nome}";
-
-                string detalhesLog = dadossistema.JuntarDetalhes(
-                    dadossistema.Alteracao(
-                        "Nome", fornecedorAtual.Nome, tbnomef.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "CNPJ", fornecedorAtual.Cnpj, tbcnpjf.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "Telefone", fornecedorAtual.Telefone, tbtelefonef.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "Status",
-                        fornecedorAtual.Status.ToString(),
-                        (cbativo.Checked
-                            ? StatusCadastro.Ativo
-                            : StatusCadastro.Inativo).ToString())
-                );
-
                 try
                 {
                     FornecedorRepositorio.Atualizar(
@@ -280,15 +263,6 @@ namespace erp_salgados_e_cia
                     );
 
                     return;
-                }
-
-                if (detalhesLog != null)
-                {
-                    dadossistema.RegistrarLog(
-                        TipoOperacaoLog.Alteracao,
-                        "Fornecedor",
-                        registroLog,
-                        detalhesLog);
                 }
 
                 MessageBox.Show(
@@ -328,12 +302,6 @@ namespace erp_salgados_e_cia
 
                     return;
                 }
-
-                dadossistema.RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "Fornecedor",
-                    $"Fornecedor: {fornecedor.Nome}",
-                    $"CNPJ: {fornecedor.Cnpj}; Telefone: {fornecedor.Telefone}");
 
                 MessageBox.Show(
                     "Fornecedor salvo com sucesso.",
@@ -403,8 +371,6 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            string nomeExcluido = fornecedorSelecionado.Nome;
-
             try
             {
                 FornecedorRepositorio.Excluir(fornecedorSelecionado.Id);
@@ -422,12 +388,6 @@ namespace erp_salgados_e_cia
 
                 return;
             }
-
-            dadossistema.RegistrarLog(
-                TipoOperacaoLog.Exclusao,
-                "Fornecedor",
-                $"Fornecedor: {nomeExcluido}",
-                null);
 
             AtualizarTabela();
             dgvfornecedores.Refresh();

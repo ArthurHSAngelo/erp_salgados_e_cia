@@ -304,22 +304,6 @@ namespace erp_salgados_e_cia
                     }
                 }
 
-                string registroLog =
-                    $"Funcionário: {funcionarioAtual.Nome} ({funcionarioAtual.Unidade})";
-
-                string detalhesLog = dadossistema.JuntarDetalhes(
-                    dadossistema.Alteracao(
-                        "Nome", funcionarioAtual.Nome, nomeDigitado),
-                    dadossistema.Alteracao(
-                        "Unidade", funcionarioAtual.Unidade, unidadeEscolhida),
-                    dadossistema.Alteracao(
-                        "Status",
-                        funcionarioAtual.Status.ToString(),
-                        (cbativo.Checked
-                            ? StatusCadastro.Ativo
-                            : StatusCadastro.Inativo).ToString())
-                );
-
                 try
                 {
                     FuncionarioRepositorio.Atualizar(
@@ -340,15 +324,6 @@ namespace erp_salgados_e_cia
                     );
 
                     return;
-                }
-
-                if (detalhesLog != null)
-                {
-                    dadossistema.RegistrarLog(
-                        TipoOperacaoLog.Alteracao,
-                        "Funcionario",
-                        registroLog,
-                        detalhesLog);
                 }
 
                 MessageBox.Show(
@@ -386,12 +361,6 @@ namespace erp_salgados_e_cia
 
                     return;
                 }
-
-                dadossistema.RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "Funcionario",
-                    $"Funcionário: {funcionario.Nome} ({funcionario.Unidade})",
-                    null);
 
                 MessageBox.Show(
                     "Funcionário salvo com sucesso.",
@@ -463,9 +432,6 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            string registroExcluido =
-                $"Funcionário: {funcionarioSelecionado.Nome} ({funcionarioSelecionado.Unidade})";
-
             try
             {
                 FuncionarioRepositorio.Excluir(
@@ -484,12 +450,6 @@ namespace erp_salgados_e_cia
 
                 return;
             }
-
-            dadossistema.RegistrarLog(
-                TipoOperacaoLog.Exclusao,
-                "Funcionario",
-                registroExcluido,
-                null);
 
             AtualizarTabela();
             dgvfuncionarios.Refresh();

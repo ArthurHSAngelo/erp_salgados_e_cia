@@ -510,24 +510,6 @@ namespace erp_salgados_e_cia
                     }
                 }
 
-                string registroLog =
-                    $"Cliente {clienteAtual.IdCliente}: {clienteAtual.Nome}";
-
-                string detalhesLog = dadossistema.JuntarDetalhes(
-                    dadossistema.Alteracao(
-                        "Nome", clienteAtual.Nome, tbnomec.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "CPF/CNPJ", clienteAtual.CpfCnpj, tbcpfcnpjc.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "Telefone", clienteAtual.Telefone, tbtelefonec.Text.Trim()),
-                    dadossistema.Alteracao(
-                        "Status",
-                        clienteAtual.Status.ToString(),
-                        (cbativo.Checked
-                            ? StatusCadastro.Ativo
-                            : StatusCadastro.Inativo).ToString())
-                );
-
                 try
                 {
                     ClienteRepositorio.Atualizar(
@@ -549,15 +531,6 @@ namespace erp_salgados_e_cia
                     );
 
                     return;
-                }
-
-                if (detalhesLog != null)
-                {
-                    dadossistema.RegistrarLog(
-                        TipoOperacaoLog.Alteracao,
-                        "Cliente",
-                        registroLog,
-                        detalhesLog);
                 }
 
                 MessageBox.Show(
@@ -597,12 +570,6 @@ namespace erp_salgados_e_cia
 
                     return;
                 }
-
-                dadossistema.RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "Cliente",
-                    $"Cliente {cliente.IdCliente}: {cliente.Nome}",
-                    $"CPF/CNPJ: {cliente.CpfCnpj}; Telefone: {cliente.Telefone}");
 
                 MessageBox.Show(
                     "Cliente salvo com sucesso.",
@@ -672,9 +639,6 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            string registroExcluido =
-                $"Cliente {clienteSelecionado.IdCliente}: {clienteSelecionado.Nome}";
-
             try
             {
                 ClienteRepositorio.Excluir((uint)clienteSelecionado.IdCliente);
@@ -692,12 +656,6 @@ namespace erp_salgados_e_cia
 
                 return;
             }
-
-            dadossistema.RegistrarLog(
-                TipoOperacaoLog.Exclusao,
-                "Cliente",
-                registroExcluido,
-                null);
 
             AtualizarTabela();
             dgvclientes.Refresh();
