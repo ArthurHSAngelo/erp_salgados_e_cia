@@ -237,6 +237,8 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTela()
         {
+            dadossistema.CarregarCaixas();
+
             CarregarResponsaveis();
 
             Caixa caixa =
@@ -483,23 +485,22 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            Caixa novoCaixa = new Caixa
+            string mensagemAbertura;
+
+            if (!dadossistema.AbrirCaixa(
+                    cbresponsavel.Text,
+                    valorInicial,
+                    out mensagemAbertura))
             {
-                IdCaixa = dadossistema.ProximoIdCaixa(),
-                Unidade = dadossistema.UnidadeAtual,
-                Responsavel = cbresponsavel.Text,
-                DataAbertura = DateTime.Now,
-                ValorInicial = valorInicial,
-                Status = "Aberto"
-            };
+                MessageBox.Show(
+                    mensagemAbertura,
+                    "Abertura não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-            dadossistema.caixas.Add(novoCaixa);
-
-            dadossistema.RegistrarLog(
-                TipoOperacaoLog.Inclusao,
-                "Caixa",
-                $"Caixa {novoCaixa.IdCaixa}",
-                $"Responsável: {novoCaixa.Responsavel}; Valor inicial: {novoCaixa.ValorInicial:N2}; Unidade: {novoCaixa.Unidade}");
+                return;
+            }
 
             cbresponsavel.SelectedIndex = -1;
             tbvalorinicial.Clear();
@@ -619,16 +620,23 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            caixa.ValorContado = valorContado;
-            caixa.ValorMaquininha = valorMaquininha;
-            caixa.DataFechamento = DateTime.Now;
-            caixa.Status = "Fechado";
+            string mensagemFechamento;
 
-            dadossistema.RegistrarLog(
-                TipoOperacaoLog.Alteracao,
-                "Caixa",
-                $"Caixa {caixa.IdCaixa}",
-                $"Status: Aberto → Fechado; Valor contado: {valorContado:N2}; Dinheiro esperado: {caixa.DinheiroEsperado:N2}; Diferença: {diferenca:N2}; Maquininha informada: {valorMaquininha:N2}; Maquininha esperada: {caixa.MaquininhaEsperada:N2}; Diferença maquininha: {diferencaMaquininha:N2}");
+            if (!dadossistema.FecharCaixa(
+                    caixa,
+                    valorContado,
+                    valorMaquininha,
+                    out mensagemFechamento))
+            {
+                MessageBox.Show(
+                    mensagemFechamento,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
 
             tbvalorcontado.Clear();
             tbvalormaquininha.Clear();

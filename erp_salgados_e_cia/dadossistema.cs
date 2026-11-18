@@ -114,6 +114,7 @@ namespace erp_salgados_e_cia
             CarregarSaldos();
             CarregarEntradas();
             CarregarPerdas();
+            CarregarCaixas();
         }
 
         public static void CarregarUnidades()
@@ -1279,6 +1280,114 @@ namespace erp_salgados_e_cia
                 c.DataAbertura.Date == System.DateTime.Today);
         }
 
+        // O caixa fica no banco; a lista "caixas" é um espelho recarregado do banco no login,
+        // ao abrir a tela do caixa e depois de cada gravação (as vendas e a DRE ainda leem daqui).
+        public static void CarregarCaixas()
+        {
+            caixas.Clear();
+
+            foreach (System.Data.DataRow linha in
+                CaixaRepositorio.Listar().Rows)
+            {
+                caixas.Add(
+                    new Caixa
+                    {
+                        IdCaixa = System.Convert.ToInt32(linha["id"]),
+                        Unidade = System.Convert.ToString(linha["unidade"]),
+                        Responsavel = System.Convert.ToString(linha["responsavel"]),
+                        DataAbertura = System.Convert.ToDateTime(linha["data_abertura"]),
+                        DataFechamento =
+                            linha["data_fechamento"] == System.DBNull.Value
+                            ? (System.DateTime?)null
+                            : System.Convert.ToDateTime(linha["data_fechamento"]),
+                        ValorInicial = System.Convert.ToDecimal(linha["valor_inicial"]),
+                        ValorContado =
+                            linha["valor_contado_dinheiro"] == System.DBNull.Value
+                            ? (decimal?)null
+                            : System.Convert.ToDecimal(linha["valor_contado_dinheiro"]),
+                        ValorMaquininha =
+                            linha["valor_contado_maquininha"] == System.DBNull.Value
+                            ? (decimal?)null
+                            : System.Convert.ToDecimal(linha["valor_contado_maquininha"]),
+                        Status = System.Convert.ToString(linha["status"])
+                    });
+            }
+        }
+
+        public static bool AbrirCaixa(
+            string responsavel,
+            decimal valorInicial,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                Unidade unidade = UnidadeDeTrabalho();
+
+                uint idCaixa = CaixaRepositorio.Abrir(
+                    unidade.Id,
+                    IdDoFuncionario(responsavel, unidade.Nome),
+                    valorInicial);
+
+                CarregarCaixas();
+
+                RegistrarLog(
+                    TipoOperacaoLog.Inclusao,
+                    "Caixa",
+                    $"Caixa {idCaixa}",
+                    $"Responsável: {responsavel}; Valor inicial: {valorInicial:N2}; Unidade: {unidade.Nome}");
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool FecharCaixa(
+            Caixa caixa,
+            decimal valorContado,
+            decimal valorMaquininha,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (caixa == null)
+            {
+                mensagem = "Não há caixa aberto para fechar.";
+                return false;
+            }
+
+            decimal dinheiroEsperado = caixa.DinheiroEsperado;
+            decimal maquininhaEsperada = caixa.MaquininhaEsperada;
+
+            try
+            {
+                CaixaRepositorio.Fechar(
+                    (uint)caixa.IdCaixa,
+                    valorContado,
+                    valorMaquininha);
+
+                CarregarCaixas();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            RegistrarLog(
+                TipoOperacaoLog.Alteracao,
+                "Caixa",
+                $"Caixa {caixa.IdCaixa}",
+                $"Status: Aberto → Fechado; Valor contado: {valorContado:N2}; Dinheiro esperado: {dinheiroEsperado:N2}; Diferença: {valorContado - dinheiroEsperado:N2}; Maquininha informada: {valorMaquininha:N2}; Maquininha esperada: {maquininhaEsperada:N2}; Diferença maquininha: {valorMaquininha - maquininhaEsperada:N2}");
+
+            return true;
+        }
+
         public static bool EditarCaixa(
             Caixa caixa,
             decimal novoValorInicial,
@@ -1347,8 +1456,31 @@ namespace erp_salgados_e_cia
                     $"Motivo: {motivo.Trim()}",
                     $"Autorizado por: {autorizadoPor}");
 
-            caixa.ValorInicial = novoValorInicial;
-            caixa.Responsavel = novoResponsavel;
+            try
+            {
+                UsuarioAcesso autorizador =
+                    UsuarioRepositorio.BuscarPorLogin(autorizadoPor);
+
+                if (autorizador == null)
+                {
+                    mensagem = "Autorizador não encontrado.";
+                    return false;
+                }
+
+                CaixaRepositorio.Editar(
+                    (uint)caixa.IdCaixa,
+                    novoValorInicial,
+                    IdDoFuncionario(novoResponsavel, caixa.Unidade),
+                    motivo.Trim(),
+                    autorizador.Id);
+
+                CarregarCaixas();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
 
             RegistrarLog(
                 TipoOperacaoLog.Alteracao,
@@ -1357,13 +1489,6 @@ namespace erp_salgados_e_cia
                 detalhes);
 
             return true;
-        }
-
-        public static int ProximoIdCaixa()
-        {
-            return caixas.Any()
-                ? caixas.Max(c => c.IdCaixa) + 1
-                : 1;
         }
 
         public static decimal TotalRecebidoPorForma(
