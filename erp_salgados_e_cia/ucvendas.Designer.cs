@@ -116,6 +116,7 @@
             // 
             // badicionaritem
             // 
+            this.badicionaritem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.badicionaritem.BackColor = System.Drawing.Color.White;
             this.badicionaritem.FlatAppearance.BorderSize = 2;
             this.badicionaritem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -146,6 +147,9 @@
             this.dgvitensvenda.AllowUserToDeleteRows = false;
             this.dgvitensvenda.AllowUserToResizeColumns = false;
             this.dgvitensvenda.AllowUserToResizeRows = false;
+            this.dgvitensvenda.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvitensvenda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvitensvenda.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -177,6 +181,7 @@
             // 
             // bfinalizarvenda
             // 
+            this.bfinalizarvenda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bfinalizarvenda.BackColor = System.Drawing.Color.White;
             this.bfinalizarvenda.FlatAppearance.BorderSize = 2;
             this.bfinalizarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -193,6 +198,7 @@
             // 
             // bremoveritem
             // 
+            this.bremoveritem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bremoveritem.BackColor = System.Drawing.Color.White;
             this.bremoveritem.FlatAppearance.BorderSize = 2;
             this.bremoveritem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -267,6 +273,7 @@
             // 
             // lcomandamesa
             // 
+            this.lcomandamesa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lcomandamesa.AutoSize = true;
             this.lcomandamesa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lcomandamesa.Location = new System.Drawing.Point(1225, 257);
@@ -281,6 +288,8 @@
             this.dgvitenscomanda.AllowUserToDeleteRows = false;
             this.dgvitenscomanda.AllowUserToResizeColumns = false;
             this.dgvitenscomanda.AllowUserToResizeRows = false;
+            this.dgvitenscomanda.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvitenscomanda.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvitenscomanda.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -312,17 +321,20 @@
             // 
             // lsemcomanda
             // 
+            this.lsemcomanda.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsemcomanda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lsemcomanda.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lsemcomanda.Location = new System.Drawing.Point(1229, 286);
             this.lsemcomanda.Name = "lsemcomanda";
-            this.lsemcomanda.Size = new System.Drawing.Size(1181, 820);
+            this.lsemcomanda.Size = new System.Drawing.Size(1181, 815);
             this.lsemcomanda.TabIndex = 32;
             this.lsemcomanda.Text = "Mesa sem comanda aberta";
             this.lsemcomanda.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ltotalcomanda
             // 
+            this.ltotalcomanda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ltotalcomanda.AutoSize = true;
             this.ltotalcomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.ltotalcomanda.Location = new System.Drawing.Point(1903, 980);
@@ -333,6 +345,7 @@
             // 
             // bcobrar
             // 
+            this.bcobrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bcobrar.FlatAppearance.BorderSize = 2;
             this.bcobrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcobrar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -348,6 +361,7 @@
             // 
             // bcancelarcomanda
             // 
+            this.bcancelarcomanda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bcancelarcomanda.FlatAppearance.BorderSize = 2;
             this.bcancelarcomanda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bcancelarcomanda.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -363,6 +377,7 @@
             // 
             // lfaltacomanda
             // 
+            this.lfaltacomanda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lfaltacomanda.AutoSize = true;
             this.lfaltacomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lfaltacomanda.Location = new System.Drawing.Point(2213, 980);
@@ -373,6 +388,7 @@
             // 
             // lpagocomanda
             // 
+            this.lpagocomanda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lpagocomanda.AutoSize = true;
             this.lpagocomanda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lpagocomanda.Location = new System.Drawing.Point(2060, 980);
@@ -383,6 +399,7 @@
             // 
             // bmesasabertas
             // 
+            this.bmesasabertas.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bmesasabertas.FlatAppearance.BorderSize = 2;
             this.bmesasabertas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bmesasabertas.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -398,6 +415,8 @@
             // 
             // lavisocaixa
             // 
+            this.lavisocaixa.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lavisocaixa.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lavisocaixa.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lavisocaixa.ForeColor = System.Drawing.Color.Firebrick;
@@ -411,6 +430,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
+            this.panel2.Controls.Add(this.lavisocaixa);
             this.panel2.Controls.Add(this.lprodutos);
             this.panel2.Controls.Add(this.cbproduto);
             this.panel2.Controls.Add(this.lquantidade);
@@ -434,7 +454,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lavisocaixa);
             this.Controls.Add(this.lsemcomanda);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.bmesasabertas);

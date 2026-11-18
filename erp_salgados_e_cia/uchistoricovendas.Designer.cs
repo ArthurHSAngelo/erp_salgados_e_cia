@@ -43,6 +43,9 @@
             this.dgvhistoricovendas.AllowUserToDeleteRows = false;
             this.dgvhistoricovendas.AllowUserToResizeColumns = false;
             this.dgvhistoricovendas.AllowUserToResizeRows = false;
+            this.dgvhistoricovendas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvhistoricovendas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvhistoricovendas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -84,6 +87,7 @@
             // 
             // cbfiltrostatus
             // 
+            this.cbfiltrostatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbfiltrostatus.BackColor = System.Drawing.Color.White;
             this.cbfiltrostatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbfiltrostatus.Font = new System.Drawing.Font("Segoe UI", 10.2F);
@@ -96,6 +100,7 @@
             // 
             // bcancelarvenda
             // 
+            this.bcancelarvenda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bcancelarvenda.BackColor = System.Drawing.Color.White;
             this.bcancelarvenda.FlatAppearance.BorderSize = 2;
             this.bcancelarvenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

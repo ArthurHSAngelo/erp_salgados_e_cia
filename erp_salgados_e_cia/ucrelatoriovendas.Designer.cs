@@ -28,32 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tlpcartoes = new System.Windows.Forms.TableLayoutPanel();
             this.pcartaoformas = new System.Windows.Forms.Panel();
-            this.chartformas = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cbvisualizacaoformas = new System.Windows.Forms.ComboBox();
             this.ltituloformas = new System.Windows.Forms.Label();
+            this.lsemdadosformas = new System.Windows.Forms.Label();
+            this.chartformas = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvformas = new System.Windows.Forms.DataGridView();
             this.pcartaoprodutos = new System.Windows.Forms.Panel();
-            this.chartprodutos = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cbvisualizacaoprodutos = new System.Windows.Forms.ComboBox();
             this.ltituloprodutos = new System.Windows.Forms.Label();
+            this.lsemdadosproduto = new System.Windows.Forms.Label();
+            this.chartprodutos = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvprodutos = new System.Windows.Forms.DataGridView();
             this.pcartaodia = new System.Windows.Forms.Panel();
-            this.chartdia = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cbvisualizacaodia = new System.Windows.Forms.ComboBox();
             this.ltitulodia = new System.Windows.Forms.Label();
+            this.lsemdadosprodutos = new System.Windows.Forms.Label();
+            this.chartdia = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvdia = new System.Windows.Forms.DataGridView();
             this.lfiltroinicio = new System.Windows.Forms.Label();
             this.lfiltrofim = new System.Windows.Forms.Label();
             this.dtpfiltroinicio = new System.Windows.Forms.DateTimePicker();
@@ -65,36 +71,34 @@
             this.lresultadovendas = new System.Windows.Forms.Label();
             this.bexportarvenda = new System.Windows.Forms.Button();
             this.prelatoriovendas = new System.Windows.Forms.Panel();
+            this.cbfiltroproduto = new System.Windows.Forms.ComboBox();
+            this.lfiltroproduto = new System.Windows.Forms.Label();
+            this.cbfiltroformapagamento = new System.Windows.Forms.ComboBox();
             this.lresumorecebido = new System.Windows.Forms.Label();
             this.lresumofaturamento = new System.Windows.Forms.Label();
             this.lresumoticket = new System.Windows.Forms.Label();
             this.lresumovendas = new System.Windows.Forms.Label();
             this.lresumonotinha = new System.Windows.Forms.Label();
-            this.cbfiltroformapagamento = new System.Windows.Forms.ComboBox();
-            this.lfiltroproduto = new System.Windows.Forms.Label();
-            this.cbfiltroproduto = new System.Windows.Forms.ComboBox();
-            this.dgvdia = new System.Windows.Forms.DataGridView();
-            this.dgvprodutos = new System.Windows.Forms.DataGridView();
-            this.dgvformas = new System.Windows.Forms.DataGridView();
-            this.lsemdadosprodutos = new System.Windows.Forms.Label();
-            this.lsemdadosproduto = new System.Windows.Forms.Label();
-            this.lsemdadosformas = new System.Windows.Forms.Label();
             this.tlpcartoes.SuspendLayout();
             this.pcartaoformas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartformas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvformas)).BeginInit();
             this.pcartaoprodutos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartprodutos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
             this.pcartaodia.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartdia)).BeginInit();
-            this.prelatoriovendas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvdia)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvformas)).BeginInit();
+            this.prelatoriovendas.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpcartoes
             // 
-            this.tlpcartoes.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tlpcartoes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpcartoes.BackColor = System.Drawing.Color.White;
+            this.tlpcartoes.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.OutsetDouble;
             this.tlpcartoes.ColumnCount = 3;
             this.tlpcartoes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tlpcartoes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
@@ -102,12 +106,12 @@
             this.tlpcartoes.Controls.Add(this.pcartaoformas, 2, 0);
             this.tlpcartoes.Controls.Add(this.pcartaoprodutos, 1, 0);
             this.tlpcartoes.Controls.Add(this.pcartaodia, 0, 0);
-            this.tlpcartoes.Location = new System.Drawing.Point(0, 253);
+            this.tlpcartoes.Location = new System.Drawing.Point(41, 253);
             this.tlpcartoes.Name = "tlpcartoes";
             this.tlpcartoes.Padding = new System.Windows.Forms.Padding(8);
             this.tlpcartoes.RowCount = 1;
             this.tlpcartoes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpcartoes.Size = new System.Drawing.Size(2445, 1079);
+            this.tlpcartoes.Size = new System.Drawing.Size(2362, 1048);
             this.tlpcartoes.TabIndex = 4;
             // 
             // pcartaoformas
@@ -118,35 +122,11 @@
             this.pcartaoformas.Controls.Add(this.chartformas);
             this.pcartaoformas.Controls.Add(this.dgvformas);
             this.pcartaoformas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pcartaoformas.Location = new System.Drawing.Point(1837, 17);
+            this.pcartaoformas.Location = new System.Drawing.Point(1774, 19);
             this.pcartaoformas.Margin = new System.Windows.Forms.Padding(8);
             this.pcartaoformas.Name = "pcartaoformas";
-            this.pcartaoformas.Size = new System.Drawing.Size(591, 1045);
+            this.pcartaoformas.Size = new System.Drawing.Size(569, 1010);
             this.pcartaoformas.TabIndex = 6;
-            // 
-            // chartformas
-            // 
-            chartArea1.Name = "ChartArea1";
-            this.chartformas.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartformas.Legends.Add(legend1);
-            this.chartformas.Location = new System.Drawing.Point(25, 261);
-            this.chartformas.Name = "chartformas";
-            this.chartformas.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            this.chartformas.PaletteCustomColors = new System.Drawing.Color[] {
-        System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(120)))), ((int)(((byte)(214))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(104)))), ((int)(((byte)(52))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(175)))), ((int)(((byte)(122))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(161)))), ((int)(((byte)(0))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(123)))), ((int)(((byte)(164)))))};
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chartformas.Series.Add(series1);
-            this.chartformas.Size = new System.Drawing.Size(544, 490);
-            this.chartformas.TabIndex = 21;
-            this.chartformas.Text = "chart1";
             // 
             // cbvisualizacaoformas
             // 
@@ -171,6 +151,85 @@
             this.ltituloformas.TabIndex = 1;
             this.ltituloformas.Text = "Formas de pagamento";
             // 
+            // lsemdadosformas
+            // 
+            this.lsemdadosformas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lsemdadosformas.BackColor = System.Drawing.Color.White;
+            this.lsemdadosformas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lsemdadosformas.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lsemdadosformas.Location = new System.Drawing.Point(25, 261);
+            this.lsemdadosformas.Name = "lsemdadosformas";
+            this.lsemdadosformas.Size = new System.Drawing.Size(522, 490);
+            this.lsemdadosformas.TabIndex = 24;
+            this.lsemdadosformas.Text = " Sem formas de pagamento no período.";
+            this.lsemdadosformas.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lsemdadosformas.Visible = false;
+            // 
+            // chartformas
+            // 
+            this.chartformas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea4.Name = "ChartArea1";
+            this.chartformas.ChartAreas.Add(chartArea4);
+            legend2.Name = "Legend1";
+            this.chartformas.Legends.Add(legend2);
+            this.chartformas.Location = new System.Drawing.Point(25, 261);
+            this.chartformas.Name = "chartformas";
+            this.chartformas.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            this.chartformas.PaletteCustomColors = new System.Drawing.Color[] {
+        System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(120)))), ((int)(((byte)(214))))),
+        System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(104)))), ((int)(((byte)(52))))),
+        System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(175)))), ((int)(((byte)(122))))),
+        System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(161)))), ((int)(((byte)(0))))),
+        System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(123)))), ((int)(((byte)(164)))))};
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chartformas.Series.Add(series4);
+            this.chartformas.Size = new System.Drawing.Size(522, 490);
+            this.chartformas.TabIndex = 21;
+            this.chartformas.Text = "chart1";
+            // 
+            // dgvformas
+            // 
+            this.dgvformas.AllowUserToAddRows = false;
+            this.dgvformas.AllowUserToDeleteRows = false;
+            this.dgvformas.AllowUserToResizeColumns = false;
+            this.dgvformas.AllowUserToResizeRows = false;
+            this.dgvformas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvformas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvformas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvformas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            this.dgvformas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvformas.DefaultCellStyle = dataGridViewCellStyle8;
+            this.dgvformas.Location = new System.Drawing.Point(25, 261);
+            this.dgvformas.MultiSelect = false;
+            this.dgvformas.Name = "dgvformas";
+            this.dgvformas.ReadOnly = true;
+            this.dgvformas.RowHeadersVisible = false;
+            this.dgvformas.RowHeadersWidth = 51;
+            this.dgvformas.RowTemplate.Height = 24;
+            this.dgvformas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvformas.Size = new System.Drawing.Size(522, 490);
+            this.dgvformas.TabIndex = 23;
+            // 
             // pcartaoprodutos
             // 
             this.pcartaoprodutos.Controls.Add(this.cbvisualizacaoprodutos);
@@ -179,31 +238,11 @@
             this.pcartaoprodutos.Controls.Add(this.chartprodutos);
             this.pcartaoprodutos.Controls.Add(this.dgvprodutos);
             this.pcartaoprodutos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pcartaoprodutos.Location = new System.Drawing.Point(988, 17);
+            this.pcartaoprodutos.Location = new System.Drawing.Point(955, 19);
             this.pcartaoprodutos.Margin = new System.Windows.Forms.Padding(8);
             this.pcartaoprodutos.Name = "pcartaoprodutos";
-            this.pcartaoprodutos.Size = new System.Drawing.Size(832, 1045);
+            this.pcartaoprodutos.Size = new System.Drawing.Size(800, 1010);
             this.pcartaoprodutos.TabIndex = 6;
-            // 
-            // chartprodutos
-            // 
-            chartArea2.AxisX.Interval = 1D;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisY.LabelStyle.Format = "0.##";
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gainsboro;
-            chartArea2.Name = "ChartArea1";
-            this.chartprodutos.ChartAreas.Add(chartArea2);
-            this.chartprodutos.Location = new System.Drawing.Point(26, 114);
-            this.chartprodutos.Name = "chartprodutos";
-            this.chartprodutos.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            this.chartprodutos.PaletteCustomColors = new System.Drawing.Color[] {
-        System.Drawing.Color.DarkOrange};
-            series2.ChartArea = "ChartArea1";
-            series2.Name = "Series1";
-            this.chartprodutos.Series.Add(series2);
-            this.chartprodutos.Size = new System.Drawing.Size(784, 903);
-            this.chartprodutos.TabIndex = 20;
-            this.chartprodutos.Text = "chart1";
             // 
             // cbvisualizacaoprodutos
             // 
@@ -228,6 +267,84 @@
             this.ltituloprodutos.TabIndex = 2;
             this.ltituloprodutos.Text = "Produtos mais vendidos";
             // 
+            // lsemdadosproduto
+            // 
+            this.lsemdadosproduto.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lsemdadosproduto.BackColor = System.Drawing.Color.White;
+            this.lsemdadosproduto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lsemdadosproduto.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lsemdadosproduto.Location = new System.Drawing.Point(26, 114);
+            this.lsemdadosproduto.Name = "lsemdadosproduto";
+            this.lsemdadosproduto.Size = new System.Drawing.Size(752, 868);
+            this.lsemdadosproduto.TabIndex = 23;
+            this.lsemdadosproduto.Text = "Sem produtos vendidos no período.";
+            this.lsemdadosproduto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lsemdadosproduto.Visible = false;
+            // 
+            // chartprodutos
+            // 
+            this.chartprodutos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea5.AxisX.Interval = 1D;
+            chartArea5.AxisX.MajorGrid.Enabled = false;
+            chartArea5.AxisY.LabelStyle.Format = "0.##";
+            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gainsboro;
+            chartArea5.Name = "ChartArea1";
+            this.chartprodutos.ChartAreas.Add(chartArea5);
+            this.chartprodutos.Location = new System.Drawing.Point(26, 114);
+            this.chartprodutos.Name = "chartprodutos";
+            this.chartprodutos.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            this.chartprodutos.PaletteCustomColors = new System.Drawing.Color[] {
+        System.Drawing.Color.DarkOrange};
+            series5.ChartArea = "ChartArea1";
+            series5.Name = "Series1";
+            this.chartprodutos.Series.Add(series5);
+            this.chartprodutos.Size = new System.Drawing.Size(752, 868);
+            this.chartprodutos.TabIndex = 20;
+            this.chartprodutos.Text = "chart1";
+            // 
+            // dgvprodutos
+            // 
+            this.dgvprodutos.AllowUserToAddRows = false;
+            this.dgvprodutos.AllowUserToDeleteRows = false;
+            this.dgvprodutos.AllowUserToResizeColumns = false;
+            this.dgvprodutos.AllowUserToResizeRows = false;
+            this.dgvprodutos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvprodutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvprodutos.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvprodutos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            this.dgvprodutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvprodutos.DefaultCellStyle = dataGridViewCellStyle10;
+            this.dgvprodutos.Location = new System.Drawing.Point(26, 114);
+            this.dgvprodutos.MultiSelect = false;
+            this.dgvprodutos.Name = "dgvprodutos";
+            this.dgvprodutos.ReadOnly = true;
+            this.dgvprodutos.RowHeadersVisible = false;
+            this.dgvprodutos.RowHeadersWidth = 51;
+            this.dgvprodutos.RowTemplate.Height = 24;
+            this.dgvprodutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvprodutos.Size = new System.Drawing.Size(752, 868);
+            this.dgvprodutos.TabIndex = 22;
+            // 
             // pcartaodia
             // 
             this.pcartaodia.Controls.Add(this.cbvisualizacaodia);
@@ -236,34 +353,11 @@
             this.pcartaodia.Controls.Add(this.chartdia);
             this.pcartaodia.Controls.Add(this.dgvdia);
             this.pcartaodia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pcartaodia.Location = new System.Drawing.Point(17, 17);
+            this.pcartaodia.Location = new System.Drawing.Point(19, 19);
             this.pcartaodia.Margin = new System.Windows.Forms.Padding(8);
             this.pcartaodia.Name = "pcartaodia";
-            this.pcartaodia.Size = new System.Drawing.Size(954, 1045);
+            this.pcartaodia.Size = new System.Drawing.Size(917, 1010);
             this.pcartaodia.TabIndex = 5;
-            // 
-            // chartdia
-            // 
-            this.chartdia.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea3.AxisX.IsLabelAutoFit = false;
-            chartArea3.AxisX.LabelStyle.Angle = -45;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisY.LabelStyle.Format = "N0";
-            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gainsboro;
-            chartArea3.Name = "ChartArea1";
-            this.chartdia.ChartAreas.Add(chartArea3);
-            this.chartdia.Location = new System.Drawing.Point(24, 108);
-            this.chartdia.Name = "chartdia";
-            this.chartdia.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            this.chartdia.PaletteCustomColors = new System.Drawing.Color[] {
-        System.Drawing.Color.DarkOrange};
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend2";
-            series3.Name = "Series1";
-            this.chartdia.Series.Add(series3);
-            this.chartdia.Size = new System.Drawing.Size(908, 903);
-            this.chartdia.TabIndex = 5;
-            this.chartdia.Text = "chart1";
             // 
             // cbvisualizacaodia
             // 
@@ -287,6 +381,87 @@
             this.ltitulodia.Size = new System.Drawing.Size(185, 25);
             this.ltitulodia.TabIndex = 0;
             this.ltitulodia.Text = "Faturamento por dia";
+            // 
+            // lsemdadosprodutos
+            // 
+            this.lsemdadosprodutos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lsemdadosprodutos.BackColor = System.Drawing.Color.White;
+            this.lsemdadosprodutos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lsemdadosprodutos.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lsemdadosprodutos.Location = new System.Drawing.Point(24, 108);
+            this.lsemdadosprodutos.Name = "lsemdadosprodutos";
+            this.lsemdadosprodutos.Size = new System.Drawing.Size(871, 868);
+            this.lsemdadosprodutos.TabIndex = 21;
+            this.lsemdadosprodutos.Text = "Sem vendas no período.";
+            this.lsemdadosprodutos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lsemdadosprodutos.Visible = false;
+            // 
+            // chartdia
+            // 
+            this.chartdia.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartdia.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea6.AxisX.IsLabelAutoFit = false;
+            chartArea6.AxisX.LabelStyle.Angle = -45;
+            chartArea6.AxisX.MajorGrid.Enabled = false;
+            chartArea6.AxisY.LabelStyle.Format = "N0";
+            chartArea6.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gainsboro;
+            chartArea6.Name = "ChartArea1";
+            this.chartdia.ChartAreas.Add(chartArea6);
+            this.chartdia.Location = new System.Drawing.Point(24, 108);
+            this.chartdia.Name = "chartdia";
+            this.chartdia.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            this.chartdia.PaletteCustomColors = new System.Drawing.Color[] {
+        System.Drawing.Color.DarkOrange};
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend2";
+            series6.Name = "Series1";
+            this.chartdia.Series.Add(series6);
+            this.chartdia.Size = new System.Drawing.Size(871, 868);
+            this.chartdia.TabIndex = 5;
+            this.chartdia.Text = "chart1";
+            // 
+            // dgvdia
+            // 
+            this.dgvdia.AllowUserToAddRows = false;
+            this.dgvdia.AllowUserToDeleteRows = false;
+            this.dgvdia.AllowUserToResizeColumns = false;
+            this.dgvdia.AllowUserToResizeRows = false;
+            this.dgvdia.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvdia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvdia.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvdia.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            this.dgvdia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvdia.DefaultCellStyle = dataGridViewCellStyle12;
+            this.dgvdia.Location = new System.Drawing.Point(24, 108);
+            this.dgvdia.MultiSelect = false;
+            this.dgvdia.Name = "dgvdia";
+            this.dgvdia.ReadOnly = true;
+            this.dgvdia.RowHeadersVisible = false;
+            this.dgvdia.RowHeadersWidth = 51;
+            this.dgvdia.RowTemplate.Height = 24;
+            this.dgvdia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvdia.Size = new System.Drawing.Size(871, 868);
+            this.dgvdia.TabIndex = 20;
             // 
             // lfiltroinicio
             // 
@@ -412,6 +587,36 @@
             this.prelatoriovendas.Size = new System.Drawing.Size(2445, 178);
             this.prelatoriovendas.TabIndex = 3;
             // 
+            // cbfiltroproduto
+            // 
+            this.cbfiltroproduto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbfiltroproduto.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.cbfiltroproduto.FormattingEnabled = true;
+            this.cbfiltroproduto.Location = new System.Drawing.Point(1115, 88);
+            this.cbfiltroproduto.Name = "cbfiltroproduto";
+            this.cbfiltroproduto.Size = new System.Drawing.Size(263, 31);
+            this.cbfiltroproduto.TabIndex = 10;
+            // 
+            // lfiltroproduto
+            // 
+            this.lfiltroproduto.AutoSize = true;
+            this.lfiltroproduto.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.lfiltroproduto.Location = new System.Drawing.Point(1111, 64);
+            this.lfiltroproduto.Name = "lfiltroproduto";
+            this.lfiltroproduto.Size = new System.Drawing.Size(76, 21);
+            this.lfiltroproduto.TabIndex = 9;
+            this.lfiltroproduto.Text = "Produto:";
+            // 
+            // cbfiltroformapagamento
+            // 
+            this.cbfiltroformapagamento.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbfiltroformapagamento.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.cbfiltroformapagamento.FormattingEnabled = true;
+            this.cbfiltroformapagamento.Location = new System.Drawing.Point(852, 88);
+            this.cbfiltroformapagamento.Name = "cbfiltroformapagamento";
+            this.cbfiltroformapagamento.Size = new System.Drawing.Size(182, 31);
+            this.cbfiltroformapagamento.TabIndex = 8;
+            // 
             // lresumorecebido
             // 
             this.lresumorecebido.AutoSize = true;
@@ -462,180 +667,6 @@
             this.lresumonotinha.TabIndex = 14;
             this.lresumonotinha.Text = "Em Notinha: R$ 0,00";
             // 
-            // cbfiltroformapagamento
-            // 
-            this.cbfiltroformapagamento.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbfiltroformapagamento.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.cbfiltroformapagamento.FormattingEnabled = true;
-            this.cbfiltroformapagamento.Location = new System.Drawing.Point(852, 88);
-            this.cbfiltroformapagamento.Name = "cbfiltroformapagamento";
-            this.cbfiltroformapagamento.Size = new System.Drawing.Size(182, 31);
-            this.cbfiltroformapagamento.TabIndex = 8;
-            // 
-            // lfiltroproduto
-            // 
-            this.lfiltroproduto.AutoSize = true;
-            this.lfiltroproduto.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lfiltroproduto.Location = new System.Drawing.Point(1111, 64);
-            this.lfiltroproduto.Name = "lfiltroproduto";
-            this.lfiltroproduto.Size = new System.Drawing.Size(76, 21);
-            this.lfiltroproduto.TabIndex = 9;
-            this.lfiltroproduto.Text = "Produto:";
-            // 
-            // cbfiltroproduto
-            // 
-            this.cbfiltroproduto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbfiltroproduto.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.cbfiltroproduto.FormattingEnabled = true;
-            this.cbfiltroproduto.Location = new System.Drawing.Point(1115, 88);
-            this.cbfiltroproduto.Name = "cbfiltroproduto";
-            this.cbfiltroproduto.Size = new System.Drawing.Size(263, 31);
-            this.cbfiltroproduto.TabIndex = 10;
-            // 
-            // dgvdia
-            // 
-            this.dgvdia.AllowUserToAddRows = false;
-            this.dgvdia.AllowUserToDeleteRows = false;
-            this.dgvdia.AllowUserToResizeColumns = false;
-            this.dgvdia.AllowUserToResizeRows = false;
-            this.dgvdia.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvdia.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvdia.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvdia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvdia.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvdia.Location = new System.Drawing.Point(24, 108);
-            this.dgvdia.MultiSelect = false;
-            this.dgvdia.Name = "dgvdia";
-            this.dgvdia.ReadOnly = true;
-            this.dgvdia.RowHeadersVisible = false;
-            this.dgvdia.RowHeadersWidth = 51;
-            this.dgvdia.RowTemplate.Height = 24;
-            this.dgvdia.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvdia.Size = new System.Drawing.Size(908, 903);
-            this.dgvdia.TabIndex = 20;
-            // 
-            // dgvprodutos
-            // 
-            this.dgvprodutos.AllowUserToAddRows = false;
-            this.dgvprodutos.AllowUserToDeleteRows = false;
-            this.dgvprodutos.AllowUserToResizeColumns = false;
-            this.dgvprodutos.AllowUserToResizeRows = false;
-            this.dgvprodutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvprodutos.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvprodutos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this.dgvprodutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvprodutos.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvprodutos.Location = new System.Drawing.Point(26, 114);
-            this.dgvprodutos.MultiSelect = false;
-            this.dgvprodutos.Name = "dgvprodutos";
-            this.dgvprodutos.ReadOnly = true;
-            this.dgvprodutos.RowHeadersVisible = false;
-            this.dgvprodutos.RowHeadersWidth = 51;
-            this.dgvprodutos.RowTemplate.Height = 24;
-            this.dgvprodutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvprodutos.Size = new System.Drawing.Size(784, 903);
-            this.dgvprodutos.TabIndex = 22;
-            // 
-            // dgvformas
-            // 
-            this.dgvformas.AllowUserToAddRows = false;
-            this.dgvformas.AllowUserToDeleteRows = false;
-            this.dgvformas.AllowUserToResizeColumns = false;
-            this.dgvformas.AllowUserToResizeRows = false;
-            this.dgvformas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvformas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvformas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvformas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvformas.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvformas.Location = new System.Drawing.Point(25, 261);
-            this.dgvformas.MultiSelect = false;
-            this.dgvformas.Name = "dgvformas";
-            this.dgvformas.ReadOnly = true;
-            this.dgvformas.RowHeadersVisible = false;
-            this.dgvformas.RowHeadersWidth = 51;
-            this.dgvformas.RowTemplate.Height = 24;
-            this.dgvformas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvformas.Size = new System.Drawing.Size(544, 490);
-            this.dgvformas.TabIndex = 23;
-            // 
-            // lsemdadosprodutos
-            // 
-            this.lsemdadosprodutos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lsemdadosprodutos.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemdadosprodutos.Location = new System.Drawing.Point(24, 108);
-            this.lsemdadosprodutos.Name = "lsemdadosprodutos";
-            this.lsemdadosprodutos.Size = new System.Drawing.Size(908, 903);
-            this.lsemdadosprodutos.TabIndex = 21;
-            this.lsemdadosprodutos.Text = "Sem vendas no período.";
-            this.lsemdadosprodutos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lsemdadosprodutos.Visible = false;
-            // 
-            // lsemdadosproduto
-            // 
-            this.lsemdadosproduto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lsemdadosproduto.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemdadosproduto.Location = new System.Drawing.Point(26, 114);
-            this.lsemdadosproduto.Name = "lsemdadosproduto";
-            this.lsemdadosproduto.Size = new System.Drawing.Size(784, 903);
-            this.lsemdadosproduto.TabIndex = 23;
-            this.lsemdadosproduto.Text = "Sem produtos vendidos no período.";
-            this.lsemdadosproduto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lsemdadosproduto.Visible = false;
-            // 
-            // lsemdadosformas
-            // 
-            this.lsemdadosformas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lsemdadosformas.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemdadosformas.Location = new System.Drawing.Point(25, 261);
-            this.lsemdadosformas.Name = "lsemdadosformas";
-            this.lsemdadosformas.Size = new System.Drawing.Size(544, 490);
-            this.lsemdadosformas.TabIndex = 24;
-            this.lsemdadosformas.Text = " Sem formas de pagamento no período.";
-            this.lsemdadosformas.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lsemdadosformas.Visible = false;
-            // 
             // ucrelatoriovendas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -655,17 +686,17 @@
             this.pcartaoformas.ResumeLayout(false);
             this.pcartaoformas.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartformas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvformas)).EndInit();
             this.pcartaoprodutos.ResumeLayout(false);
             this.pcartaoprodutos.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartprodutos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).EndInit();
             this.pcartaodia.ResumeLayout(false);
             this.pcartaodia.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartdia)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvdia)).EndInit();
             this.prelatoriovendas.ResumeLayout(false);
             this.prelatoriovendas.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvdia)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvprodutos)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvformas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

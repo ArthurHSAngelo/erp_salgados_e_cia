@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="erp_salgados_e_cia.csproj" Id="0a9e0971-87ff-44fb-b28d-cdd1ff3cbc0c" />
+  <Project Path="../erp_salgados_e_cia.Data/erp_salgados_e_cia.Data.csproj" Id="0f09e13b-7dd2-4d95-b795-1d0588956fd3" />
+  <Project Path="../erp_salgados_e_cia.Domain/erp_salgados_e_cia.Domain.csproj" Id="109c1e7c-748a-4e50-a184-a9895205761d" />
 </Solution>

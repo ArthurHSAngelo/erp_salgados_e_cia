@@ -71,6 +71,9 @@
             this.dgvinventario.AllowUserToDeleteRows = false;
             this.dgvinventario.AllowUserToResizeColumns = false;
             this.dgvinventario.AllowUserToResizeRows = false;
+            this.dgvinventario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvinventario.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvinventario.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -154,22 +157,22 @@
             // ldivergenciasinventario
             // 
             this.ldivergenciasinventario.AutoSize = true;
-            this.ldivergenciasinventario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.ldivergenciasinventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ldivergenciasinventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.ldivergenciasinventario.Location = new System.Drawing.Point(1257, 255);
+            this.ldivergenciasinventario.Location = new System.Drawing.Point(1245, 248);
             this.ldivergenciasinventario.Name = "ldivergenciasinventario";
-            this.ldivergenciasinventario.Size = new System.Drawing.Size(126, 21);
+            this.ldivergenciasinventario.Size = new System.Drawing.Size(157, 28);
             this.ldivergenciasinventario.TabIndex = 25;
             this.ldivergenciasinventario.Text = "Divergências: 0";
             // 
             // lcontadosinventario
             // 
             this.lcontadosinventario.AutoSize = true;
-            this.lcontadosinventario.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.lcontadosinventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lcontadosinventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.lcontadosinventario.Location = new System.Drawing.Point(1009, 255);
+            this.lcontadosinventario.Location = new System.Drawing.Point(999, 248);
             this.lcontadosinventario.Name = "lcontadosinventario";
-            this.lcontadosinventario.Size = new System.Drawing.Size(99, 21);
+            this.lcontadosinventario.Size = new System.Drawing.Size(123, 28);
             this.lcontadosinventario.TabIndex = 26;
             this.lcontadosinventario.Text = "Contados: 0";
             // 
@@ -202,7 +205,7 @@
             this.pinventario.Controls.Add(this.blimparinventario);
             this.pinventario.Dock = System.Windows.Forms.DockStyle.Top;
             this.pinventario.Location = new System.Drawing.Point(0, 0);
-            this.pinventario.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pinventario.Margin = new System.Windows.Forms.Padding(4);
             this.pinventario.Name = "pinventario";
             this.pinventario.Size = new System.Drawing.Size(2445, 178);
             this.pinventario.TabIndex = 28;

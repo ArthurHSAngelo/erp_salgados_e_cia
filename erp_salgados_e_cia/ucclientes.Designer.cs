@@ -218,7 +218,7 @@
             // 
             this.lnotinhacliente.AutoSize = true;
             this.lnotinhacliente.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lnotinhacliente.Location = new System.Drawing.Point(1374, 209);
+            this.lnotinhacliente.Location = new System.Drawing.Point(1318, 209);
             this.lnotinhacliente.Name = "lnotinhacliente";
             this.lnotinhacliente.Size = new System.Drawing.Size(194, 28);
             this.lnotinhacliente.TabIndex = 33;
@@ -247,7 +247,7 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvhistoriconotinha.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvhistoriconotinha.Location = new System.Drawing.Point(1379, 276);
+            this.dgvhistoriconotinha.Location = new System.Drawing.Point(1323, 276);
             this.dgvhistoriconotinha.MultiSelect = false;
             this.dgvhistoriconotinha.Name = "dgvhistoriconotinha";
             this.dgvhistoriconotinha.ReadOnly = true;
@@ -261,7 +261,7 @@
             // 
             this.lsaldonotinha.AutoSize = true;
             this.lsaldonotinha.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsaldonotinha.Location = new System.Drawing.Point(1374, 237);
+            this.lsaldonotinha.Location = new System.Drawing.Point(1318, 237);
             this.lsaldonotinha.Name = "lsaldonotinha";
             this.lsaldonotinha.Size = new System.Drawing.Size(217, 28);
             this.lsaldonotinha.TabIndex = 34;
@@ -271,7 +271,7 @@
             // 
             this.lsemclientenotinha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lsemclientenotinha.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsemclientenotinha.Location = new System.Drawing.Point(1379, 276);
+            this.lsemclientenotinha.Location = new System.Drawing.Point(1323, 276);
             this.lsemclientenotinha.Name = "lsemclientenotinha";
             this.lsemclientenotinha.Size = new System.Drawing.Size(835, 542);
             this.lsemclientenotinha.TabIndex = 36;
@@ -284,7 +284,7 @@
             this.bpagarnotinha.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bpagarnotinha.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bpagarnotinha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.bpagarnotinha.Location = new System.Drawing.Point(2042, 833);
+            this.bpagarnotinha.Location = new System.Drawing.Point(1986, 833);
             this.bpagarnotinha.Name = "bpagarnotinha";
             this.bpagarnotinha.Size = new System.Drawing.Size(172, 52);
             this.bpagarnotinha.TabIndex = 37;

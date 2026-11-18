@@ -268,5 +268,15 @@ namespace erp_salgados_e_cia
             temporizador.Stop();
             temporizador.Dispose();
         }
+
+        private void dgvatividade_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dgvultimasvendas_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

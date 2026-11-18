@@ -9,6 +9,7 @@
     <RootNamespace>erp_salgados_e_cia</RootNamespace>
     <AssemblyName>erp_salgados_e_cia</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <ApplicationIcon>Recursos\salgados.ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -323,4 +324,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Content Include="Recursos\salgados.ico" />
+    <Content Include="Recursos\logo_salgados_e_cia.png" />
+  </ItemGroup>
 </Project>
