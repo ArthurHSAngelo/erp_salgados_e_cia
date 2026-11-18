@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using erp_salgados_e_cia.Data.Connection;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Entities;
+using erp_salgados_e_cia.Domain.Exceptions;
+using erp_salgados_e_cia.Domain.Services;
 
 namespace erp_salgados_e_cia
 {
@@ -53,8 +58,30 @@ namespace erp_salgados_e_cia
                        a.IdCliente == cliente.IdCliente));
         }
 
-        public static string UnidadeAtual { get; set; } =
+        private static string unidadeAtual =
             "Lanchonete Centro";
+
+        // A unidade de trabalho também precisa chegar ao banco (SET @unidade_id),
+        // para o log e as regras de unidade; por isso o setter atualiza a sessão.
+        public static string UnidadeAtual
+        {
+            get { return unidadeAtual; }
+            set
+            {
+                unidadeAtual = value;
+
+                if (SessaoBanco.UsuarioId.HasValue)
+                {
+                    UnidadeResumo unidade =
+                        UnidadeRepositorio.PorNome(value);
+
+                    SessaoBanco.UnidadeId =
+                        unidade == null
+                        ? (uint?)null
+                        : unidade.Id;
+                }
+            }
+        }
 
         public static Usuario UsuarioLogado { get; private set; }
 
@@ -69,68 +96,35 @@ namespace erp_salgados_e_cia
 
         public static string GerarHashSenha(string senha)
         {
-            byte[] sal = new byte[16];
-
-            using (System.Security.Cryptography.RNGCryptoServiceProvider gerador =
-                new System.Security.Cryptography.RNGCryptoServiceProvider())
-            {
-                gerador.GetBytes(sal);
-            }
-
-            byte[] hash;
-
-            using (System.Security.Cryptography.Rfc2898DeriveBytes derivador =
-                new System.Security.Cryptography.Rfc2898DeriveBytes(
-                    senha,
-                    sal,
-                    10000,
-                    System.Security.Cryptography.HashAlgorithmName.SHA256))
-            {
-                hash = derivador.GetBytes(32);
-            }
-
-            return System.Convert.ToBase64String(sal) +
-                   ":" +
-                   System.Convert.ToBase64String(hash);
+            return ServicoSenha.GerarHash(senha);
         }
 
         public static bool VerificarSenha(string senha, string senhaHash)
         {
-            if (string.IsNullOrEmpty(senha) ||
-                string.IsNullOrEmpty(senhaHash))
+            return ServicoSenha.Verificar(senha, senhaHash);
+        }
+
+        private static PerfilUsuario ParaPerfil(string perfil)
+        {
+            return (PerfilUsuario)System.Enum.Parse(
+                typeof(PerfilUsuario),
+                perfil);
+        }
+
+        // Converte o login lido do banco no Usuario que as telas já usam.
+        private static Usuario ParaUsuario(UsuarioAcesso acesso)
+        {
+            return new Usuario
             {
-                return false;
-            }
-
-            string[] partes = senhaHash.Split(':');
-
-            if (partes.Length != 2)
-            {
-                return false;
-            }
-
-            byte[] sal = System.Convert.FromBase64String(partes[0]);
-            byte[] esperado = System.Convert.FromBase64String(partes[1]);
-            byte[] calculado;
-
-            using (System.Security.Cryptography.Rfc2898DeriveBytes derivador =
-                new System.Security.Cryptography.Rfc2898DeriveBytes(
-                    senha,
-                    sal,
-                    10000,
-                    System.Security.Cryptography.HashAlgorithmName.SHA256))
-            {
-                calculado = derivador.GetBytes(esperado.Length);
-            }
-
-            int diferenca = 0;
-
-            for (int i = 0; i < esperado.Length; i++)
-            {
-                diferenca |= esperado[i] ^ calculado[i];
-            }
-
-            return diferenca == 0;
+                IdUsuario = (int)acesso.Id,
+                Login = acesso.Login,
+                SenhaHash = acesso.SenhaHash,
+                Perfil = ParaPerfil(acesso.Perfil),
+                Unidade = acesso.UnidadeNome,
+                Status = acesso.Ativo
+                    ? StatusCadastro.Ativo
+                    : StatusCadastro.Inativo
+            };
         }
 
         public static bool Autenticar(
@@ -142,45 +136,65 @@ namespace erp_salgados_e_cia
             usuario = null;
             mensagem = "";
 
-            string loginInformado =
-                (login ?? "").Trim();
-
-            Usuario encontrado =
-                usuarios.FirstOrDefault(u =>
-                    string.Equals(
-                        u.Login,
-                        loginInformado,
-                        System.StringComparison.OrdinalIgnoreCase));
-
-            if (encontrado == null ||
-                !VerificarSenha(senha, encontrado.SenhaHash))
+            try
             {
-                mensagem = "Login ou senha inválidos.";
+                UsuarioAcesso acesso =
+                    UsuarioRepositorio.BuscarPorLogin(login);
+
+                if (acesso == null ||
+                    !VerificarSenha(senha, acesso.SenhaHash))
+                {
+                    mensagem = "Login ou senha inválidos.";
+                    return false;
+                }
+
+                if (!acesso.Ativo)
+                {
+                    mensagem = "Usuário inativo. Procure um gerente.";
+                    return false;
+                }
+
+                // Unidade de trabalho: a do login base (Atendente) ou a
+                // primeira unidade ativa (Gerente e Administrador).
+                UnidadeResumo unidade =
+                    acesso.UnidadeId.HasValue
+                    ? new UnidadeResumo
+                    {
+                        Id = acesso.UnidadeId.Value,
+                        Nome = acesso.UnidadeNome
+                    }
+                    : UnidadeRepositorio.PrimeiraAtiva();
+
+                if (unidade == null)
+                {
+                    mensagem = "Nenhuma unidade ativa cadastrada.";
+                    return false;
+                }
+
+                Usuario encontrado = ParaUsuario(acesso);
+
+                usuario = encontrado;
+                UsuarioLogado = encontrado;
+
+                SessaoBanco.UsuarioId = acesso.Id;
+                SessaoBanco.UnidadeId = unidade.Id;
+                unidadeAtual = unidade.Nome;
+
+                LogRepositorio.RegistrarLogin(
+                    acesso.Id,
+                    acesso.Login);
+            }
+            catch (RegraNegocioException ex)
+            {
+                usuario = null;
+                mensagem = ex.Message;
                 return false;
             }
-
-            if (encontrado.Status != StatusCadastro.Ativo)
-            {
-                mensagem = "Usuário inativo. Procure um gerente.";
-                return false;
-            }
-
-            usuario = encontrado;
-            UsuarioLogado = encontrado;
-
-            UnidadeAtual =
-                encontrado.Unidade ??
-                unidades
-                    .Where(u => u.Status == StatusCadastro.Ativo)
-                    .OrderBy(u => u.Nome)
-                    .Select(u => u.Nome)
-                    .FirstOrDefault() ??
-                UnidadeAtual;
 
             RegistrarLog(
                 TipoOperacaoLog.Login,
                 "Usuario",
-                encontrado.Login,
+                usuario.Login,
                 $"Unidade de trabalho: {UnidadeAtual}");
 
             return true;
@@ -195,9 +209,21 @@ namespace erp_salgados_e_cia
                     "Usuario",
                     UsuarioLogado.Login,
                     null);
+
+                try
+                {
+                    LogRepositorio.RegistrarLogout(
+                        (uint)UsuarioLogado.IdUsuario,
+                        UsuarioLogado.Login);
+                }
+                catch (RegraNegocioException)
+                {
+                    // sem banco, o programa ainda precisa conseguir sair
+                }
             }
 
             UsuarioLogado = null;
+            SessaoBanco.Limpar();
         }
 
         private static List<LogOperacao> registrosLog =
@@ -1141,28 +1167,32 @@ namespace erp_salgados_e_cia
             autorizador = null;
             mensagem = "";
 
-            string loginInformado =
-                (login ?? "").Trim();
+            UsuarioAcesso acesso;
 
-            Usuario encontrado =
-                usuarios.FirstOrDefault(u =>
-                    string.Equals(
-                        u.Login,
-                        loginInformado,
-                        System.StringComparison.OrdinalIgnoreCase));
+            try
+            {
+                acesso = UsuarioRepositorio.BuscarPorLogin(login);
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
 
-            if (encontrado == null ||
-                !VerificarSenha(senha, encontrado.SenhaHash))
+            if (acesso == null ||
+                !VerificarSenha(senha, acesso.SenhaHash))
             {
                 mensagem = "Login ou senha inválidos.";
                 return false;
             }
 
-            if (encontrado.Status != StatusCadastro.Ativo)
+            if (!acesso.Ativo)
             {
                 mensagem = "Usuário inativo.";
                 return false;
             }
+
+            Usuario encontrado = ParaUsuario(acesso);
 
             if (encontrado.Perfil == PerfilUsuario.Atendente)
             {

@@ -315,5 +315,15 @@
       <DependentUpon>ucvendas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\erp_salgados_e_cia.Data\erp_salgados_e_cia.Data.csproj">
+      <Project>{0F09E13B-7DD2-4D95-B795-1D0588956FD3}</Project>
+      <Name>erp_salgados_e_cia.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\erp_salgados_e_cia.Domain\erp_salgados_e_cia.Domain.csproj">
+      <Project>{109C1E7C-748A-4E50-A184-A9895205761D}</Project>
+      <Name>erp_salgados_e_cia.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
