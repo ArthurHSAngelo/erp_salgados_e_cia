@@ -6,6 +6,9 @@ namespace erp_salgados_e_cia
 {
     public class Comanda
     {
+        [Browsable(false)]
+        public uint Id { get; set; }
+
         public int NumeroMesa { get; set; }
 
         public string Unidade { get; set; }

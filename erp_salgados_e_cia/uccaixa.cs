@@ -238,6 +238,7 @@ namespace erp_salgados_e_cia
         public void AtualizarTela()
         {
             dadossistema.CarregarCaixas();
+            dadossistema.CarregarVendas();
 
             CarregarResponsaveis();
 

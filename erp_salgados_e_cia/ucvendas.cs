@@ -276,7 +276,7 @@ namespace erp_salgados_e_cia
                 nudquantidade.Value;
 
             if (quantidadeSolicitada >
-                produtoSelecionado.EstoqueAtual)
+                dadossistema.SaldoNoBanco(produtoSelecionado))
             {
                 MessageBox.Show(
                     $"Estoque insuficiente para o produto {produtoSelecionado.Nome}.",
@@ -403,7 +403,22 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            comanda.IdCliente = novoCliente;
+            string mensagemCliente;
+
+            if (!dadossistema.TrocarClienteDaComanda(
+                    comanda,
+                    novoCliente,
+                    out mensagemCliente))
+            {
+                MessageBox.Show(
+                    mensagemCliente,
+                    "Cliente bloqueado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                AtualizarVisaoComanda();
+            }
         }
 
         private void LimparPedido()
@@ -418,126 +433,29 @@ namespace erp_salgados_e_cia
             nudquantidade.Value = 1;
         }
 
-        private void BaixarEstoquePedido(int numeroMesa)
-        {
-            foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
-            {
-                Produto produto =
-                    dadossistema.produtos
-                    .First(p => p.Nome == grupo.Key);
-
-                decimal quantidadeBaixada =
-                    grupo.Sum(item => item.Quantidade);
-
-                produto.EstoqueAtual -= quantidadeBaixada;
-
-                dadossistema.RegistrarHistoricoEstoque(
-                    produto,
-                    TipoMovimentoEstoque.Venda,
-                    quantidadeBaixada,
-                    dadossistema.CaixaAberto()?.Responsavel ?? "",
-                    numeroMesa == 0 ? "Balcão" : $"Mesa {numeroMesa}"
-                );
-            }
-        }
-
         private void EnviarPedidoParaComanda(int numeroMesa, int? idCliente)
         {
-            Comanda comanda =
-                dadossistema.ComandaDaMesa(numeroMesa);
+            string mensagem;
 
-            if (comanda == null)
+            if (!dadossistema.EnviarPedidoParaComanda(
+                    numeroMesa,
+                    idCliente,
+                    itensVenda.ToList(),
+                    out mensagem))
             {
-                comanda = new Comanda
-                {
-                    NumeroMesa = numeroMesa,
-                    Unidade = dadossistema.UnidadeAtual,
-                    IdCliente = idCliente
-                };
+                MessageBox.Show(
+                    mensagem,
+                    "Pedido não enviado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-                dadossistema.comandas.Add(comanda);
+                return;
             }
-
-            foreach (ItemVenda item in itensVenda)
-            {
-                ItemVenda itemNaComanda =
-                    comanda.Itens
-                    .FirstOrDefault(itemExistente =>
-                        itemExistente.Produto == item.Produto &&
-                        itemExistente.PrecoUnitario == item.PrecoUnitario);
-
-                if (itemNaComanda != null)
-                {
-                    itemNaComanda.Quantidade += item.Quantidade;
-                }
-                else
-                {
-                    comanda.Itens.Add(
-                        new ItemVenda
-                        {
-                            Produto = item.Produto,
-                            Quantidade = item.Quantidade,
-                            PrecoUnitario = item.PrecoUnitario
-                        }
-                    );
-                }
-            }
-
-            BaixarEstoquePedido(numeroMesa);
 
             LimparPedido();
 
             AtualizarVisaoComanda();
-        }
-
-        private Venda CriarVenda(
-            int numeroMesa,
-            decimal totalVenda,
-            int? idCliente,
-            IEnumerable<ItemVenda> itens,
-            IEnumerable<PagamentoVenda> pagamentos)
-        {
-            decimal totalPago =
-                pagamentos.Sum(pagamento => pagamento.Valor);
-
-            return new Venda
-            {
-                NumeroMesa = numeroMesa,
-                IdCaixa = dadossistema.CaixaAberto().IdCaixa,
-                IdVenda = dadossistema.vendas.Count + 1,
-                DataHora = DateTime.Now,
-                FormaPagamento = string.Join(
-                    " + ",
-                    pagamentos.Select(pagamento =>
-                        $"{pagamento.FormaPagamento} R$ {pagamento.Valor:N2}")
-                ),
-                ValorTotal = totalVenda,
-                ValorRecebido = pagamentos
-                    .Where(pagamento => pagamento.FormaPagamento != "Notinha")
-                    .Sum(pagamento => pagamento.Valor),
-                Troco = Math.Max(0m, totalPago - totalVenda),
-                Status = "Concluída",
-                IdCliente = idCliente,
-                Itens = new BindingList<ItemVenda>(
-                    itens
-                    .Select(item => new ItemVenda
-                    {
-                        Produto = item.Produto,
-                        Quantidade = item.Quantidade,
-                        PrecoUnitario = item.PrecoUnitario
-                    })
-                    .ToList()
-                ),
-                Pagamentos = new BindingList<PagamentoVenda>(
-                    pagamentos
-                    .Select(pagamento => new PagamentoVenda
-                    {
-                        FormaPagamento = pagamento.FormaPagamento,
-                        Valor = pagamento.Valor
-                    })
-                    .ToList()
-                )
-            };
         }
 
         private void CobrarPedidoNoBalcao(int? idCliente)
@@ -561,21 +479,23 @@ namespace erp_salgados_e_cia
                 pagamentosCobrados = cobranca.Pagamentos;
             }
 
-            BaixarEstoquePedido(0);
+            string mensagem;
 
-            Venda vendaBalcao = CriarVenda(
-                0,
-                totalVenda,
-                idCliente,
-                itensVenda,
-                pagamentosCobrados
-            );
+            if (!dadossistema.VenderNoBalcao(
+                    idCliente,
+                    itensVenda.ToList(),
+                    pagamentosCobrados,
+                    out mensagem))
+            {
+                MessageBox.Show(
+                    mensagem,
+                    "Venda não realizada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-            dadossistema.vendas.Add(vendaBalcao);
-
-            dadossistema.RegistrarLogVenda(vendaBalcao);
-
-            dadossistema.LancarNotinhaDaVenda(vendaBalcao);
+                return;
+            }
 
             LimparPedido();
 
@@ -625,53 +545,31 @@ namespace erp_salgados_e_cia
                 pagamentoParcial = cobranca.PagamentoParcial;
             }
 
-            foreach (PagamentoVenda pagamentoNovo in pagamentosNovos)
-            {
-                PagamentoVenda pagamentoExistente =
-                    comanda.Pagamentos
-                    .FirstOrDefault(pagamento =>
-                        pagamento.FormaPagamento ==
-                        pagamentoNovo.FormaPagamento);
+            string mensagem;
 
-                if (pagamentoExistente != null)
-                {
-                    pagamentoExistente.Valor += pagamentoNovo.Valor;
-                }
-                else
-                {
-                    comanda.Pagamentos.Add(
-                        new PagamentoVenda
-                        {
-                            FormaPagamento = pagamentoNovo.FormaPagamento,
-                            Valor = pagamentoNovo.Valor
-                        }
-                    );
-                }
-            }
-
-            if (pagamentoParcial)
+            if (!dadossistema.CobrarComanda(
+                    comanda,
+                    pagamentosNovos,
+                    pagamentoParcial,
+                    out mensagem))
             {
+                MessageBox.Show(
+                    mensagem,
+                    "Cobrança não realizada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
                 AtualizarVisaoComanda();
                 return;
             }
 
-            Venda vendaComanda = CriarVenda(
-                comanda.NumeroMesa,
-                comanda.Total,
-                comanda.IdCliente,
-                comanda.Itens,
-                comanda.Pagamentos
-            );
-
-            dadossistema.vendas.Add(vendaComanda);
-
-            dadossistema.RegistrarLogVenda(vendaComanda);
-
-            dadossistema.LancarNotinhaDaVenda(vendaComanda);
-
-            dadossistema.comandas.Remove(comanda);
-
             AtualizarVisaoComanda();
+
+            if (pagamentoParcial)
+            {
+                return;
+            }
 
             MessageBox.Show(
                 "Venda finalizada com sucesso.",
@@ -715,30 +613,24 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            foreach (ItemVenda item in comanda.Itens)
+            string mensagem;
+
+            if (!dadossistema.CancelarComanda(comanda, out mensagem))
             {
-                Produto produto =
-                    dadossistema.produtos
-                    .FirstOrDefault(p => p.Nome == item.Produto);
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
 
-                if (produto != null)
-                {
-                    produto.EstoqueAtual += item.Quantidade;
-
-                    dadossistema.RegistrarHistoricoEstoque(
-                        produto,
-                        TipoMovimentoEstoque.Estorno,
-                        item.Quantidade,
-                        dadossistema.CaixaAberto()?.Responsavel ?? "",
-                        $"Mesa {comanda.NumeroMesa}"
-                    );
-                }
+                AtualizarVisaoComanda();
+                return;
             }
-
-            dadossistema.comandas.Remove(comanda);
 
             AtualizarVisaoComanda();
         }
+
         private void bfinalizarvenda_Click(object sender, EventArgs e)
         {
             if (!CaixaEstaAberto())
@@ -758,6 +650,9 @@ namespace erp_salgados_e_cia
                 return;
             }
 
+            Dictionary<uint, decimal> saldos =
+                dadossistema.SaldosNoBanco();
+
             foreach (var grupo in itensVenda.GroupBy(item => item.Produto))
             {
                 Produto produto =
@@ -768,7 +663,8 @@ namespace erp_salgados_e_cia
                     grupo.Sum(item => item.Quantidade);
 
                 if (produto == null ||
-                    produto.EstoqueAtual < quantidadeTotal)
+                    !saldos.ContainsKey(produto.Id) ||
+                    saldos[produto.Id] < quantidadeTotal)
                 {
                     MessageBox.Show(
                         $"Estoque insuficiente para o produto: {grupo.Key}.",

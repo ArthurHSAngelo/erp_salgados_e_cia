@@ -20,6 +20,9 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTabela()
         {
+            dadossistema.CarregarCaixas();
+            dadossistema.CarregarVendas();
+
             string filtroStatus =
                 cbfiltrostatus.SelectedItem == null
                 ? "Todas"

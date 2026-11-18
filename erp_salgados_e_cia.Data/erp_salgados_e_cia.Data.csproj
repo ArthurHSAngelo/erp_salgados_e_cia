@@ -56,6 +56,7 @@
     <Compile Include="Repositories\ProdutoRepositorio.cs" />
     <Compile Include="Repositories\UnidadeRepositorio.cs" />
     <Compile Include="Repositories\UsuarioRepositorio.cs" />
+    <Compile Include="Repositories\VendaRepositorio.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\erp_salgados_e_cia.Domain\erp_salgados_e_cia.Domain.csproj">

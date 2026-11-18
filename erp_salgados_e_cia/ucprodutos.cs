@@ -24,6 +24,9 @@ namespace erp_salgados_e_cia
 
         private void AtualizarTabela()
         {
+            // Atualiza o saldo de estoque (coluna "Estoque atual") com o que está no banco.
+            dadossistema.CarregarProdutos();
+
             string filtro =
                 cbfiltrostatus.SelectedItem == null
                 ? "Ativos"
@@ -429,8 +432,6 @@ namespace erp_salgados_e_cia
 
                     return;
                 }
-
-                dadossistema.RemoverSaldosDoProduto(produtoSelecionado);
 
                 dadossistema.CarregarProdutos();
 

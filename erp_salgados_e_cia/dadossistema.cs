@@ -22,9 +22,6 @@ namespace erp_salgados_e_cia
                        m.Produto == produto.Nome) ||
                     vendas.Any(v =>
                        v.Itens.Any(item =>
-                           item.Produto == produto.Nome)) ||
-                    comandas.Any(c =>
-                       c.Itens.Any(item =>
                            item.Produto == produto.Nome)));
         }
 
@@ -53,8 +50,6 @@ namespace erp_salgados_e_cia
                    (ClienteRepositorio.PossuiVinculos((uint)cliente.IdCliente) ||
                     vendas.Any(v =>
                        v.IdCliente == cliente.IdCliente) ||
-                    comandas.Any(c =>
-                       c.IdCliente == cliente.IdCliente) ||
                     notinhas.Any(n =>
                        n.IdCliente == cliente.IdCliente) ||
                     abatimentos.Any(a =>
@@ -67,8 +62,6 @@ namespace erp_salgados_e_cia
         // as telas gravam pelos repositórios e depois chamam CarregarXxx().
         // O objeto de cada linha é reaproveitado (pelo id), para que as telas e as
         // listas que ainda estão em memória continuem apontando para ele.
-
-        private static bool saldosCarregados = false;
 
         private static StatusCadastro ParaStatus(object valor)
         {
@@ -111,10 +104,10 @@ namespace erp_salgados_e_cia
             CarregarClientes();
             CarregarFuncionarios();
             CarregarUsuarios();
-            CarregarSaldos();
             CarregarEntradas();
             CarregarPerdas();
             CarregarCaixas();
+            CarregarVendas();
         }
 
         public static void CarregarUnidades()
@@ -163,6 +156,25 @@ namespace erp_salgados_e_cia
                 produto.Status = ParaStatus(linha["status"]);
 
                 doBanco.Add(produto);
+            }
+
+            // Saldo da unidade de trabalho (coluna "Estoque atual" e telas de venda).
+            Unidade unidadeTrabalho =
+                unidades.FirstOrDefault(u => u.Nome == UnidadeAtual);
+
+            Dictionary<uint, decimal> saldos =
+                unidadeTrabalho == null
+                ? new Dictionary<uint, decimal>()
+                : EstoqueRepositorio.SaldosDaUnidade(unidadeTrabalho.Id);
+
+            foreach (Produto produto in doBanco)
+            {
+                decimal saldo;
+
+                produto.EstoqueAtual =
+                    saldos.TryGetValue(produto.Id, out saldo)
+                    ? saldo
+                    : 0m;
             }
 
             Reconciliar(produtos, doBanco);
@@ -274,37 +286,6 @@ namespace erp_salgados_e_cia
                     UsuarioLogado = daLista;
                 }
             }
-        }
-
-        // PROVISÓRIO até o Bloco 5 (estoque): os saldos ainda são mantidos em memória
-        // pelas telas de venda e estoque; aqui só entra o saldo gravado no banco,
-        // uma vez por execução do programa.
-        private static void CarregarSaldos()
-        {
-            if (saldosCarregados)
-            {
-                return;
-            }
-
-            foreach (System.Data.DataRow linha in
-                EstoqueRepositorio.Listar().Rows)
-            {
-                uint produtoId = System.Convert.ToUInt32(linha["produto_id"]);
-                uint unidadeId = System.Convert.ToUInt32(linha["unidade_id"]);
-
-                Produto produto = produtos.FirstOrDefault(p => p.Id == produtoId);
-                Unidade unidade = unidades.FirstOrDefault(u => u.Id == unidadeId);
-
-                if (produto != null && unidade != null)
-                {
-                    DefinirSaldoDoProduto(
-                        produto,
-                        unidade.Nome,
-                        System.Convert.ToDecimal(linha["quantidade"]));
-                }
-            }
-
-            saldosCarregados = true;
         }
 
         private static string unidadeAtual =
@@ -601,18 +582,6 @@ namespace erp_salgados_e_cia
                 UnidadeDeTrabalho().Id);
         }
 
-        // PROVISÓRIO até o Bloco 7: a venda ainda usa o saldo em memória; depois de gravar
-        // no banco, o saldo daquele produto na memória volta a ser o do banco.
-        private static void SincronizarSaldoDaMemoria(
-            Produto produto,
-            Unidade unidade)
-        {
-            DefinirSaldoDoProduto(
-                produto,
-                unidade.Nome,
-                EstoqueRepositorio.SaldoDe(unidade.Id, produto.Id));
-        }
-
         public static void CarregarEntradas()
         {
             movimentacoes.Clear();
@@ -709,10 +678,7 @@ namespace erp_salgados_e_cia
                     System.DateTime.Now,
                     linhas);
 
-                foreach (Produto produto in afetados.Distinct())
-                {
-                    SincronizarSaldoDaMemoria(produto, unidade);
-                }
+                CarregarProdutos();
 
                 CarregarEntradas();
             }
@@ -841,9 +807,9 @@ namespace erp_salgados_e_cia
                     IdDoUsuarioLogado(),
                     IdDoFuncionario(responsavel, unidade.Nome));
 
-                SincronizarSaldoDaMemoria(produto, unidade);
+                saldoAtual = EstoqueRepositorio.SaldoDe(unidade.Id, produto.Id);
 
-                saldoAtual = produto.EstoqueAtual;
+                CarregarProdutos();
 
                 CarregarPerdas();
             }
@@ -1009,10 +975,7 @@ namespace erp_salgados_e_cia
                     observacao,
                     linhas);
 
-                foreach (Produto produto in afetados)
-                {
-                    SincronizarSaldoDaMemoria(produto, unidade);
-                }
+                CarregarProdutos();
             }
             catch (RegraNegocioException ex)
             {
@@ -1552,83 +1515,313 @@ namespace erp_salgados_e_cia
                 .Sum(a => a.Valor);
         }
 
-        public static decimal SaldoDoProduto(
-            Produto produto,
-            string unidade)
-        {
-            SaldoEstoque saldo =
-                saldosestoque.FirstOrDefault(s =>
-                    s.Produto == produto &&
-                    s.Unidade == unidade);
+        // ---- Comandas, vendas e Notinha (lidas do banco) ----
+        // As listas vendas, notinhas e abatimentos são um espelho recarregado do banco
+        // (login, depois de cada gravação e ao abrir as telas). Os relatórios do Bloco 8
+        // ainda leem delas. As comandas abertas são lidas direto do banco a cada consulta.
 
-            return saldo == null
-                ? 0m
-                : saldo.Quantidade;
+        private static string FormaParaBanco(string forma)
+        {
+            switch (forma)
+            {
+                case "Crédito":
+                    return "Credito";
+
+                case "Débito":
+                    return "Debito";
+
+                default:
+                    return forma;
+            }
         }
 
-        public static void DefinirSaldoDoProduto(
-            Produto produto,
-            string unidade,
-            decimal quantidade)
+        private static string FormaDoBanco(string forma)
         {
-            SaldoEstoque saldo =
-                saldosestoque.FirstOrDefault(s =>
-                    s.Produto == produto &&
-                    s.Unidade == unidade);
-
-            if (saldo == null)
+            switch (forma)
             {
-                saldosestoque.Add(
-                    new SaldoEstoque
+                case "Credito":
+                    return "Crédito";
+
+                case "Debito":
+                    return "Débito";
+
+                default:
+                    return forma;
+            }
+        }
+
+        private static List<PagamentoNovo> ParaPagamentosNovos(
+            IEnumerable<PagamentoVenda> pagamentos)
+        {
+            return pagamentos
+                .Select(p => new PagamentoNovo
+                {
+                    Forma = FormaParaBanco(p.FormaPagamento),
+                    Valor = p.Valor
+                })
+                .ToList();
+        }
+
+        private static List<ItemPedido> ParaItensPedido(
+            IEnumerable<ItemVenda> itens)
+        {
+            List<ItemPedido> pedido = new List<ItemPedido>();
+
+            foreach (ItemVenda item in itens)
+            {
+                Produto produto =
+                    produtos.FirstOrDefault(p => p.Nome == item.Produto);
+
+                if (produto == null)
+                {
+                    throw new RegraNegocioException(
+                        $"Produto não encontrado: {item.Produto}.");
+                }
+
+                pedido.Add(
+                    new ItemPedido
                     {
-                        Produto = produto,
-                        Unidade = unidade,
-                        Quantidade = quantidade
+                        ProdutoId = produto.Id,
+                        Quantidade = item.Quantidade,
+                        PrecoUnitario = item.PrecoUnitario
                     });
-
-                return;
             }
 
-            saldo.Quantidade = quantidade;
+            return pedido;
         }
 
-        public static void RemoverSaldosDoProduto(Produto produto)
+        public static void CarregarVendas()
         {
-            foreach (SaldoEstoque saldo in
-                saldosestoque
-                .Where(s => s.Produto == produto)
-                .ToList())
+            Dictionary<int, Venda> porId = new Dictionary<int, Venda>();
+            List<Venda> doBanco = new List<Venda>();
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarVendas().Rows)
             {
-                saldosestoque.Remove(saldo);
+                Venda venda = new Venda
+                {
+                    IdVenda = System.Convert.ToInt32(linha["id"]),
+                    NumeroMesa = System.Convert.ToInt32(linha["numero_mesa"]),
+                    IdCaixa = System.Convert.ToInt32(linha["caixa_id"]),
+                    DataHora = System.Convert.ToDateTime(linha["data_hora"]),
+                    ValorTotal = System.Convert.ToDecimal(linha["valor_total"]),
+                    Troco = System.Convert.ToDecimal(linha["troco"]),
+                    Status =
+                        System.Convert.ToString(linha["status"]) == "Concluida"
+                        ? "Concluída"
+                        : "Cancelada",
+                    IdCliente =
+                        linha["cliente_id"] == System.DBNull.Value
+                        ? (int?)null
+                        : System.Convert.ToInt32(linha["cliente_id"]),
+                    MotivoCancelamento = TextoOuNulo(linha["motivo_cancelamento"]),
+                    CanceladaPor = TextoOuNulo(linha["cancelado_por"]),
+                    DataCancelamento =
+                        linha["data_cancelamento"] == System.DBNull.Value
+                        ? (System.DateTime?)null
+                        : System.Convert.ToDateTime(linha["data_cancelamento"])
+                };
+
+                porId[venda.IdVenda] = venda;
+                doBanco.Add(venda);
+            }
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarItensDasVendas().Rows)
+            {
+                Venda venda;
+
+                if (porId.TryGetValue(System.Convert.ToInt32(linha["venda_id"]), out venda))
+                {
+                    venda.Itens.Add(
+                        new ItemVenda
+                        {
+                            Produto = System.Convert.ToString(linha["produto"]),
+                            Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
+                            PrecoUnitario = System.Convert.ToDecimal(linha["preco_unitario"])
+                        });
+                }
+            }
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarPagamentosDasVendas().Rows)
+            {
+                Venda venda;
+
+                if (!porId.TryGetValue(System.Convert.ToInt32(linha["venda_id"]), out venda))
+                {
+                    continue;
+                }
+
+                string forma = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]));
+                decimal valor = System.Convert.ToDecimal(linha["valor"]);
+
+                PagamentoVenda existente =
+                    venda.Pagamentos.FirstOrDefault(p => p.FormaPagamento == forma);
+
+                if (existente != null)
+                {
+                    existente.Valor += valor;
+                }
+                else
+                {
+                    venda.Pagamentos.Add(
+                        new PagamentoVenda { FormaPagamento = forma, Valor = valor });
+                }
+            }
+
+            foreach (Venda venda in doBanco)
+            {
+                venda.ValorRecebido =
+                    venda.Pagamentos
+                    .Where(p => p.FormaPagamento != "Notinha")
+                    .Sum(p => p.Valor);
+
+                venda.FormaPagamento = string.Join(
+                    " + ",
+                    venda.Pagamentos.Select(p =>
+                        $"{p.FormaPagamento} R$ {p.Valor:N2}"));
+            }
+
+            vendas.Clear();
+
+            foreach (Venda venda in doBanco)
+            {
+                vendas.Add(venda);
+            }
+
+            notinhas.Clear();
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarNotinhas().Rows)
+            {
+                notinhas.Add(
+                    new Notinha
+                    {
+                        IdNotinha = System.Convert.ToInt32(linha["id"]),
+                        IdCliente = System.Convert.ToInt32(linha["cliente_id"]),
+                        IdVenda = System.Convert.ToInt32(linha["venda_id"]),
+                        DataHora = System.Convert.ToDateTime(linha["data_hora"]),
+                        Valor = System.Convert.ToDecimal(linha["valor"]),
+                        Unidade = System.Convert.ToString(linha["unidade"])
+                    });
+            }
+
+            abatimentos.Clear();
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarAbatimentos().Rows)
+            {
+                abatimentos.Add(
+                    new AbatimentoNotinha
+                    {
+                        IdAbatimento = System.Convert.ToInt32(linha["id"]),
+                        IdCliente = System.Convert.ToInt32(linha["cliente_id"]),
+                        IdCaixa = System.Convert.ToInt32(linha["caixa_id"]),
+                        Unidade = System.Convert.ToString(linha["unidade"]),
+                        DataHora = System.Convert.ToDateTime(linha["data_hora"]),
+                        Valor = System.Convert.ToDecimal(linha["valor"]),
+                        FormaPagamento = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]))
+                    });
             }
         }
 
+        // Comandas de mesa abertas na unidade de trabalho (itens e pagamentos incluídos).
         public static List<Comanda> ComandasDaUnidade()
         {
-            return comandas
-                .Where(c => c.Unidade == UnidadeAtual)
-                .ToList();
+            uint unidadeId = UnidadeDeTrabalho().Id;
+
+            List<Comanda> lista = new List<Comanda>();
+            Dictionary<uint, Comanda> porId = new Dictionary<uint, Comanda>();
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarComandasAbertas(unidadeId).Rows)
+            {
+                Comanda comanda = new Comanda
+                {
+                    Id = System.Convert.ToUInt32(linha["id"]),
+                    NumeroMesa = System.Convert.ToInt32(linha["numero_mesa"]),
+                    Unidade = UnidadeAtual,
+                    IdCliente =
+                        linha["cliente_id"] == System.DBNull.Value
+                        ? (int?)null
+                        : System.Convert.ToInt32(linha["cliente_id"]),
+                    Abertura = System.Convert.ToDateTime(linha["data_abertura"])
+                };
+
+                porId[comanda.Id] = comanda;
+                lista.Add(comanda);
+            }
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarItensDasComandasAbertas(unidadeId).Rows)
+            {
+                Comanda comanda;
+
+                if (!porId.TryGetValue(System.Convert.ToUInt32(linha["comanda_id"]), out comanda))
+                {
+                    continue;
+                }
+
+                string nomeProduto = System.Convert.ToString(linha["produto"]);
+                decimal quantidade = System.Convert.ToDecimal(linha["quantidade"]);
+                decimal preco = System.Convert.ToDecimal(linha["preco_unitario"]);
+
+                ItemVenda existente =
+                    comanda.Itens.FirstOrDefault(i =>
+                        i.Produto == nomeProduto &&
+                        i.PrecoUnitario == preco);
+
+                if (existente != null)
+                {
+                    existente.Quantidade += quantidade;
+                }
+                else
+                {
+                    comanda.Itens.Add(
+                        new ItemVenda
+                        {
+                            Produto = nomeProduto,
+                            Quantidade = quantidade,
+                            PrecoUnitario = preco
+                        });
+                }
+            }
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarPagamentosDasComandasAbertas(unidadeId).Rows)
+            {
+                Comanda comanda;
+
+                if (!porId.TryGetValue(System.Convert.ToUInt32(linha["comanda_id"]), out comanda))
+                {
+                    continue;
+                }
+
+                string forma = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]));
+                decimal valor = System.Convert.ToDecimal(linha["valor"]);
+
+                PagamentoVenda existente =
+                    comanda.Pagamentos.FirstOrDefault(p => p.FormaPagamento == forma);
+
+                if (existente != null)
+                {
+                    existente.Valor += valor;
+                }
+                else
+                {
+                    comanda.Pagamentos.Add(
+                        new PagamentoVenda { FormaPagamento = forma, Valor = valor });
+                }
+            }
+
+            return lista;
         }
 
         public static Comanda ComandaDaMesa(int numeroMesa)
         {
-            return comandas.FirstOrDefault(c =>
-                c.Unidade == UnidadeAtual &&
-                c.NumeroMesa == numeroMesa);
-        }
-
-        public static int ProximoIdNotinha()
-        {
-            return notinhas.Any()
-                ? notinhas.Max(n => n.IdNotinha) + 1
-                : 1;
-        }
-
-        public static int ProximoIdAbatimento()
-        {
-            return abatimentos.Any()
-                ? abatimentos.Max(a => a.IdAbatimento) + 1
-                : 1;
+            return ComandasDaUnidade()
+                .FirstOrDefault(c => c.NumeroMesa == numeroMesa);
         }
 
         public static decimal SaldoNotinha(int idCliente)
@@ -1641,35 +1834,330 @@ namespace erp_salgados_e_cia
                        .Sum(a => a.Valor);
         }
 
-        public static void LancarNotinhaDaVenda(Venda venda)
+        // Confere os pagamentos antes de gravar, para não deixar uma venda pela metade.
+        private static string ConferirPagamentos(
+            decimal total,
+            IEnumerable<PagamentoVenda> pagamentos,
+            bool temCliente)
         {
-            if (venda == null || venda.IdCliente == null)
+            decimal pago = pagamentos.Sum(p => p.Valor);
+
+            decimal dinheiro =
+                pagamentos
+                .Where(p => p.FormaPagamento == "Dinheiro")
+                .Sum(p => p.Valor);
+
+            if (total <= 0)
             {
-                return;
+                return "A venda não tem itens.";
             }
 
-            decimal valorNotinha =
-                venda.Pagamentos
-                .Where(pagamento =>
-                    pagamento.FormaPagamento == "Notinha")
-                .Sum(pagamento => pagamento.Valor);
-
-            if (valorNotinha <= 0)
+            if (pagamentos.Any(p => p.FormaPagamento == "Notinha") && !temCliente)
             {
-                return;
+                return "Para usar Notinha, selecione um cliente na venda.";
             }
 
-            notinhas.Add(
-                new Notinha
+            if (pago < total)
+            {
+                return $"Ainda faltam R$ {total - pago:N2} para cobrir o total da venda.";
+            }
+
+            if (pago - total > dinheiro)
+            {
+                return "O troco não pode ser maior que o valor pago em dinheiro.";
+            }
+
+            return null;
+        }
+
+        private static uint? ClienteParaBanco(int? idCliente)
+        {
+            return idCliente.HasValue
+                ? (uint?)idCliente.Value
+                : null;
+        }
+
+        private static Caixa CaixaParaVender()
+        {
+            CarregarCaixas();
+
+            return CaixaAberto();
+        }
+
+        public static bool EnviarPedidoParaComanda(
+            int numeroMesa,
+            int? idCliente,
+            List<ItemVenda> itens,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                VendaRepositorio.EnviarPedido(
+                    UnidadeDeTrabalho().Id,
+                    numeroMesa,
+                    ClienteParaBanco(idCliente),
+                    ParaItensPedido(itens));
+
+                CarregarProdutos();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool TrocarClienteDaComanda(
+            Comanda comanda,
+            int? novoCliente,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                VendaRepositorio.TrocarCliente(
+                    comanda.Id,
+                    ClienteParaBanco(novoCliente));
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool CancelarComanda(
+            Comanda comanda,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                VendaRepositorio.CancelarComanda(
+                    comanda.Id,
+                    IdDoUsuarioLogado());
+
+                CarregarProdutos();
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            RegistrarLog(
+                TipoOperacaoLog.Alteracao,
+                "Comanda",
+                $"Comanda mesa {comanda.NumeroMesa}",
+                "Status: Aberta → Cancelada; itens devolvidos ao estoque");
+
+            return true;
+        }
+
+        // Pagamento de uma comanda: grava os pagamentos e, se cobrirem tudo, cobra e gera a venda.
+        public static bool CobrarComanda(
+            Comanda comanda,
+            IEnumerable<PagamentoVenda> pagamentosNovos,
+            bool pagamentoParcial,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                List<PagamentoVenda> novos = pagamentosNovos.ToList();
+
+                if (!pagamentoParcial)
                 {
-                    IdNotinha = ProximoIdNotinha(),
-                    IdCliente = venda.IdCliente.Value,
-                    IdVenda = venda.IdVenda,
-                    DataHora = venda.DataHora,
-                    Valor = valorNotinha,
-                    Unidade = UnidadeAtual
+                    List<PagamentoVenda> todos =
+                        comanda.Pagamentos
+                        .Select(p => new PagamentoVenda { FormaPagamento = p.FormaPagamento, Valor = p.Valor })
+                        .Concat(novos)
+                        .ToList();
+
+                    string problema = ConferirPagamentos(
+                        comanda.Total,
+                        todos,
+                        comanda.IdCliente != null);
+
+                    if (problema != null)
+                    {
+                        mensagem = problema;
+                        return false;
+                    }
                 }
-            );
+
+                Caixa caixa = CaixaParaVender();
+
+                if (caixa == null)
+                {
+                    mensagem = "Abra o caixa antes de registrar vendas.";
+                    return false;
+                }
+
+                VendaRepositorio.RegistrarPagamentos(
+                    comanda.Id,
+                    ParaPagamentosNovos(novos));
+
+                if (pagamentoParcial)
+                {
+                    return true;
+                }
+
+                uint idVenda = VendaRepositorio.Cobrar(
+                    comanda.Id,
+                    (uint)caixa.IdCaixa,
+                    IdDoUsuarioLogado());
+
+                CarregarVendas();
+                RegistrarLogDaVenda((int)idVenda);
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool VenderNoBalcao(
+            int? idCliente,
+            List<ItemVenda> itens,
+            IEnumerable<PagamentoVenda> pagamentos,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                List<PagamentoVenda> lista = pagamentos.ToList();
+
+                string problema = ConferirPagamentos(
+                    itens.Sum(i => i.Total),
+                    lista,
+                    idCliente != null);
+
+                if (problema != null)
+                {
+                    mensagem = problema;
+                    return false;
+                }
+
+                Caixa caixa = CaixaParaVender();
+
+                if (caixa == null)
+                {
+                    mensagem = "Abra o caixa antes de registrar vendas.";
+                    return false;
+                }
+
+                uint idVenda = VendaRepositorio.VenderNoBalcao(
+                    UnidadeDeTrabalho().Id,
+                    ClienteParaBanco(idCliente),
+                    ParaItensPedido(itens),
+                    ParaPagamentosNovos(lista),
+                    (uint)caixa.IdCaixa,
+                    IdDoUsuarioLogado());
+
+                CarregarProdutos();
+                CarregarVendas();
+                RegistrarLogDaVenda((int)idVenda);
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void RegistrarLogDaVenda(int idVenda)
+        {
+            Venda venda = vendas.FirstOrDefault(v => v.IdVenda == idVenda);
+
+            if (venda != null)
+            {
+                RegistrarLogVenda(venda);
+            }
+        }
+
+        // Abatimento da Notinha de um cliente na unidade de trabalho (o troco sai do dinheiro).
+        public static bool RegistrarAbatimentoNotinha(
+            Cliente cliente,
+            IEnumerable<PagamentoVenda> pagamentosCobrados,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            try
+            {
+                Caixa caixa = CaixaParaVender();
+
+                if (caixa == null)
+                {
+                    mensagem = "Abra o caixa antes de registrar pagamentos.";
+                    return false;
+                }
+
+                decimal restante = SaldoNotinha(cliente.IdCliente);
+
+                List<PagamentoNovo> abatimentosNovos = new List<PagamentoNovo>();
+
+                foreach (PagamentoVenda pagamento in pagamentosCobrados
+                    .OrderBy(p => p.FormaPagamento == "Dinheiro"))
+                {
+                    decimal valorAbatido =
+                        System.Math.Min(pagamento.Valor, restante);
+
+                    if (valorAbatido <= 0)
+                    {
+                        break;
+                    }
+
+                    abatimentosNovos.Add(
+                        new PagamentoNovo
+                        {
+                            Forma = FormaParaBanco(pagamento.FormaPagamento),
+                            Valor = valorAbatido
+                        });
+
+                    restante -= valorAbatido;
+                }
+
+                VendaRepositorio.RegistrarAbatimentos(
+                    (uint)cliente.IdCliente,
+                    (uint)caixa.IdCaixa,
+                    UnidadeDeTrabalho().Id,
+                    abatimentosNovos);
+
+                CarregarVendas();
+
+                foreach (PagamentoNovo abatimento in abatimentosNovos)
+                {
+                    RegistrarLog(
+                        TipoOperacaoLog.Inclusao,
+                        "AbatimentoNotinha",
+                        $"Cliente {cliente.IdCliente}: {cliente.Nome}",
+                        $"Valor: {abatimento.Valor:N2}; Forma: {FormaDoBanco(abatimento.Forma)}; Caixa {caixa.IdCaixa}");
+                }
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
         }
 
         public static bool AutorizarGerente(
@@ -1745,75 +2233,36 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            Caixa caixaDaVenda =
-                caixas.FirstOrDefault(c =>
-                    c.IdCaixa == venda.IdCaixa);
-
-            if (caixaDaVenda == null ||
-                caixaDaVenda.Status != "Aberto")
+            try
             {
-                mensagem =
-                    "Cancelamento bloqueado: o caixa desta venda já foi fechado.";
-                return false;
-            }
+                UsuarioAcesso autorizador =
+                    UsuarioRepositorio.BuscarPorLogin(autorizadoPor);
 
-            if (caixaDaVenda.Unidade != UnidadeAtual)
-            {
-                mensagem =
-                    "Cancelamento bloqueado: esta venda pertence a outra unidade.";
-                return false;
-            }
-
-            Notinha notinhaDaVenda =
-                notinhas.FirstOrDefault(n =>
-                    n.IdVenda == venda.IdVenda);
-
-            if (notinhaDaVenda != null &&
-                SaldoNotinha(notinhaDaVenda.IdCliente) -
-                notinhaDaVenda.Valor < 0)
-            {
-                mensagem =
-                    "Cancelamento bloqueado: o cliente já abateu parte da Notinha desta venda.";
-                return false;
-            }
-
-            foreach (ItemVenda item in venda.Itens)
-            {
-                Produto produto =
-                    produtos.FirstOrDefault(p =>
-                        p.Nome == item.Produto);
-
-                if (produto == null)
+                if (autorizador == null)
                 {
-                    continue;
+                    mensagem = "Autorizador não encontrado.";
+                    return false;
                 }
 
-                produto.EstoqueAtual += item.Quantidade;
+                // As regras (caixa aberto, unidade, Notinha já abatida, perfil) são do banco.
+                VendaRepositorio.CancelarVenda(
+                    (uint)venda.IdVenda,
+                    autorizador.Id,
+                    motivo.Trim());
 
-                RegistrarHistoricoEstoque(
-                    produto,
-                    TipoMovimentoEstoque.Estorno,
-                    item.Quantidade,
-                    autorizadoPor,
-                    $"Venda {venda.IdVenda} cancelada"
-                );
+                CarregarVendas();
             }
-
-            if (notinhaDaVenda != null)
+            catch (RegraNegocioException ex)
             {
-                notinhas.Remove(notinhaDaVenda);
+                mensagem = ex.Message;
+                return false;
             }
-
-            venda.Status = "Cancelada";
-            venda.MotivoCancelamento = motivo.Trim();
-            venda.CanceladaPor = autorizadoPor;
-            venda.DataCancelamento = System.DateTime.Now;
 
             RegistrarLog(
                 TipoOperacaoLog.Alteracao,
                 "Venda",
                 $"Venda {venda.IdVenda}",
-                $"Status: Concluída → Cancelada; Motivo: {venda.MotivoCancelamento}; Autorizado por: {autorizadoPor}; Total: {venda.ValorTotal:N2}");
+                $"Status: Concluída → Cancelada; Motivo: {motivo.Trim()}; Autorizado por: {autorizadoPor}; Total: {venda.ValorTotal:N2}");
 
             return true;
         }
@@ -1916,28 +2365,6 @@ namespace erp_salgados_e_cia
             }
 
             return linhas;
-        }
-        public static void RegistrarHistoricoEstoque(
-            Produto produto,
-            TipoMovimentoEstoque tipo,
-            decimal quantidade,
-            string responsavel,
-            string origem
-        )
-        {
-            historicoestoque.Add(
-                new HistoricoEstoque
-                {
-                    Data = System.DateTime.Now,
-                    Produto = produto.Nome,
-                    Tipo = tipo,
-                    Quantidade = quantidade,
-                    SaldoApos = produto.EstoqueAtual,
-                    Unidade = UnidadeAtual,
-                    Responsavel = responsavel,
-                    Origem = origem
-                }
-            );
         }
         private static decimal? CustoDaPerda(Perda perda)
         {
@@ -2172,21 +2599,6 @@ namespace erp_salgados_e_cia
                         Origem = OrigemDoMovimento(tipoLinha)
                     });
             }
-
-            // PROVISÓRIO até o Bloco 7: vendas e estornos ainda são anotados em memória.
-            resultado.AddRange(
-                historicoestoque
-                .Where(h =>
-                    (h.Tipo == TipoMovimentoEstoque.Venda ||
-                     h.Tipo == TipoMovimentoEstoque.Estorno) &&
-                    h.Data.Date >= dataInicial &&
-                    h.Data.Date <= dataFinal &&
-                    (string.IsNullOrEmpty(unidade) ||
-                        h.Unidade == unidade) &&
-                    (string.IsNullOrEmpty(produto) ||
-                        h.Produto == produto) &&
-                    (tipo == null || h.Tipo == tipo)));
-
             return resultado
                 .OrderByDescending(h => h.Data)
                 .ToList();
@@ -2343,6 +2755,9 @@ namespace erp_salgados_e_cia
             string produto
         )
         {
+            // As vendas vêm do banco (o Bloco 8 troca estes cálculos por consultas).
+            CarregarVendas();
+
             System.DateTime dataInicial;
             System.DateTime dataFinal;
 
@@ -2490,8 +2905,7 @@ namespace erp_salgados_e_cia
             return relatorio;
         }
         public static BindingList<movimentoestoque> movimentacoes =
-            new BindingList<movimentoestoque>();        public static BindingList<HistoricoEstoque> historicoestoque =
-            new BindingList<HistoricoEstoque>();
+            new BindingList<movimentoestoque>();
         public static BindingList<Venda> vendas =
             new BindingList<Venda>();
         public static BindingList<Produto> produtos =
@@ -2506,9 +2920,6 @@ namespace erp_salgados_e_cia
         public static BindingList<Cliente> clientes =
             new BindingList<Cliente>();
 
-        public static BindingList<Comanda> comandas =
-            new BindingList<Comanda>();
-
         public static BindingList<Notinha> notinhas =
             new BindingList<Notinha>();
 
@@ -2517,9 +2928,6 @@ namespace erp_salgados_e_cia
 
         public static BindingList<Caixa> caixas =
             new BindingList<Caixa>();
-
-        public static BindingList<SaldoEstoque> saldosestoque =
-            new BindingList<SaldoEstoque>();
 
         public static BindingList<Usuario> usuarios =
             new BindingList<Usuario>();

@@ -158,6 +158,9 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTabela()
         {
+            // Notinhas e abatimentos vêm do banco.
+            dadossistema.CarregarVendas();
+
             string filtro =
                 cbfiltrostatus.SelectedItem == null
                 ? "Ativos"
@@ -320,39 +323,21 @@ namespace erp_salgados_e_cia
             decimal totalPago =
                 pagamentosCobrados.Sum(pagamento => pagamento.Valor);
 
-            decimal restante = saldo;
+            string mensagemAbatimento;
 
-            foreach (PagamentoVenda pagamento in pagamentosCobrados
-                .OrderBy(p => p.FormaPagamento == "Dinheiro"))
+            if (!dadossistema.RegistrarAbatimentoNotinha(
+                    cliente,
+                    pagamentosCobrados,
+                    out mensagemAbatimento))
             {
-                decimal valorAbatido =
-                    Math.Min(pagamento.Valor, restante);
-
-                if (valorAbatido <= 0)
-                {
-                    break;
-                }
-
-                dadossistema.abatimentos.Add(
-                    new AbatimentoNotinha
-                    {
-                        IdAbatimento = dadossistema.ProximoIdAbatimento(),
-                        IdCliente = cliente.IdCliente,
-                        DataHora = DateTime.Now,
-                        Valor = valorAbatido,
-                        FormaPagamento = pagamento.FormaPagamento,
-                        IdCaixa = caixaAberto.IdCaixa,
-                        Unidade = caixaAberto.Unidade
-                    }
+                MessageBox.Show(
+                    mensagemAbatimento,
+                    "Pagamento não registrado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
                 );
 
-                dadossistema.RegistrarLog(
-                    TipoOperacaoLog.Inclusao,
-                    "AbatimentoNotinha",
-                    $"Cliente {cliente.IdCliente}: {cliente.Nome}",
-                    $"Valor: {valorAbatido:N2}; Forma: {pagamento.FormaPagamento}; Caixa {caixaAberto.IdCaixa}");
-
-                restante -= valorAbatido;
+                return;
             }
 
             decimal troco = Math.Max(0m, totalPago - saldo);
