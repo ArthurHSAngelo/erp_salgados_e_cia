@@ -1,0 +1,81 @@
+﻿SALGADOS & CIA - ERP
+Sistema de gestão para a rede de lanchonetes Salgados & Cia
+Projeto Extensionista IV - UEMG
+
+Este pacote traz o programa (instalável ou portátil) e os scripts do banco de dados.
+Todos os dados que acompanham o pacote são fictícios.
+
+
+1. O QUE É PRECISO TER
+- Windows 10 ou 11 (o .NET Framework 4.8 já vem com o Windows).
+- Um banco de dados MySQL 8.0 ou MariaDB 10.4 (ou mais novo). Se você não tem nenhum, o
+  INSTALADOR instala um servidor MariaDB para você (veja a seção 2).
+
+
+2. INSTALAÇÃO PELO INSTALADOR (recomendado)
+  Execute SalgadosECia_ERP_Setup_<versão>.exe como administrador. Na tela "Banco de dados",
+  escolha uma das três opções:
+
+  a) Instalar um servidor de banco de dados (MariaDB) neste computador.
+     Informe a porta (3306 é a padrão) e uma senha para o administrador do servidor (guarde-a).
+     O instalador instala o servidor, cria o banco, carrega os dados de teste, define a senha do
+     usuário do programa e já deixa o programa configurado. Se este computador for o servidor
+     de várias unidades, marque "Permitir que outras unidades acessem este banco pela rede" e
+     libere a porta no firewall do Windows.
+
+  b) Usar um servidor que já existe (XAMPP, MySQL, MariaDB; neste computador ou na rede).
+     Informe servidor, porta e o usuário administrador (root) e sua senha (no XAMPP costuma
+     ser vazia). O instalador cria o banco "salgados_cia" nesse servidor e configura o
+     programa. Se o banco já existir com dados, o instalador pergunta antes de apagá-lo.
+
+  c) O banco já está criado. O instalador só grava a conexão (servidor, porta, banco, usuário
+     e senha). Use esta opção nas unidades que acessam o banco de outro computador.
+
+  Ao final, entre com um dos logins de teste (todos com a senha 123):
+    admin      Administrador
+    gerente1   Gerente
+    gerente2   Gerente
+    centro     Atendente da Lanchonete Centro
+    norte      Atendente da Lanchonete Norte
+  Troque essas senhas antes de usar de verdade (tela Usuários).
+
+
+3. VERSÃO PORTÁTIL (ZIP)
+  Extraia SalgadosECia_ERP_Portatil_<versão>.zip numa pasta. Para criar o banco num servidor
+  que você já tem, dê duplo clique em "Criar banco de dados.cmd" e responda às perguntas
+  (servidor, porta, usuário administrador, senhas). Depois edite o arquivo
+  "erp_salgados_e_cia.exe.config" com a senha do usuário do programa (seção 5) e abra
+  "erp_salgados_e_cia.exe". A versão portátil não instala servidor de banco.
+
+
+4. CRIAR O BANCO DEPOIS (OU À MÃO)
+  - Pelo menu Iniciar: "Criar o banco de dados (assistente)" (mesmo que o duplo clique acima).
+  - Pela linha de comando, na pasta "Banco de Dados":
+      .\criar_banco.ps1 -Interativo
+  - Pelo MySQL Workbench/phpMyAdmin: conecte como root e execute, inteiros e nesta ordem,
+    01_schema.sql (apaga e recria o banco: só em banco novo ou de teste) e 02_dados_teste.sql.
+    Depois troque a senha do usuário do programa:
+      ALTER USER 'app_salgados'@'localhost' IDENTIFIED BY 'sua_senha_forte';
+
+
+5. MUDAR A CONEXÃO DEPOIS DE INSTALAR
+  A conexão fica no arquivo "erp_salgados_e_cia.exe.config", na pasta do programa. No
+  instalador, use o atalho do menu Iniciar "Configurar conexão com o banco". Procure a linha:
+    <add name="salgados_cia" connectionString="Server=...;Port=...;Database=...;Uid=...;Pwd=...;CharSet=utf8mb4;" />
+  Troque só os valores. Não use aspas simples nem aspas duplas na senha.
+
+
+6. SE ALGO NÃO FUNCIONAR
+- "Não foi possível conectar ao banco de dados": o servidor está desligado, ou o servidor/porta estão errados.
+- "Usuário ou senha do banco de dados incorretos": a senha do arquivo .config não é a do usuário app_salgados.
+- "O banco 'salgados_cia' não existe": use o assistente de criação do banco (seção 4).
+- A instalação do servidor falhou: veja o registro "mariadb_instalacao.log" na pasta "Banco de Dados"
+  do programa. Confira se a porta escolhida está livre (XAMPP usa a 3306; escolha 3307, por exemplo).
+- Janela maior que a tela: o programa foi desenhado para 1920x1080 ou mais; maximize a janela.
+
+
+7. DESINSTALAR
+  Painel de Controle > Programas (ou Configurações > Aplicativos) > Salgados & Cia - ERP.
+  A desinstalação NÃO apaga o banco de dados nem o servidor MariaDB instalado junto
+  (serviço "MariaDBSalgados"); assim os dados da empresa não se perdem por engano. Para
+  remover o servidor, desinstale também "MariaDB 10.11 (x64)" nos mesmos Aplicativos.

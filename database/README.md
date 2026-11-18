@@ -1,15 +1,21 @@
 # Banco de dados
 
-Scripts do ERP Salgados & Cia. Testados no **MariaDB 10.4** (XAMPP) e no **MySQL 8.0**.
+Scripts do ERP Salgados & Cia. Testados no **MariaDB 10.4** (XAMPP), no **MariaDB 10.11 LTS** (o servidor que o instalador embute) e no **MySQL 8.0**.
 
 | Arquivo | O que faz |
 |---|---|
 | `01_schema.sql` | Cria o banco `salgados_cia`: tabelas, funcoes, triggers, procedures, views e o usuario de aplicacao `app_salgados` |
 | `02_dados_teste.sql` | Dados ficticios de teste (unidades, logins, funcionarios, produtos, estoque). Rodar **depois** do schema |
+| `03_acesso_rede.sql` | **Opcional.** Cria o usuario `app_salgados` para acesso pela rede (varias unidades no mesmo banco). Leia o cabecalho antes de rodar |
+| `criar_banco.ps1` | Cria o banco sozinho num servidor (roda o 01 e o 02, define a senha do `app_salgados`, opcionalmente roda o 03 e confere a entrada do programa). E o que o instalador usa; tambem roda a mao: `.\criar_banco.ps1 -Interativo` |
 | `gerar_hash.ps1` | Gera o hash de uma senha (`sal:hash`) para a coluna `usuario.senha_hash` |
 | `testes_integracao.ps1` | Testes de integracao: chama o programa compilado contra o banco e confere as regras (68 verificacoes) |
 
 ## Como criar o banco
+
+**Automatico:** o instalador do programa cria o banco (e, se quiser, instala um servidor MariaDB junto). Sem o instalador, rode `.\criar_banco.ps1 -Interativo` nesta pasta (precisa do `MySql.Data.dll`, que fica na pasta do programa). Se o banco ja existir com dados, o script para, a menos que voce confirme apagar. A desinstalacao do programa nunca apaga o banco.
+
+**Manual:**
 
 1. Inicie o MySQL pelo painel do XAMPP (botao **Start** em MySQL).
 2. Abra o phpMyAdmin (ou o MySQL Workbench, conectando em `127.0.0.1:3306` como `root`).
