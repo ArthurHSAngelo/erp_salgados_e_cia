@@ -47,7 +47,12 @@
     <Compile Include="Connection\SessaoBanco.cs" />
     <Compile Include="InfoDados.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ClienteRepositorio.cs" />
+    <Compile Include="Repositories\EstoqueRepositorio.cs" />
+    <Compile Include="Repositories\FornecedorRepositorio.cs" />
+    <Compile Include="Repositories\FuncionarioRepositorio.cs" />
     <Compile Include="Repositories\LogRepositorio.cs" />
+    <Compile Include="Repositories\ProdutoRepositorio.cs" />
     <Compile Include="Repositories\UnidadeRepositorio.cs" />
     <Compile Include="Repositories\UsuarioRepositorio.cs" />
   </ItemGroup>

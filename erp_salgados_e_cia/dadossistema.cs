@@ -11,10 +11,14 @@ namespace erp_salgados_e_cia
 {
     public static class dadossistema
     {
+        // Os vínculos são conferidos no banco. As listas em memória (movimentações,
+        // vendas, comandas...) ainda existem até os próximos blocos da migração,
+        // por isso também entram na conta.
         public static bool ProdutoPossuiVinculos(Produto produto)
         {
             return produto != null &&
-                   (movimentacoes.Any(m =>
+                   (ProdutoRepositorio.PossuiVinculos(produto.Id) ||
+                    movimentacoes.Any(m =>
                        m.Produto == produto.Nome) ||
                     vendas.Any(v =>
                        v.Itens.Any(item =>
@@ -28,27 +32,26 @@ namespace erp_salgados_e_cia
             Fornecedor fornecedor)
         {
             return fornecedor != null &&
-                   movimentacoes.Any(m =>
-                       m.Fornecedor == fornecedor.Nome);
+                   (FornecedorRepositorio.PossuiVinculos(fornecedor.Id) ||
+                    movimentacoes.Any(m =>
+                       m.Fornecedor == fornecedor.Nome));
         }
 
         public static bool UnidadePossuiVinculos(
             Unidade unidade)
         {
             return unidade != null &&
-                   (movimentacoes.Any(m =>
-                       m.Unidade == unidade.Nome) ||
-                    usuarios.Any(u =>
-                       u.Unidade == unidade.Nome) ||
-                    funcionarios.Any(f =>
-                       f.Unidade == unidade.Nome));
+                   (UnidadeRepositorio.PossuiVinculos(unidade.Id) ||
+                    movimentacoes.Any(m =>
+                       m.Unidade == unidade.Nome));
         }
 
         public static bool ClientePossuiVinculos(
             Cliente cliente)
         {
             return cliente != null &&
-                   (vendas.Any(v =>
+                   (ClienteRepositorio.PossuiVinculos((uint)cliente.IdCliente) ||
+                    vendas.Any(v =>
                        v.IdCliente == cliente.IdCliente) ||
                     comandas.Any(c =>
                        c.IdCliente == cliente.IdCliente) ||
@@ -56,6 +59,249 @@ namespace erp_salgados_e_cia
                        n.IdCliente == cliente.IdCliente) ||
                     abatimentos.Any(a =>
                        a.IdCliente == cliente.IdCliente));
+        }
+
+        // ---- Cadastros lidos do banco ----
+        // As listas abaixo (produtos, unidades, fornecedores, clientes,
+        // funcionarios, usuarios) são apenas um espelho do que está no banco:
+        // as telas gravam pelos repositórios e depois chamam CarregarXxx().
+        // O objeto de cada linha é reaproveitado (pelo id), para que as telas e as
+        // listas que ainda estão em memória continuem apontando para ele.
+
+        private static bool saldosCarregados = false;
+
+        private static StatusCadastro ParaStatus(object valor)
+        {
+            return System.Convert.ToString(valor) == "Ativo"
+                ? StatusCadastro.Ativo
+                : StatusCadastro.Inativo;
+        }
+
+        private static string TextoOuNulo(object valor)
+        {
+            return valor == System.DBNull.Value
+                ? null
+                : System.Convert.ToString(valor);
+        }
+
+        private static void Reconciliar<T>(
+            BindingList<T> lista,
+            List<T> doBanco)
+        {
+            foreach (T antigo in
+                lista.Where(item => !doBanco.Contains(item)).ToList())
+            {
+                lista.Remove(antigo);
+            }
+
+            foreach (T novo in doBanco)
+            {
+                if (!lista.Contains(novo))
+                {
+                    lista.Add(novo);
+                }
+            }
+        }
+
+        public static void CarregarCadastros()
+        {
+            CarregarUnidades();
+            CarregarProdutos();
+            CarregarFornecedores();
+            CarregarClientes();
+            CarregarFuncionarios();
+            CarregarUsuarios();
+            CarregarSaldos();
+        }
+
+        public static void CarregarUnidades()
+        {
+            List<Unidade> doBanco = new List<Unidade>();
+
+            foreach (System.Data.DataRow linha in
+                UnidadeRepositorio.Listar().Rows)
+            {
+                uint id = System.Convert.ToUInt32(linha["id"]);
+
+                Unidade unidade =
+                    unidades.FirstOrDefault(u => u.Id == id) ??
+                    new Unidade { Id = id };
+
+                unidade.Nome = System.Convert.ToString(linha["nome"]);
+                unidade.Cnpj = TextoOuNulo(linha["cnpj"]);
+                unidade.Endereco = System.Convert.ToString(linha["endereco"]);
+                unidade.Numero = TextoOuNulo(linha["numero"]);
+                unidade.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(unidade);
+            }
+
+            Reconciliar(unidades, doBanco);
+        }
+
+        public static void CarregarProdutos()
+        {
+            List<Produto> doBanco = new List<Produto>();
+
+            foreach (System.Data.DataRow linha in
+                ProdutoRepositorio.Listar().Rows)
+            {
+                uint id = System.Convert.ToUInt32(linha["id"]);
+
+                Produto produto =
+                    produtos.FirstOrDefault(p => p.Id == id) ??
+                    new Produto { Id = id };
+
+                produto.Nome = System.Convert.ToString(linha["nome"]);
+                produto.Categoria = System.Convert.ToString(linha["categoria"]);
+                produto.Preco = System.Convert.ToDecimal(linha["preco_venda"]);
+                produto.UnidadeMedida = System.Convert.ToString(linha["unidade_medida"]);
+                produto.EstoqueMinimo = System.Convert.ToDecimal(linha["estoque_minimo"]);
+                produto.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(produto);
+            }
+
+            Reconciliar(produtos, doBanco);
+        }
+
+        public static void CarregarFornecedores()
+        {
+            List<Fornecedor> doBanco = new List<Fornecedor>();
+
+            foreach (System.Data.DataRow linha in
+                FornecedorRepositorio.Listar().Rows)
+            {
+                uint id = System.Convert.ToUInt32(linha["id"]);
+
+                Fornecedor fornecedor =
+                    fornecedores.FirstOrDefault(f => f.Id == id) ??
+                    new Fornecedor { Id = id };
+
+                fornecedor.Nome = System.Convert.ToString(linha["nome"]);
+                fornecedor.Cnpj = TextoOuNulo(linha["cnpj"]);
+                fornecedor.Telefone = TextoOuNulo(linha["telefone"]);
+                fornecedor.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(fornecedor);
+            }
+
+            Reconciliar(fornecedores, doBanco);
+        }
+
+        public static void CarregarClientes()
+        {
+            List<Cliente> doBanco = new List<Cliente>();
+
+            foreach (System.Data.DataRow linha in
+                ClienteRepositorio.Listar().Rows)
+            {
+                int id = System.Convert.ToInt32(linha["id"]);
+
+                Cliente cliente =
+                    clientes.FirstOrDefault(c => c.IdCliente == id) ??
+                    new Cliente { IdCliente = id };
+
+                cliente.Nome = System.Convert.ToString(linha["nome"]);
+                cliente.CpfCnpj = TextoOuNulo(linha["cpf_cnpj"]);
+                cliente.Telefone = TextoOuNulo(linha["telefone"]);
+                cliente.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(cliente);
+            }
+
+            Reconciliar(clientes, doBanco);
+        }
+
+        public static void CarregarFuncionarios()
+        {
+            List<Funcionario> doBanco = new List<Funcionario>();
+
+            foreach (System.Data.DataRow linha in
+                FuncionarioRepositorio.Listar().Rows)
+            {
+                int id = System.Convert.ToInt32(linha["id"]);
+
+                Funcionario funcionario =
+                    funcionarios.FirstOrDefault(f => f.IdFuncionario == id) ??
+                    new Funcionario { IdFuncionario = id };
+
+                funcionario.Nome = System.Convert.ToString(linha["nome"]);
+                funcionario.Unidade = System.Convert.ToString(linha["unidade_nome"]);
+                funcionario.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(funcionario);
+            }
+
+            Reconciliar(funcionarios, doBanco);
+        }
+
+        public static void CarregarUsuarios()
+        {
+            List<Usuario> doBanco = new List<Usuario>();
+
+            foreach (System.Data.DataRow linha in
+                UsuarioRepositorio.Listar().Rows)
+            {
+                int id = System.Convert.ToInt32(linha["id"]);
+
+                Usuario usuario =
+                    usuarios.FirstOrDefault(u => u.IdUsuario == id) ??
+                    new Usuario { IdUsuario = id };
+
+                usuario.Login = System.Convert.ToString(linha["login"]);
+                usuario.SenhaHash = System.Convert.ToString(linha["senha_hash"]);
+                usuario.Perfil = ParaPerfil(System.Convert.ToString(linha["perfil"]));
+                usuario.Unidade = TextoOuNulo(linha["unidade_nome"]);
+                usuario.Status = ParaStatus(linha["status"]);
+
+                doBanco.Add(usuario);
+            }
+
+            Reconciliar(usuarios, doBanco);
+
+            // O login da sessão passa a ser o mesmo objeto da lista (comparações por referência nas telas).
+            if (UsuarioLogado != null)
+            {
+                Usuario daLista = usuarios.FirstOrDefault(u =>
+                    u.IdUsuario == UsuarioLogado.IdUsuario);
+
+                if (daLista != null)
+                {
+                    UsuarioLogado = daLista;
+                }
+            }
+        }
+
+        // PROVISÓRIO até o Bloco 5 (estoque): os saldos ainda são mantidos em memória
+        // pelas telas de venda e estoque; aqui só entra o saldo gravado no banco,
+        // uma vez por execução do programa.
+        private static void CarregarSaldos()
+        {
+            if (saldosCarregados)
+            {
+                return;
+            }
+
+            foreach (System.Data.DataRow linha in
+                EstoqueRepositorio.Listar().Rows)
+            {
+                uint produtoId = System.Convert.ToUInt32(linha["produto_id"]);
+                uint unidadeId = System.Convert.ToUInt32(linha["unidade_id"]);
+
+                Produto produto = produtos.FirstOrDefault(p => p.Id == produtoId);
+                Unidade unidade = unidades.FirstOrDefault(u => u.Id == unidadeId);
+
+                if (produto != null && unidade != null)
+                {
+                    DefinirSaldoDoProduto(
+                        produto,
+                        unidade.Nome,
+                        System.Convert.ToDecimal(linha["quantidade"]));
+                }
+            }
+
+            saldosCarregados = true;
         }
 
         private static string unidadeAtual =
@@ -183,10 +429,17 @@ namespace erp_salgados_e_cia
                 LogRepositorio.RegistrarLogin(
                     acesso.Id,
                     acesso.Login);
+
+                // Cadastros (unidades, produtos, clientes...) vêm do banco a cada login.
+                CarregarCadastros();
+
+                usuario = UsuarioLogado;
             }
             catch (RegraNegocioException ex)
             {
                 usuario = null;
+                UsuarioLogado = null;
+                SessaoBanco.Limpar();
                 mensagem = ex.Message;
                 return false;
             }
@@ -754,104 +1007,6 @@ namespace erp_salgados_e_cia
                 .ToList();
         }
 
-        public static int ProximoIdUsuario()
-        {
-            return usuarios.Any()
-                ? usuarios.Max(u => u.IdUsuario) + 1
-                : 1;
-        }
-
-        public static int ProximoIdFuncionario()
-        {
-            return funcionarios.Any()
-                ? funcionarios.Max(f => f.IdFuncionario) + 1
-                : 1;
-        }
-
-        private static void CriarUsuariosIniciais()
-        {
-            // SENHAS PROVISÓRIAS DE TESTE: troque pelas suas.
-            // Elas só existem aqui; o sistema guarda apenas o hash.
-            string senhaAdmin = "123";
-            string senhaGerente1 = "123";
-            string senhaGerente2 = "123";
-            string senhaCentro = "123";
-
-            usuarios.Add(new Usuario
-            {
-                IdUsuario = 1,
-                Login = "admin",
-                SenhaHash = GerarHashSenha(senhaAdmin),
-                Perfil = PerfilUsuario.Administrador,
-                Unidade = null,
-                Status = StatusCadastro.Ativo
-            });
-
-            usuarios.Add(new Usuario
-            {
-                IdUsuario = 2,
-                Login = "gerente1",
-                SenhaHash = GerarHashSenha(senhaGerente1),
-                Perfil = PerfilUsuario.Gerente,
-                Unidade = null,
-                Status = StatusCadastro.Ativo
-            });
-
-            usuarios.Add(new Usuario
-            {
-                IdUsuario = 3,
-                Login = "gerente2",
-                SenhaHash = GerarHashSenha(senhaGerente2),
-                Perfil = PerfilUsuario.Gerente,
-                Unidade = null,
-                Status = StatusCadastro.Ativo
-            });
-
-            usuarios.Add(new Usuario
-            {
-                IdUsuario = 4,
-                Login = "centro",
-                SenhaHash = GerarHashSenha(senhaCentro),
-                Perfil = PerfilUsuario.Atendente,
-                Unidade = "Lanchonete Centro",
-                Status = StatusCadastro.Ativo
-            });
-
-            usuarios.Add(new Usuario
-            {
-                IdUsuario = 5,
-                Login = "norte",
-                SenhaHash = GerarHashSenha(senhaCentro),
-                Perfil = PerfilUsuario.Atendente,
-                Unidade = "Lanchonete Norte",
-                Status = StatusCadastro.Ativo
-            });
-
-            funcionarios.Add(new Funcionario
-            {
-                IdFuncionario = 3,
-                Nome = "Bia Rocha",
-                Unidade = "Lanchonete Norte",
-                Status = StatusCadastro.Ativo
-            });
-
-            funcionarios.Add(new Funcionario
-            {
-                IdFuncionario = 1,
-                Nome = "Ana Lima",
-                Unidade = "Lanchonete Centro",
-                Status = StatusCadastro.Ativo
-            });
-
-            funcionarios.Add(new Funcionario
-            {
-                IdFuncionario = 2,
-                Nome = "Carlos Souza",
-                Unidade = "Lanchonete Centro",
-                Status = StatusCadastro.Ativo
-            });
-        }
-
         public static List<string> NomesFuncionariosAtivos(
             string nomeUnidade)
         {
@@ -868,7 +1023,9 @@ namespace erp_salgados_e_cia
             Funcionario funcionario)
         {
             return funcionario != null &&
-                   (caixas.Any(c =>
+                   (FuncionarioRepositorio.PossuiVinculos(
+                        (uint)funcionario.IdFuncionario) ||
+                    caixas.Any(c =>
                        c.Responsavel == funcionario.Nome &&
                        c.Unidade == funcionario.Unidade) ||
                     movimentacoes.Any(m =>
@@ -1877,13 +2034,6 @@ namespace erp_salgados_e_cia
 
             return relatorio;
         }
-        public static int ProximoIdCliente()
-        {
-            return clientes.Any()
-                ? clientes.Max(c => c.IdCliente) + 1
-                : 1;
-        }
-
         public static BindingList<movimentoestoque> movimentacoes =
             new BindingList<movimentoestoque>();        public static BindingList<HistoricoEstoque> historicoestoque =
             new BindingList<HistoricoEstoque>();
@@ -1921,122 +2071,6 @@ namespace erp_salgados_e_cia
 
         public static BindingList<Funcionario> funcionarios =
             new BindingList<Funcionario>();
-
-        static dadossistema()
-        {
-            produtos.Add(new Produto
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Coxinha",
-                Preco = 5.00m,
-                Categoria = "Salgados",
-                UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10
-            });
-
-            produtos.Add(new Produto
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Bolinha de queijo",
-                Preco = 4.50m,
-                Categoria = "Salgados",
-                UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10
-            });
-
-            produtos.Add(new Produto
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Refrigerante",
-                Preco = 6.00m,
-                Categoria = "Bebidas",
-                UnidadeMedida = "Unidade",
-                EstoqueMinimo = 5
-            });
-            produtos.Add(new Produto
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Pastel de carne",
-                Preco = 7.00m,
-                Categoria = "Salgados",
-                UnidadeMedida = "Unidade",
-                EstoqueMinimo = 10
-            });
-
-            produtos.Add(new Produto
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Suco de laranja",
-                Preco = 5.50m,
-                Categoria = "Bebidas",
-                UnidadeMedida = "Unidade",
-                EstoqueMinimo = 5
-            });
-
-            // Saldos de teste por unidade (produto, Centro, Norte).
-            DefinirSaldoDoProduto(produtos[0], "Lanchonete Centro", 50);
-            DefinirSaldoDoProduto(produtos[0], "Lanchonete Norte", 20);
-            DefinirSaldoDoProduto(produtos[1], "Lanchonete Centro", 50);
-            DefinirSaldoDoProduto(produtos[1], "Lanchonete Norte", 15);
-            DefinirSaldoDoProduto(produtos[2], "Lanchonete Centro", 50);
-            DefinirSaldoDoProduto(produtos[2], "Lanchonete Norte", 30);
-            DefinirSaldoDoProduto(produtos[3], "Lanchonete Centro", 30);
-            DefinirSaldoDoProduto(produtos[3], "Lanchonete Norte", 10);
-            DefinirSaldoDoProduto(produtos[4], "Lanchonete Centro", 20);
-            DefinirSaldoDoProduto(produtos[4], "Lanchonete Norte", 12);
-
-            fornecedores.Add(new Fornecedor
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Distribuidora Central",
-                Cnpj = "12.345.678/0001-90",
-                Telefone = "(11) 3333-4444"
-            });
-
-            fornecedores.Add(new Fornecedor
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Fornecedor Bom Sabor",
-                Cnpj = "98.765.432/0001-10",
-                Telefone = "(11) 99999-8888"
-            });
-            unidades.Add(new Unidade
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Lanchonete Centro",
-                Cnpj = "11.222.333/0001-44",
-                Endereco = "Rua Principal",
-                Numero = "100"
-            });
-
-            unidades.Add(new Unidade
-            {
-                Status = StatusCadastro.Ativo,
-                Nome = "Lanchonete Norte",
-                Cnpj = "22.333.444/0001-55",
-                Endereco = "Avenida Norte",
-                Numero = "200"
-            });
-
-            clientes.Add(new Cliente
-            {
-                IdCliente = 1,
-                Status = StatusCadastro.Ativo,
-                Nome = "Maria Souza",
-                CpfCnpj = "123.456.789-09",
-                Telefone = "(11) 98888-1111"
-            });
-
-            clientes.Add(new Cliente
-            {
-                IdCliente = 2,
-                Status = StatusCadastro.Ativo,
-                Nome = "João Pereira",
-                Telefone = "(11) 97777-2222"
-            });
-
-            CriarUsuariosIniciais();
-        }
 
         public enum StatusCadastro
         {

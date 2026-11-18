@@ -2,6 +2,9 @@
 
 public class Produto
 {
+    [System.ComponentModel.Browsable(false)]
+    public uint Id { get; set; }
+
     public string Nome { get; set; }
 
     public string Categoria { get; set; }

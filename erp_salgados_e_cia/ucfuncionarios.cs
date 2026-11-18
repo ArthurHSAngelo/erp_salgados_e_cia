@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -21,6 +23,13 @@ namespace erp_salgados_e_cia
 
         private BindingSource fonteFuncionarios =
             new BindingSource();
+
+        private uint IdDaUnidade(string nomeUnidade)
+        {
+            return dadossistema.unidades
+                .First(u => u.Nome == nomeUnidade)
+                .Id;
+        }
 
         public void AtualizarTabela()
         {
@@ -311,13 +320,27 @@ namespace erp_salgados_e_cia
                             : StatusCadastro.Inativo).ToString())
                 );
 
-                funcionarioAtual.Nome = nomeDigitado;
-                funcionarioAtual.Unidade = unidadeEscolhida;
+                try
+                {
+                    FuncionarioRepositorio.Atualizar(
+                        (uint)funcionarioAtual.IdFuncionario,
+                        nomeDigitado,
+                        IdDaUnidade(unidadeEscolhida),
+                        cbativo.Checked);
 
-                funcionarioAtual.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
+                    dadossistema.CarregarFuncionarios();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 if (detalhesLog != null)
                 {
@@ -339,13 +362,30 @@ namespace erp_salgados_e_cia
             {
                 Funcionario funcionario = new Funcionario
                 {
-                    IdFuncionario = dadossistema.ProximoIdFuncionario(),
                     Nome = nomeDigitado,
                     Unidade = unidadeEscolhida,
                     Status = StatusCadastro.Ativo
                 };
 
-                funcionarios.Add(funcionario);
+                try
+                {
+                    funcionario.IdFuncionario = (int)FuncionarioRepositorio.Inserir(
+                        nomeDigitado,
+                        IdDaUnidade(unidadeEscolhida));
+
+                    dadossistema.CarregarFuncionarios();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,
@@ -426,7 +466,24 @@ namespace erp_salgados_e_cia
             string registroExcluido =
                 $"Funcionário: {funcionarioSelecionado.Nome} ({funcionarioSelecionado.Unidade})";
 
-            funcionarios.Remove(funcionarioSelecionado);
+            try
+            {
+                FuncionarioRepositorio.Excluir(
+                    (uint)funcionarioSelecionado.IdFuncionario);
+
+                dadossistema.CarregarFuncionarios();
+            }
+            catch (RegraNegocioException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
 
             dadossistema.RegistrarLog(
                 TipoOperacaoLog.Exclusao,

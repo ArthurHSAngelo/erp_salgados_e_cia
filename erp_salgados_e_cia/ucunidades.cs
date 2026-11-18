@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -246,15 +248,29 @@ namespace erp_salgados_e_cia
                             : StatusCadastro.Inativo).ToString())
                 );
 
-                unidadeAtual.Nome = tbnomeu.Text.Trim();
-                unidadeAtual.Cnpj = tbcnpju.Text.Trim();
-                unidadeAtual.Endereco = tbenderecou.Text.Trim();
-                unidadeAtual.Numero = tbnumerou.Text.Trim();
+                try
+                {
+                    UnidadeRepositorio.Atualizar(
+                        unidadeAtual.Id,
+                        tbnomeu.Text.Trim(),
+                        tbcnpju.Text.Trim(),
+                        tbenderecou.Text.Trim(),
+                        tbnumerou.Text.Trim(),
+                        cbativo.Checked);
 
-                unidadeAtual.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
+                    dadossistema.CarregarUnidades();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 if (detalhesLog != null)
                 {
@@ -283,7 +299,27 @@ namespace erp_salgados_e_cia
                     Numero = tbnumerou.Text.Trim()
                 };
 
-                unidades.Add(unidade);
+                try
+                {
+                    UnidadeRepositorio.Inserir(
+                        unidade.Nome,
+                        unidade.Cnpj,
+                        unidade.Endereco,
+                        unidade.Numero);
+
+                    dadossistema.CarregarUnidades();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,
@@ -361,7 +397,23 @@ namespace erp_salgados_e_cia
 
             string nomeExcluido = unidadeSelecionada.Nome;
 
-            unidades.Remove(unidadeSelecionada);
+            try
+            {
+                UnidadeRepositorio.Excluir(unidadeSelecionada.Id);
+
+                dadossistema.CarregarUnidades();
+            }
+            catch (RegraNegocioException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
 
             dadossistema.RegistrarLog(
                 TipoOperacaoLog.Exclusao,

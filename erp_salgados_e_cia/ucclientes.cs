@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -541,14 +543,28 @@ namespace erp_salgados_e_cia
                             : StatusCadastro.Inativo).ToString())
                 );
 
-                clienteAtual.Nome = tbnomec.Text.Trim();
-                clienteAtual.CpfCnpj = tbcpfcnpjc.Text.Trim();
-                clienteAtual.Telefone = tbtelefonec.Text.Trim();
+                try
+                {
+                    ClienteRepositorio.Atualizar(
+                        (uint)clienteAtual.IdCliente,
+                        tbnomec.Text.Trim(),
+                        tbcpfcnpjc.Text.Trim(),
+                        tbtelefonec.Text.Trim(),
+                        cbativo.Checked);
 
-                clienteAtual.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
+                    dadossistema.CarregarClientes();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 if (detalhesLog != null)
                 {
@@ -570,14 +586,32 @@ namespace erp_salgados_e_cia
             {
                 Cliente cliente = new Cliente
                 {
-                    IdCliente = dadossistema.ProximoIdCliente(),
                     Status = StatusCadastro.Ativo,
                     Nome = tbnomec.Text.Trim(),
                     CpfCnpj = tbcpfcnpjc.Text.Trim(),
                     Telefone = tbtelefonec.Text.Trim()
                 };
 
-                clientes.Add(cliente);
+                try
+                {
+                    cliente.IdCliente = (int)ClienteRepositorio.Inserir(
+                        cliente.Nome,
+                        cliente.CpfCnpj,
+                        cliente.Telefone);
+
+                    dadossistema.CarregarClientes();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,
@@ -656,7 +690,23 @@ namespace erp_salgados_e_cia
             string registroExcluido =
                 $"Cliente {clienteSelecionado.IdCliente}: {clienteSelecionado.Nome}";
 
-            clientes.Remove(clienteSelecionado);
+            try
+            {
+                ClienteRepositorio.Excluir((uint)clienteSelecionado.IdCliente);
+
+                dadossistema.CarregarClientes();
+            }
+            catch (RegraNegocioException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
 
             dadossistema.RegistrarLog(
                 TipoOperacaoLog.Exclusao,

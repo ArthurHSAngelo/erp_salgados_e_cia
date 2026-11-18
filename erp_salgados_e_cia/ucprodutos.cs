@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -259,16 +261,30 @@ namespace erp_salgados_e_cia
                             : StatusCadastro.Inativo).ToString())
                 );
 
-                produto.Nome = tbnomeproduto.Text;
-                produto.Preco = preco;
-                produto.Categoria = cbcategoria.Text;
-                produto.UnidadeMedida = cbunidademedida.Text;
-                produto.EstoqueMinimo = nudestoqueminimo.Value;
+                try
+                {
+                    ProdutoRepositorio.Atualizar(
+                        produto.Id,
+                        tbnomeproduto.Text.Trim(),
+                        cbcategoria.Text,
+                        preco,
+                        cbunidademedida.Text,
+                        nudestoqueminimo.Value,
+                        cbativo.Checked);
 
-                produto.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
+                    dadossistema.CarregarProdutos();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 if (detalhesLog != null)
                 {
@@ -298,7 +314,28 @@ namespace erp_salgados_e_cia
                     EstoqueMinimo = nudestoqueminimo.Value
                 };
 
-                produtos.Add(produto);
+                try
+                {
+                    ProdutoRepositorio.Inserir(
+                        produto.Nome.Trim(),
+                        produto.Categoria,
+                        produto.Preco,
+                        produto.UnidadeMedida,
+                        produto.EstoqueMinimo);
+
+                    dadossistema.CarregarProdutos();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,
@@ -377,9 +414,25 @@ namespace erp_salgados_e_cia
             {
                 string nomeExcluido = produtoSelecionado.Nome;
 
+                try
+                {
+                    ProdutoRepositorio.Excluir(produtoSelecionado.Id);
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Exclusão não permitida",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
                 dadossistema.RemoverSaldosDoProduto(produtoSelecionado);
 
-                produtos.Remove(produtoSelecionado);
+                dadossistema.CarregarProdutos();
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Exclusao,

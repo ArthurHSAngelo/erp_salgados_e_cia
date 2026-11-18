@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -65,6 +67,19 @@ namespace erp_salgados_e_cia
                 dgvusuarios.Columns["Unidade"].HeaderText = "Unidade";
                 dgvusuarios.Columns["Status"].HeaderText = "Status";
             }
+        }
+
+        // Gerente não tem unidade fixa: devolve null (unidade_id vazio no banco).
+        private uint? IdDaUnidade(string nomeUnidade)
+        {
+            if (nomeUnidade == null)
+            {
+                return null;
+            }
+
+            return dadossistema.unidades
+                .First(u => u.Nome == nomeUnidade)
+                .Id;
         }
 
         private string TextoAcesso(Usuario usuario)
@@ -430,19 +445,30 @@ namespace erp_salgados_e_cia
                     alterarSenha ? "Senha redefinida" : null
                 );
 
-                usuarioAtual.Login = loginDigitado;
-                usuarioAtual.Perfil = perfilEscolhido;
-                usuarioAtual.Unidade = unidadeEscolhida;
-
-                usuarioAtual.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
-
-                if (alterarSenha)
+                try
                 {
-                    usuarioAtual.SenhaHash =
-                        dadossistema.GerarHashSenha(tbsenha.Text);
+                    UsuarioRepositorio.Atualizar(
+                        (uint)usuarioAtual.IdUsuario,
+                        loginDigitado,
+                        perfilEscolhido.ToString(),
+                        IdDaUnidade(unidadeEscolhida),
+                        cbativo.Checked,
+                        alterarSenha
+                            ? dadossistema.GerarHashSenha(tbsenha.Text)
+                            : null);
+
+                    dadossistema.CarregarUsuarios();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
                 }
 
                 if (detalhesLog != null)
@@ -465,15 +491,33 @@ namespace erp_salgados_e_cia
             {
                 Usuario usuario = new Usuario
                 {
-                    IdUsuario = dadossistema.ProximoIdUsuario(),
                     Login = loginDigitado,
-                    SenhaHash = dadossistema.GerarHashSenha(tbsenha.Text),
                     Perfil = perfilEscolhido,
                     Unidade = unidadeEscolhida,
                     Status = StatusCadastro.Ativo
                 };
 
-                usuarios.Add(usuario);
+                try
+                {
+                    usuario.IdUsuario = (int)UsuarioRepositorio.Inserir(
+                        loginDigitado,
+                        dadossistema.GerarHashSenha(tbsenha.Text),
+                        perfilEscolhido.ToString(),
+                        IdDaUnidade(unidadeEscolhida));
+
+                    dadossistema.CarregarUsuarios();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,

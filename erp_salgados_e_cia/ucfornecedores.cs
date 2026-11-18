@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
 using static erp_salgados_e_cia.dadossistema;
 
 namespace erp_salgados_e_cia
@@ -257,14 +259,28 @@ namespace erp_salgados_e_cia
                             : StatusCadastro.Inativo).ToString())
                 );
 
-                fornecedorAtual.Nome = tbnomef.Text.Trim();
-                fornecedorAtual.Cnpj = tbcnpjf.Text.Trim();
-                fornecedorAtual.Telefone = tbtelefonef.Text.Trim();
+                try
+                {
+                    FornecedorRepositorio.Atualizar(
+                        fornecedorAtual.Id,
+                        tbnomef.Text.Trim(),
+                        tbcnpjf.Text.Trim(),
+                        tbtelefonef.Text.Trim(),
+                        cbativo.Checked);
 
-                fornecedorAtual.Status =
-                    cbativo.Checked
-                    ? StatusCadastro.Ativo
-                    : StatusCadastro.Inativo;
+                    dadossistema.CarregarFornecedores();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 if (detalhesLog != null)
                 {
@@ -292,7 +308,26 @@ namespace erp_salgados_e_cia
                     Telefone = tbtelefonef.Text.Trim()
                 };
 
-                fornecedores.Add(fornecedor);
+                try
+                {
+                    FornecedorRepositorio.Inserir(
+                        fornecedor.Nome,
+                        fornecedor.Cnpj,
+                        fornecedor.Telefone);
+
+                    dadossistema.CarregarFornecedores();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
 
                 dadossistema.RegistrarLog(
                     TipoOperacaoLog.Inclusao,
@@ -370,7 +405,23 @@ namespace erp_salgados_e_cia
 
             string nomeExcluido = fornecedorSelecionado.Nome;
 
-            fornecedores.Remove(fornecedorSelecionado);
+            try
+            {
+                FornecedorRepositorio.Excluir(fornecedorSelecionado.Id);
+
+                dadossistema.CarregarFornecedores();
+            }
+            catch (RegraNegocioException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
 
             dadossistema.RegistrarLog(
                 TipoOperacaoLog.Exclusao,
