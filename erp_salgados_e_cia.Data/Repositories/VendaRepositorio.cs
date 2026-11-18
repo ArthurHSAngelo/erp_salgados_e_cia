@@ -144,7 +144,8 @@ namespace erp_salgados_e_cia.Data.Repositories
 
         // ---- Vendas ----
 
-        public static DataTable ListarVendas()
+        /// <summary>Vendas (da unidade, ou de todas se unidadeId for nulo), da mais antiga para a mais nova.</summary>
+        public static DataTable ListarVendas(uint? unidadeId)
         {
             return BancoDados.Consultar(
                 "SELECT v.id, un.nome AS unidade, v.numero_mesa, v.caixa_id, v.data_hora, v.valor_total, " +
@@ -153,20 +154,32 @@ namespace erp_salgados_e_cia.Data.Repositories
                 "FROM venda v " +
                 "JOIN unidade un ON un.id = v.unidade_id " +
                 "LEFT JOIN usuario u ON u.id = v.cancelado_por " +
-                "ORDER BY v.data_hora, v.id");
+                "WHERE (@un IS NULL OR v.unidade_id = @un) " +
+                "ORDER BY v.data_hora, v.id",
+                BancoDados.Parametro("@un", unidadeId.HasValue ? (object)unidadeId.Value : null));
         }
 
-        public static DataTable ListarItensDasVendas()
+        public static DataTable ListarItensDasVendas(uint? unidadeId)
         {
             return BancoDados.Consultar(
                 "SELECT i.venda_id, p.nome AS produto, i.quantidade, i.preco_unitario " +
-                "FROM item_venda i JOIN produto p ON p.id = i.produto_id ORDER BY i.id");
+                "FROM item_venda i " +
+                "JOIN venda v ON v.id = i.venda_id " +
+                "JOIN produto p ON p.id = i.produto_id " +
+                "WHERE (@un IS NULL OR v.unidade_id = @un) " +
+                "ORDER BY i.id",
+                BancoDados.Parametro("@un", unidadeId.HasValue ? (object)unidadeId.Value : null));
         }
 
-        public static DataTable ListarPagamentosDasVendas()
+        public static DataTable ListarPagamentosDasVendas(uint? unidadeId)
         {
             return BancoDados.Consultar(
-                "SELECT venda_id, forma_pagamento, valor FROM pagamento_venda ORDER BY id");
+                "SELECT g.venda_id, g.forma_pagamento, g.valor " +
+                "FROM pagamento_venda g " +
+                "JOIN venda v ON v.id = g.venda_id " +
+                "WHERE (@un IS NULL OR v.unidade_id = @un) " +
+                "ORDER BY g.id",
+                BancoDados.Parametro("@un", unidadeId.HasValue ? (object)unidadeId.Value : null));
         }
 
         /// <summary>Cancela a venda (somente Gerente/Administrador, caixa aberto, unidade de trabalho, com motivo).</summary>
@@ -181,23 +194,58 @@ namespace erp_salgados_e_cia.Data.Repositories
 
         // ---- Notinha ----
 
-        /// <summary>Notinhas de vendas não canceladas.</summary>
-        public static DataTable ListarNotinhas()
+        /// <summary>Saldo devedor de um cliente na unidade (notinhas de vendas não canceladas menos abatimentos).</summary>
+        public static decimal SaldoNotinha(uint clienteId, uint unidadeId)
         {
-            return BancoDados.Consultar(
-                "SELECT n.id, n.cliente_id, n.venda_id, un.nome AS unidade, n.data_hora, n.valor " +
-                "FROM notinha n " +
-                "JOIN venda v ON v.id = n.venda_id AND v.status = 'Concluida' " +
-                "JOIN unidade un ON un.id = n.unidade_id " +
-                "ORDER BY n.data_hora, n.id");
+            object r = BancoDados.Escalar(
+                "SELECT saldo_devedor FROM vw_notinha_saldo WHERE cliente_id = @cli AND unidade_id = @un",
+                BancoDados.Parametro("@cli", clienteId),
+                BancoDados.Parametro("@un", unidadeId));
+
+            return r == null ? 0m : Convert.ToDecimal(r);
         }
 
-        public static DataTable ListarAbatimentos()
+        /// <summary>Saldo devedor de todos os clientes com movimento de Notinha na unidade.</summary>
+        public static DataTable SaldosNotinhaDaUnidade(uint unidadeId)
         {
             return BancoDados.Consultar(
-                "SELECT a.id, a.cliente_id, a.caixa_id, un.nome AS unidade, a.data_hora, a.valor, a.forma_pagamento " +
-                "FROM abatimento_notinha a JOIN unidade un ON un.id = a.unidade_id " +
-                "ORDER BY a.data_hora, a.id");
+                "SELECT cliente_id, saldo_devedor FROM vw_notinha_saldo WHERE unidade_id = @un",
+                BancoDados.Parametro("@un", unidadeId));
+        }
+
+        /// <summary>Notinhas do cliente na unidade (de vendas não canceladas).</summary>
+        public static DataTable ListarNotinhasDoCliente(uint clienteId, uint unidadeId)
+        {
+            return BancoDados.Consultar(
+                "SELECT n.id, n.venda_id, n.data_hora, n.valor " +
+                "FROM notinha n JOIN venda v ON v.id = n.venda_id AND v.status = 'Concluida' " +
+                "WHERE n.cliente_id = @cli AND n.unidade_id = @un " +
+                "ORDER BY n.data_hora, n.id",
+                BancoDados.Parametro("@cli", clienteId),
+                BancoDados.Parametro("@un", unidadeId));
+        }
+
+        /// <summary>Produtos das vendas que geraram Notinha para o cliente na unidade.</summary>
+        public static DataTable ListarItensDasNotinhasDoCliente(uint clienteId, uint unidadeId)
+        {
+            return BancoDados.Consultar(
+                "SELECT n.venda_id, p.nome AS produto, i.quantidade " +
+                "FROM notinha n " +
+                "JOIN item_venda i ON i.venda_id = n.venda_id " +
+                "JOIN produto p ON p.id = i.produto_id " +
+                "WHERE n.cliente_id = @cli AND n.unidade_id = @un " +
+                "ORDER BY i.id",
+                BancoDados.Parametro("@cli", clienteId),
+                BancoDados.Parametro("@un", unidadeId));
+        }
+
+        public static DataTable ListarAbatimentosDoCliente(uint clienteId, uint unidadeId)
+        {
+            return BancoDados.Consultar(
+                "SELECT id, data_hora, valor, forma_pagamento FROM abatimento_notinha " +
+                "WHERE cliente_id = @cli AND unidade_id = @un ORDER BY data_hora, id",
+                BancoDados.Parametro("@cli", clienteId),
+                BancoDados.Parametro("@un", unidadeId));
         }
 
         /// <summary>Grava os abatimentos de uma vez (tudo ou nada). Cada pagamento vira uma linha.</summary>

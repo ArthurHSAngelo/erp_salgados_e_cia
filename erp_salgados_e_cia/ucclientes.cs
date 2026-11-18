@@ -64,35 +64,8 @@ namespace erp_salgados_e_cia
             lsaldonotinha.Text =
                 $"Saldo devido: R$ {dadossistema.SaldoNotinha(cliente.IdCliente):N2}";
 
-            List<MovimentoNotinha> movimentos =
-                dadossistema.notinhas
-                .Where(n =>
-                    n.IdCliente == cliente.IdCliente &&
-                    n.Unidade == dadossistema.UnidadeAtual)
-                .Select(n => new MovimentoNotinha
-                {
-                    DataHora = n.DataHora,
-                    Tipo = "Notinha",
-                    Valor = n.Valor,
-                    Detalhe = ProdutosDaVenda(n.IdVenda)
-                })
-                .Concat(
-                    dadossistema.abatimentos
-                    .Where(a =>
-                        a.IdCliente == cliente.IdCliente &&
-                        a.Unidade == dadossistema.UnidadeAtual)
-                    .Select(a => new MovimentoNotinha
-                    {
-                        DataHora = a.DataHora,
-                        Tipo = "Abatimento",
-                        Valor = a.Valor,
-                        Detalhe = a.FormaPagamento
-                    })
-                )
-                .OrderByDescending(m => m.DataHora)
-                .ToList();
-
-            fonteHistoricoNotinha.DataSource = movimentos;
+            fonteHistoricoNotinha.DataSource =
+                dadossistema.MovimentosNotinhaDoCliente(cliente.IdCliente);
 
             dgvhistoriconotinha.Columns["DataHora"].HeaderText =
                 "Data/Hora";
@@ -102,24 +75,6 @@ namespace erp_salgados_e_cia
 
             dgvhistoriconotinha.Columns["Valor"]
                 .DefaultCellStyle.Format = "C2";
-        }
-
-        private string ProdutosDaVenda(int idVenda)
-        {
-            Venda venda =
-                dadossistema.vendas
-                .FirstOrDefault(v => v.IdVenda == idVenda);
-
-            if (venda == null)
-            {
-                return "";
-            }
-
-            return string.Join(
-                ", ",
-                venda.Itens.Select(item =>
-                    $"{item.Quantidade:0.##}x {item.Produto}")
-            );
         }
 
         private void SelecionarClienteNaGrade(int idCliente)
@@ -158,8 +113,8 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTabela()
         {
-            // Notinhas e abatimentos vêm do banco.
-            dadossistema.CarregarVendas();
+            // Atualiza o saldo de Notinha de cada cliente com o que está no banco.
+            dadossistema.CarregarClientes();
 
             string filtro =
                 cbfiltrostatus.SelectedItem == null

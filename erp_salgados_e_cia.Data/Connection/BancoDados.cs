@@ -58,6 +58,12 @@ namespace erp_salgados_e_cia.Data.Connection
             try
             {
                 cn.Open();
+
+                // O MySQL 8 usa utf8mb4_0900_ai_ci na conexão e o MariaDB, utf8mb4_unicode_ci. As tabelas
+                // são unicode_ci; igualar a conexão evita "Illegal mix of collations" nos filtros.
+                using (MySqlCommand ajuste = new MySqlCommand("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci", cn))
+                    ajuste.ExecuteNonQuery();
+
                 using (MySqlCommand cmd = new MySqlCommand("SET @usuario_id = @u, @unidade_id = @un", cn))
                 {
                     cmd.Parameters.AddWithValue("@u", SessaoBanco.UsuarioId.HasValue ? (object)SessaoBanco.UsuarioId.Value : DBNull.Value);
@@ -173,8 +179,10 @@ namespace erp_salgados_e_cia.Data.Connection
                     return new RegraNegocioException(ex.Message, ex);
                 case 1062:
                     return new RegraNegocioException("Já existe um registro com esses dados.", ex);
+                case 1217:
                 case 1451:
                     return new RegraNegocioException("Este registro possui vínculos (histórico) e não pode ser excluído. Inative-o.", ex);
+                case 1216:
                 case 1452:
                     return new RegraNegocioException("O registro informado não existe ou foi removido.", ex);
                 case 3819:

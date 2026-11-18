@@ -67,7 +67,6 @@
     <Compile Include="dadossistema.cs" />
     <Compile Include="Caixa.cs" />
     <Compile Include="Cliente.cs" />
-    <Compile Include="AbatimentoNotinha.cs" />
     <Compile Include="Comanda.cs" />
     <Compile Include="frmcancelarvenda.cs">
       <SubType>Form</SubType>
@@ -99,7 +98,6 @@
     </Compile>
     <Compile Include="itemvenda.cs" />
     <Compile Include="MovimentoNotinha.cs" />
-    <Compile Include="Notinha.cs" />
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>

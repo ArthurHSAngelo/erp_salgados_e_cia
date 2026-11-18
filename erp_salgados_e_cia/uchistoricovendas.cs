@@ -12,40 +12,30 @@ namespace erp_salgados_e_cia
 {
     public partial class uchistoricovendas : UserControl
     {
-        private BindingList<Venda> vendas =
-             dadossistema.vendas;
-
         private BindingSource fonteVendas =
             new BindingSource();
 
         public void AtualizarTabela()
         {
-            dadossistema.CarregarCaixas();
-            dadossistema.CarregarVendas();
-
             string filtroStatus =
                 cbfiltrostatus.SelectedItem == null
                 ? "Todas"
                 : cbfiltrostatus.SelectedItem.ToString();
 
-            IEnumerable<Venda> vendasFiltradas = vendas;
+            // As vendas da unidade vêm do banco.
+            IEnumerable<Venda> vendasFiltradas =
+                dadossistema.VendasDaUnidade();
 
             if (filtroStatus == "Concluídas")
             {
                 vendasFiltradas =
-                    vendas.Where(v => v.Status == "Concluída");
+                    vendasFiltradas.Where(v => v.Status == "Concluída");
             }
-            else if (filtroStatus == "Canceladas")
+            else if (filtroStatus == "Cancelada" || filtroStatus == "Canceladas")
             {
                 vendasFiltradas =
-                    vendas.Where(v => v.Status == "Cancelada");
+                    vendasFiltradas.Where(v => v.Status == "Cancelada");
             }
-
-            vendasFiltradas =
-                vendasFiltradas.Where(v =>
-                    dadossistema.caixas.Any(c =>
-                        c.IdCaixa == v.IdCaixa &&
-                        c.Unidade == dadossistema.UnidadeAtual));
 
             fonteVendas.DataSource = vendasFiltradas.ToList();
 
@@ -255,7 +245,7 @@ namespace erp_salgados_e_cia
 
             cbfiltrostatus.SelectedIndex = 0;
 
-            fonteVendas.DataSource = vendas;
+            fonteVendas.DataSource = new List<Venda>();
             dgvhistoricovendas.DataSource = fonteVendas;
 
             dgvhistoricovendas.CellFormatting +=

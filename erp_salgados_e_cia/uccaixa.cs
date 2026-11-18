@@ -237,9 +237,6 @@ namespace erp_salgados_e_cia
 
         public void AtualizarTela()
         {
-            dadossistema.CarregarCaixas();
-            dadossistema.CarregarVendas();
-
             CarregarResponsaveis();
 
             Caixa caixa =
@@ -265,16 +262,16 @@ namespace erp_salgados_e_cia
                     $"Valor inicial: R$ {caixa.ValorInicial:N2}";
 
                 ldinheiro.Text =
-                    $"Dinheiro: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Dinheiro"):N2}";
+                    $"Dinheiro: R$ {caixa.RecebidoPorForma("Dinheiro"):N2}";
 
                 lpix.Text =
-                    $"Pix: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Pix"):N2}";
+                    $"Pix: R$ {caixa.RecebidoPorForma("Pix"):N2}";
 
                 lcredito.Text =
-                    $"Crédito: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Crédito"):N2}";
+                    $"Crédito: R$ {caixa.RecebidoPorForma("Crédito"):N2}";
 
                 ldebito.Text =
-                    $"Débito: R$ {dadossistema.TotalRecebidoPorForma(caixa.IdCaixa, "Débito"):N2}";
+                    $"Débito: R$ {caixa.RecebidoPorForma("Débito"):N2}";
 
                 ltotalvendas.Text =
                     $"Total de vendas (sem Notinha): R$ {caixa.TotalVendas:N2}";
@@ -301,10 +298,7 @@ namespace erp_salgados_e_cia
         private void AtualizarHistorico()
         {
             fonteCaixas.DataSource =
-                dadossistema.caixas
-                .Where(c => c.Unidade == dadossistema.UnidadeAtual)
-                .OrderByDescending(c => c.DataAbertura)
-                .ToList();
+                dadossistema.CaixasDaUnidade();
 
             if (dgvcaixas.Columns.Contains("DataAbertura"))
             {

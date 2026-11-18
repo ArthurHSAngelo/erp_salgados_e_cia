@@ -10,7 +10,8 @@ namespace erp_salgados_e_cia.Data.Repositories
     /// </summary>
     public static class CaixaRepositorio
     {
-        public static DataTable Listar()
+        /// <summary>Caixas da unidade (ou de todas, se unidadeId for nulo), do mais antigo para o mais novo.</summary>
+        public static DataTable Listar(uint? unidadeId)
         {
             return BancoDados.Consultar(
                 "SELECT c.id, un.nome AS unidade, fu.nome AS responsavel, c.data_abertura, c.data_fechamento, " +
@@ -18,7 +19,22 @@ namespace erp_salgados_e_cia.Data.Repositories
                 "FROM caixa c " +
                 "JOIN unidade un ON un.id = c.unidade_id " +
                 "JOIN funcionario fu ON fu.id = c.responsavel_funcionario_id " +
-                "ORDER BY c.data_abertura, c.id");
+                "WHERE (@un IS NULL OR c.unidade_id = @un) " +
+                "ORDER BY c.data_abertura, c.id",
+                BancoDados.Parametro("@un", unidadeId.HasValue ? (object)unidadeId.Value : null));
+        }
+
+        /// <summary>
+        /// O que entrou em cada caixa por forma de pagamento (vw_caixa_totais): vendas já sem o troco
+        /// e abatimentos de Notinha. Formas com os nomes do banco.
+        /// </summary>
+        public static DataTable ListarTotais(uint? unidadeId)
+        {
+            return BancoDados.Consultar(
+                "SELECT t.caixa_id, t.forma_pagamento, t.total_vendas, t.total_abatimentos " +
+                "FROM vw_caixa_totais t JOIN caixa c ON c.id = t.caixa_id " +
+                "WHERE (@un IS NULL OR c.unidade_id = @un)",
+                BancoDados.Parametro("@un", unidadeId.HasValue ? (object)unidadeId.Value : null));
         }
 
         /// <summary>Abre o caixa da unidade e devolve o id dele.</summary>

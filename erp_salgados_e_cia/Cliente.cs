@@ -24,12 +24,7 @@ namespace erp_salgados_e_cia
             }
         }
 
-        public decimal SaldoNotinha
-        {
-            get
-            {
-                return dadossistema.SaldoNotinha(IdCliente);
-            }
-        }
+        // Saldo devedor na unidade de trabalho, lido do banco por CarregarClientes().
+        public decimal SaldoNotinha { get; set; }
     }
 }

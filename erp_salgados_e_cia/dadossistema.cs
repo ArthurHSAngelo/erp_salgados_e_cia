@@ -11,57 +11,39 @@ namespace erp_salgados_e_cia
 {
     public static class dadossistema
     {
-        // Os vínculos são conferidos no banco. As listas em memória (movimentações,
-        // vendas, comandas...) ainda existem até os próximos blocos da migração,
-        // por isso também entram na conta.
+        // Os vínculos (histórico que impede a exclusão) são conferidos no banco.
         public static bool ProdutoPossuiVinculos(Produto produto)
         {
             return produto != null &&
-                   (ProdutoRepositorio.PossuiVinculos(produto.Id) ||
-                    movimentacoes.Any(m =>
-                       m.Produto == produto.Nome) ||
-                    vendas.Any(v =>
-                       v.Itens.Any(item =>
-                           item.Produto == produto.Nome)));
+                   ProdutoRepositorio.PossuiVinculos(produto.Id);
         }
 
         public static bool FornecedorPossuiVinculos(
             Fornecedor fornecedor)
         {
             return fornecedor != null &&
-                   (FornecedorRepositorio.PossuiVinculos(fornecedor.Id) ||
-                    movimentacoes.Any(m =>
-                       m.Fornecedor == fornecedor.Nome));
+                   FornecedorRepositorio.PossuiVinculos(fornecedor.Id);
         }
 
         public static bool UnidadePossuiVinculos(
             Unidade unidade)
         {
             return unidade != null &&
-                   (UnidadeRepositorio.PossuiVinculos(unidade.Id) ||
-                    movimentacoes.Any(m =>
-                       m.Unidade == unidade.Nome));
+                   UnidadeRepositorio.PossuiVinculos(unidade.Id);
         }
 
         public static bool ClientePossuiVinculos(
             Cliente cliente)
         {
             return cliente != null &&
-                   (ClienteRepositorio.PossuiVinculos((uint)cliente.IdCliente) ||
-                    vendas.Any(v =>
-                       v.IdCliente == cliente.IdCliente) ||
-                    notinhas.Any(n =>
-                       n.IdCliente == cliente.IdCliente) ||
-                    abatimentos.Any(a =>
-                       a.IdCliente == cliente.IdCliente));
+                   ClienteRepositorio.PossuiVinculos((uint)cliente.IdCliente);
         }
 
         // ---- Cadastros lidos do banco ----
-        // As listas abaixo (produtos, unidades, fornecedores, clientes,
-        // funcionarios, usuarios) são apenas um espelho do que está no banco:
-        // as telas gravam pelos repositórios e depois chamam CarregarXxx().
-        // O objeto de cada linha é reaproveitado (pelo id), para que as telas e as
-        // listas que ainda estão em memória continuem apontando para ele.
+        // As listas abaixo (produtos, unidades, fornecedores, clientes, funcionarios,
+        // usuarios) guardam só a última leitura do banco, para preencher as telas e
+        // achar o id de um nome. As telas gravam pelos repositórios e depois chamam
+        // CarregarXxx(); o objeto de cada linha é reaproveitado (pelo id).
 
         private static StatusCadastro ParaStatus(object valor)
         {
@@ -104,10 +86,6 @@ namespace erp_salgados_e_cia
             CarregarClientes();
             CarregarFuncionarios();
             CarregarUsuarios();
-            CarregarEntradas();
-            CarregarPerdas();
-            CarregarCaixas();
-            CarregarVendas();
         }
 
         public static void CarregarUnidades()
@@ -223,6 +201,32 @@ namespace erp_salgados_e_cia
                 cliente.Status = ParaStatus(linha["status"]);
 
                 doBanco.Add(cliente);
+            }
+
+            // Saldo de Notinha de cada cliente na unidade de trabalho.
+            Unidade unidadeTrabalho =
+                unidades.FirstOrDefault(u => u.Nome == UnidadeAtual);
+
+            Dictionary<int, decimal> saldos = new Dictionary<int, decimal>();
+
+            if (unidadeTrabalho != null)
+            {
+                foreach (System.Data.DataRow linha in
+                    VendaRepositorio.SaldosNotinhaDaUnidade(unidadeTrabalho.Id).Rows)
+                {
+                    saldos[System.Convert.ToInt32(linha["cliente_id"])] =
+                        System.Convert.ToDecimal(linha["saldo_devedor"]);
+                }
+            }
+
+            foreach (Cliente cliente in doBanco)
+            {
+                decimal saldo;
+
+                cliente.SaldoNotinha =
+                    saldos.TryGetValue(cliente.IdCliente, out saldo)
+                    ? saldo
+                    : 0m;
             }
 
             Reconciliar(clientes, doBanco);
@@ -452,12 +456,7 @@ namespace erp_salgados_e_cia
         }
 
         // ---- Estoque (entradas, perdas, inventário) ----
-        // Entradas e perdas ficam no banco; estas listas são só um espelho, recarregado
-        // do banco no login e sempre que uma tela de estoque consulta. O DRE (Bloco 8)
-        // ainda lê daqui.
-
-        public static BindingList<Perda> perdas =
-            new BindingList<Perda>();
+        // Tudo é lido e gravado direto no banco.
 
         private static Unidade UnidadeDeTrabalho()
         {
@@ -519,32 +518,22 @@ namespace erp_salgados_e_cia
                 UnidadeDeTrabalho().Id);
         }
 
-        public static void CarregarEntradas()
-        {
-            movimentacoes.Clear();
-
-            foreach (System.Data.DataRow linha in
-                EstoqueRepositorio.ListarEntradas().Rows)
-            {
-                movimentacoes.Add(
-                    new movimentoestoque
-                    {
-                        Produto = System.Convert.ToString(linha["produto"]),
-                        Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
-                        CustoUnitario = System.Convert.ToDecimal(linha["custo_unitario"]),
-                        Fornecedor = TextoOuNulo(linha["fornecedor"]),
-                        Responsavel = System.Convert.ToString(linha["responsavel"]),
-                        Unidade = System.Convert.ToString(linha["unidade"]),
-                        DataEntrada = System.Convert.ToDateTime(linha["data_hora"])
-                    });
-            }
-        }
-
+        // Entradas de estoque da unidade de trabalho, da mais recente para a mais antiga.
         public static List<movimentoestoque> EntradasDaUnidade()
         {
-            CarregarEntradas();
-
-            return movimentacoes
+            return EstoqueRepositorio.ListarEntradas()
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .Select(linha => new movimentoestoque
+                {
+                    Produto = System.Convert.ToString(linha["produto"]),
+                    Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
+                    CustoUnitario = System.Convert.ToDecimal(linha["custo_unitario"]),
+                    Fornecedor = TextoOuNulo(linha["fornecedor"]),
+                    Responsavel = System.Convert.ToString(linha["responsavel"]),
+                    Unidade = System.Convert.ToString(linha["unidade"]),
+                    DataEntrada = System.Convert.ToDateTime(linha["data_hora"])
+                })
                 .Where(m => m.Unidade == UnidadeAtual)
                 .OrderByDescending(m => m.DataEntrada)
                 .ToList();
@@ -616,8 +605,6 @@ namespace erp_salgados_e_cia
                     linhas);
 
                 CarregarProdutos();
-
-                CarregarEntradas();
             }
             catch (RegraNegocioException ex)
             {
@@ -628,41 +615,30 @@ namespace erp_salgados_e_cia
             return true;
         }
 
-        public static void CarregarPerdas()
-        {
-            perdas.Clear();
-
-            foreach (System.Data.DataRow linha in
-                EstoqueRepositorio.ListarPerdas().Rows)
-            {
-                perdas.Add(
-                    new Perda
-                    {
-                        IdPerda = System.Convert.ToInt32(linha["id"]),
-                        Data = System.Convert.ToDateTime(linha["data"]),
-                        Unidade = System.Convert.ToString(linha["unidade"]),
-                        Produto = System.Convert.ToString(linha["produto"]),
-                        Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
-                        Motivo = (MotivoPerda)System.Enum.Parse(
-                            typeof(MotivoPerda),
-                            System.Convert.ToString(linha["motivo"])),
-                        Responsavel = System.Convert.ToString(linha["responsavel"]),
-                        Usuario = System.Convert.ToString(linha["usuario"]),
-                        DataHoraRegistro = System.Convert.ToDateTime(linha["data_hora"])
-                    });
-            }
-        }
-
         public static List<Perda> PerdasDaUnidade(
             string unidade,
             int dias)
         {
-            CarregarPerdas();
-
             System.DateTime inicio =
                 System.DateTime.Today.AddDays(-dias);
 
-            return perdas
+            return EstoqueRepositorio.ListarPerdas()
+                .Rows
+                .Cast<System.Data.DataRow>()
+                .Select(linha => new Perda
+                {
+                    IdPerda = System.Convert.ToInt32(linha["id"]),
+                    Data = System.Convert.ToDateTime(linha["data"]),
+                    Unidade = System.Convert.ToString(linha["unidade"]),
+                    Produto = System.Convert.ToString(linha["produto"]),
+                    Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
+                    Motivo = (MotivoPerda)System.Enum.Parse(
+                        typeof(MotivoPerda),
+                        System.Convert.ToString(linha["motivo"])),
+                    Responsavel = System.Convert.ToString(linha["responsavel"]),
+                    Usuario = System.Convert.ToString(linha["usuario"]),
+                    DataHoraRegistro = System.Convert.ToDateTime(linha["data_hora"])
+                })
                 .Where(p =>
                     p.Unidade == unidade &&
                     p.Data >= inicio)
@@ -711,7 +687,6 @@ namespace erp_salgados_e_cia
             }
 
             decimal saldoAnterior;
-            decimal saldoAtual;
 
             try
             {
@@ -735,11 +710,7 @@ namespace erp_salgados_e_cia
                     IdDoUsuarioLogado(),
                     IdDoFuncionario(responsavel, unidade.Nome));
 
-                saldoAtual = EstoqueRepositorio.SaldoDe(unidade.Id, produto.Id);
-
                 CarregarProdutos();
-
-                CarregarPerdas();
             }
             catch (RegraNegocioException ex)
             {
@@ -900,19 +871,18 @@ namespace erp_salgados_e_cia
                 Unidade = unidade
             };
 
-            // Caixa e vendas do dia vêm do banco.
-            CarregarCaixas();
-            CarregarVendas();
-
             Unidade unidadeDoPainel =
                 unidades.FirstOrDefault(u => u.Nome == unidade);
 
+            List<Caixa> caixasDoPainel =
+                unidadeDoPainel == null
+                ? new List<Caixa>()
+                : LerCaixas(unidadeDoPainel.Id);
+
             Caixa caixa =
-                caixas.FirstOrDefault(c =>
-                    c.Unidade == unidade &&
+                caixasDoPainel.FirstOrDefault(c =>
                     c.Status == "Aberto") ??
-                caixas.FirstOrDefault(c =>
-                    c.Unidade == unidade &&
+                caixasDoPainel.FirstOrDefault(c =>
                     c.DataAbertura.Date == System.DateTime.Today);
 
             if (caixa != null)
@@ -1126,62 +1096,95 @@ namespace erp_salgados_e_cia
             Funcionario funcionario)
         {
             return funcionario != null &&
-                   (FuncionarioRepositorio.PossuiVinculos(
-                        (uint)funcionario.IdFuncionario) ||
-                    caixas.Any(c =>
-                       c.Responsavel == funcionario.Nome &&
-                       c.Unidade == funcionario.Unidade) ||
-                    movimentacoes.Any(m =>
-                       m.Responsavel == funcionario.Nome &&
-                       m.Unidade == funcionario.Unidade));
+                   FuncionarioRepositorio.PossuiVinculos(
+                       (uint)funcionario.IdFuncionario);
+        }
+
+        // ---- Caixa (lido do banco a cada consulta) ----
+
+        private static List<Caixa> LerCaixas(uint? unidadeId)
+        {
+            List<Caixa> lista = new List<Caixa>();
+            Dictionary<int, Caixa> porId = new Dictionary<int, Caixa>();
+
+            foreach (System.Data.DataRow linha in
+                CaixaRepositorio.Listar(unidadeId).Rows)
+            {
+                Caixa caixa = new Caixa
+                {
+                    IdCaixa = System.Convert.ToInt32(linha["id"]),
+                    Unidade = System.Convert.ToString(linha["unidade"]),
+                    Responsavel = System.Convert.ToString(linha["responsavel"]),
+                    DataAbertura = System.Convert.ToDateTime(linha["data_abertura"]),
+                    DataFechamento =
+                        linha["data_fechamento"] == System.DBNull.Value
+                        ? (System.DateTime?)null
+                        : System.Convert.ToDateTime(linha["data_fechamento"]),
+                    ValorInicial = System.Convert.ToDecimal(linha["valor_inicial"]),
+                    ValorContado =
+                        linha["valor_contado_dinheiro"] == System.DBNull.Value
+                        ? (decimal?)null
+                        : System.Convert.ToDecimal(linha["valor_contado_dinheiro"]),
+                    ValorMaquininha =
+                        linha["valor_contado_maquininha"] == System.DBNull.Value
+                        ? (decimal?)null
+                        : System.Convert.ToDecimal(linha["valor_contado_maquininha"]),
+                    Status = System.Convert.ToString(linha["status"])
+                };
+
+                porId[caixa.IdCaixa] = caixa;
+                lista.Add(caixa);
+            }
+
+            foreach (System.Data.DataRow linha in
+                CaixaRepositorio.ListarTotais(unidadeId).Rows)
+            {
+                Caixa caixa;
+
+                if (!porId.TryGetValue(System.Convert.ToInt32(linha["caixa_id"]), out caixa))
+                {
+                    continue;
+                }
+
+                string forma = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]));
+                decimal vendasDaForma = System.Convert.ToDecimal(linha["total_vendas"]);
+                decimal abatimentosDaForma = System.Convert.ToDecimal(linha["total_abatimentos"]);
+
+                caixa.TotaisPorForma[forma] = vendasDaForma + abatimentosDaForma;
+
+                if (forma == "Notinha")
+                {
+                    caixa.TotalNotinhaDoCaixa += vendasDaForma;
+                }
+                else
+                {
+                    caixa.TotalVendasSemNotinha += vendasDaForma;
+                }
+
+                caixa.TotalAbatimentosRecebidos += abatimentosDaForma;
+            }
+
+            return lista;
+        }
+
+        public static List<Caixa> CaixasDaUnidade()
+        {
+            return LerCaixas(UnidadeDeTrabalho().Id)
+                .OrderByDescending(c => c.DataAbertura)
+                .ToList();
         }
 
         public static Caixa CaixaAberto()
         {
-            return caixas.FirstOrDefault(c =>
-                c.Unidade == UnidadeAtual &&
-                c.Status == "Aberto");
+            return LerCaixas(UnidadeDeTrabalho().Id)
+                .FirstOrDefault(c => c.Status == "Aberto");
         }
 
         public static Caixa CaixaDeHoje()
         {
-            return caixas.FirstOrDefault(c =>
-                c.Unidade == UnidadeAtual &&
-                c.DataAbertura.Date == System.DateTime.Today);
-        }
-
-        // O caixa fica no banco; a lista "caixas" é um espelho recarregado do banco no login,
-        // ao abrir a tela do caixa e depois de cada gravação (as vendas e a DRE ainda leem daqui).
-        public static void CarregarCaixas()
-        {
-            caixas.Clear();
-
-            foreach (System.Data.DataRow linha in
-                CaixaRepositorio.Listar().Rows)
-            {
-                caixas.Add(
-                    new Caixa
-                    {
-                        IdCaixa = System.Convert.ToInt32(linha["id"]),
-                        Unidade = System.Convert.ToString(linha["unidade"]),
-                        Responsavel = System.Convert.ToString(linha["responsavel"]),
-                        DataAbertura = System.Convert.ToDateTime(linha["data_abertura"]),
-                        DataFechamento =
-                            linha["data_fechamento"] == System.DBNull.Value
-                            ? (System.DateTime?)null
-                            : System.Convert.ToDateTime(linha["data_fechamento"]),
-                        ValorInicial = System.Convert.ToDecimal(linha["valor_inicial"]),
-                        ValorContado =
-                            linha["valor_contado_dinheiro"] == System.DBNull.Value
-                            ? (decimal?)null
-                            : System.Convert.ToDecimal(linha["valor_contado_dinheiro"]),
-                        ValorMaquininha =
-                            linha["valor_contado_maquininha"] == System.DBNull.Value
-                            ? (decimal?)null
-                            : System.Convert.ToDecimal(linha["valor_contado_maquininha"]),
-                        Status = System.Convert.ToString(linha["status"])
-                    });
-            }
+            return LerCaixas(UnidadeDeTrabalho().Id)
+                .FirstOrDefault(c =>
+                    c.DataAbertura.Date == System.DateTime.Today);
         }
 
         public static bool AbrirCaixa(
@@ -1199,8 +1202,7 @@ namespace erp_salgados_e_cia
                     unidade.Id,
                     IdDoFuncionario(responsavel, unidade.Nome),
                     valorInicial);
-
-                CarregarCaixas();            }
+            }
             catch (RegraNegocioException ex)
             {
                 mensagem = ex.Message;
@@ -1230,8 +1232,6 @@ namespace erp_salgados_e_cia
                     (uint)caixa.IdCaixa,
                     valorContado,
                     valorMaquininha);
-
-                CarregarCaixas();
             }
             catch (RegraNegocioException ex)
             {
@@ -1314,8 +1314,6 @@ namespace erp_salgados_e_cia
                     IdDoFuncionario(novoResponsavel, caixa.Unidade),
                     motivo.Trim(),
                     autorizador.Id);
-
-                CarregarCaixas();
             }
             catch (RegraNegocioException ex)
             {
@@ -1326,71 +1324,7 @@ namespace erp_salgados_e_cia
             return true;
         }
 
-        public static decimal TotalRecebidoPorForma(
-            int idCaixa,
-            string formaPagamento)
-        {
-            IEnumerable<Venda> vendasDoCaixa =
-                vendas.Where(v =>
-                    v.IdCaixa == idCaixa &&
-                    v.Status == "Concluída");
-
-            decimal total =
-                vendasDoCaixa
-                .SelectMany(v => v.Pagamentos)
-                .Where(p => p.FormaPagamento == formaPagamento)
-                .Sum(p => p.Valor);
-
-            if (formaPagamento == "Dinheiro")
-            {
-                total -= vendasDoCaixa.Sum(v => v.Troco);
-            }
-
-            total += abatimentos
-                .Where(a =>
-                    a.IdCaixa == idCaixa &&
-                    a.FormaPagamento == formaPagamento)
-                .Sum(a => a.Valor);
-
-            return total;
-        }
-
-        public static decimal TotalVendasDoCaixa(int idCaixa)
-        {
-            IEnumerable<Venda> vendasDoCaixa =
-                vendas.Where(v =>
-                    v.IdCaixa == idCaixa &&
-                    v.Status == "Concluída");
-
-            return vendasDoCaixa
-                .SelectMany(v => v.Pagamentos)
-                .Where(p => p.FormaPagamento != "Notinha")
-                .Sum(p => p.Valor)
-                - vendasDoCaixa.Sum(v => v.Troco);
-        }
-
-        public static decimal TotalNotinhaDoCaixa(int idCaixa)
-        {
-            return vendas
-                .Where(v =>
-                    v.IdCaixa == idCaixa &&
-                    v.Status == "Concluída")
-                .SelectMany(v => v.Pagamentos)
-                .Where(p => p.FormaPagamento == "Notinha")
-                .Sum(p => p.Valor);
-        }
-
-        public static decimal TotalAbatimentosDoCaixa(int idCaixa)
-        {
-            return abatimentos
-                .Where(a => a.IdCaixa == idCaixa)
-                .Sum(a => a.Valor);
-        }
-
-        // ---- Comandas, vendas e Notinha (lidas do banco) ----
-        // As listas vendas, notinhas e abatimentos são um espelho recarregado do banco
-        // (login, depois de cada gravação e ao abrir as telas). Os relatórios do Bloco 8
-        // ainda leem delas. As comandas abertas são lidas direto do banco a cada consulta.
+        // ---- Comandas, vendas e Notinha (lidas direto do banco) ----
 
         private static string FormaParaBanco(string forma)
         {
@@ -1462,13 +1396,17 @@ namespace erp_salgados_e_cia
             return pedido;
         }
 
-        public static void CarregarVendas()
+        // Vendas da unidade de trabalho (histórico), da mais antiga para a mais nova,
+        // lidas do banco com itens e pagamentos.
+        public static List<Venda> VendasDaUnidade()
         {
+            uint unidadeId = UnidadeDeTrabalho().Id;
+
             Dictionary<int, Venda> porId = new Dictionary<int, Venda>();
             List<Venda> doBanco = new List<Venda>();
 
             foreach (System.Data.DataRow linha in
-                VendaRepositorio.ListarVendas().Rows)
+                VendaRepositorio.ListarVendas(unidadeId).Rows)
             {
                 Venda venda = new Venda
                 {
@@ -1499,24 +1437,41 @@ namespace erp_salgados_e_cia
             }
 
             foreach (System.Data.DataRow linha in
-                VendaRepositorio.ListarItensDasVendas().Rows)
+                VendaRepositorio.ListarItensDasVendas(unidadeId).Rows)
             {
                 Venda venda;
 
                 if (porId.TryGetValue(System.Convert.ToInt32(linha["venda_id"]), out venda))
                 {
-                    venda.Itens.Add(
-                        new ItemVenda
-                        {
-                            Produto = System.Convert.ToString(linha["produto"]),
-                            Quantidade = System.Convert.ToDecimal(linha["quantidade"]),
-                            PrecoUnitario = System.Convert.ToDecimal(linha["preco_unitario"])
-                        });
+                    string nomeProduto = System.Convert.ToString(linha["produto"]);
+                    decimal quantidade = System.Convert.ToDecimal(linha["quantidade"]);
+                    decimal preco = System.Convert.ToDecimal(linha["preco_unitario"]);
+
+                    // Pedidos do mesmo produto e preço aparecem como uma linha só.
+                    ItemVenda existente =
+                        venda.Itens.FirstOrDefault(i =>
+                            i.Produto == nomeProduto &&
+                            i.PrecoUnitario == preco);
+
+                    if (existente != null)
+                    {
+                        existente.Quantidade += quantidade;
+                    }
+                    else
+                    {
+                        venda.Itens.Add(
+                            new ItemVenda
+                            {
+                                Produto = nomeProduto,
+                                Quantidade = quantidade,
+                                PrecoUnitario = preco
+                            });
+                    }
                 }
             }
 
             foreach (System.Data.DataRow linha in
-                VendaRepositorio.ListarPagamentosDasVendas().Rows)
+                VendaRepositorio.ListarPagamentosDasVendas(unidadeId).Rows)
             {
                 Venda venda;
 
@@ -1555,47 +1510,92 @@ namespace erp_salgados_e_cia
                         $"{p.FormaPagamento} R$ {p.Valor:N2}"));
             }
 
-            vendas.Clear();
+            return doBanco;
+        }
 
-            foreach (Venda venda in doBanco)
-            {
-                vendas.Add(venda);
-            }
+        // Notinhas e abatimentos do cliente na unidade de trabalho, do mais recente para o mais antigo.
+        public static List<MovimentoNotinha> MovimentosNotinhaDoCliente(int idCliente)
+        {
+            uint unidadeId = UnidadeDeTrabalho().Id;
 
-            notinhas.Clear();
+            // Produtos de cada venda, somando as quantidades do mesmo produto.
+            Dictionary<int, List<KeyValuePair<string, decimal>>> itensPorVenda =
+                new Dictionary<int, List<KeyValuePair<string, decimal>>>();
 
             foreach (System.Data.DataRow linha in
-                VendaRepositorio.ListarNotinhas().Rows)
+                VendaRepositorio.ListarItensDasNotinhasDoCliente((uint)idCliente, unidadeId).Rows)
             {
-                notinhas.Add(
-                    new Notinha
+                int idVenda = System.Convert.ToInt32(linha["venda_id"]);
+                string nomeProduto = System.Convert.ToString(linha["produto"]);
+                decimal quantidade = System.Convert.ToDecimal(linha["quantidade"]);
+
+                if (!itensPorVenda.ContainsKey(idVenda))
+                {
+                    itensPorVenda[idVenda] = new List<KeyValuePair<string, decimal>>();
+                }
+
+                List<KeyValuePair<string, decimal>> itens = itensPorVenda[idVenda];
+
+                int posicao = itens.FindIndex(i => i.Key == nomeProduto);
+
+                if (posicao >= 0)
+                {
+                    itens[posicao] =
+                        new KeyValuePair<string, decimal>(
+                            nomeProduto,
+                            itens[posicao].Value + quantidade);
+                }
+                else
+                {
+                    itens.Add(new KeyValuePair<string, decimal>(nomeProduto, quantidade));
+                }
+            }
+
+            Dictionary<int, List<string>> produtosPorVenda =
+                itensPorVenda.ToDictionary(
+                    v => v.Key,
+                    v => v.Value
+                        .Select(i => $"{i.Value:0.##}x {i.Key}")
+                        .ToList());
+
+            List<MovimentoNotinha> movimentos = new List<MovimentoNotinha>();
+
+            foreach (System.Data.DataRow linha in
+                VendaRepositorio.ListarNotinhasDoCliente((uint)idCliente, unidadeId).Rows)
+            {
+                int idVenda = System.Convert.ToInt32(linha["venda_id"]);
+
+                movimentos.Add(
+                    new MovimentoNotinha
                     {
-                        IdNotinha = System.Convert.ToInt32(linha["id"]),
-                        IdCliente = System.Convert.ToInt32(linha["cliente_id"]),
-                        IdVenda = System.Convert.ToInt32(linha["venda_id"]),
                         DataHora = System.Convert.ToDateTime(linha["data_hora"]),
+                        Tipo = "Notinha",
                         Valor = System.Convert.ToDecimal(linha["valor"]),
-                        Unidade = System.Convert.ToString(linha["unidade"])
+                        Detalhe =
+                            produtosPorVenda.ContainsKey(idVenda)
+                            ? string.Join(", ", produtosPorVenda[idVenda])
+                            : ""
                     });
             }
 
-            abatimentos.Clear();
-
             foreach (System.Data.DataRow linha in
-                VendaRepositorio.ListarAbatimentos().Rows)
+                VendaRepositorio.ListarAbatimentosDoCliente((uint)idCliente, unidadeId).Rows)
             {
-                abatimentos.Add(
-                    new AbatimentoNotinha
+                movimentos.Add(
+                    new MovimentoNotinha
                     {
-                        IdAbatimento = System.Convert.ToInt32(linha["id"]),
-                        IdCliente = System.Convert.ToInt32(linha["cliente_id"]),
-                        IdCaixa = System.Convert.ToInt32(linha["caixa_id"]),
-                        Unidade = System.Convert.ToString(linha["unidade"]),
                         DataHora = System.Convert.ToDateTime(linha["data_hora"]),
+                        Tipo = "Abatimento",
                         Valor = System.Convert.ToDecimal(linha["valor"]),
-                        FormaPagamento = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]))
+                        Detalhe = FormaDoBanco(System.Convert.ToString(linha["forma_pagamento"]))
                     });
             }
+
+            // Mais recente primeiro; no mesmo instante, o abatimento vem antes da notinha.
+            return movimentos
+                .OrderByDescending(m => m.DataHora)
+                .ThenBy(m => m.Tipo)
+                .ToList();
         }
 
         // Comandas de mesa abertas na unidade de trabalho (itens e pagamentos incluídos).
@@ -1696,14 +1696,12 @@ namespace erp_salgados_e_cia
                 .FirstOrDefault(c => c.NumeroMesa == numeroMesa);
         }
 
+        // Saldo devedor do cliente na unidade de trabalho, lido do banco.
         public static decimal SaldoNotinha(int idCliente)
         {
-            return notinhas
-                       .Where(n => n.IdCliente == idCliente && n.Unidade == UnidadeAtual)
-                       .Sum(n => n.Valor)
-                   - abatimentos
-                       .Where(a => a.IdCliente == idCliente && a.Unidade == UnidadeAtual)
-                       .Sum(a => a.Valor);
+            return VendaRepositorio.SaldoNotinha(
+                (uint)idCliente,
+                UnidadeDeTrabalho().Id);
         }
 
         // Confere os pagamentos antes de gravar, para não deixar uma venda pela metade.
@@ -1751,8 +1749,6 @@ namespace erp_salgados_e_cia
 
         private static Caixa CaixaParaVender()
         {
-            CarregarCaixas();
-
             return CaixaAberto();
         }
 
@@ -1883,7 +1879,6 @@ namespace erp_salgados_e_cia
                     (uint)caixa.IdCaixa,
                     IdDoUsuarioLogado());
 
-                CarregarVendas();
             }
             catch (RegraNegocioException ex)
             {
@@ -1934,7 +1929,6 @@ namespace erp_salgados_e_cia
                     IdDoUsuarioLogado());
 
                 CarregarProdutos();
-                CarregarVendas();
             }
             catch (RegraNegocioException ex)
             {
@@ -1994,7 +1988,6 @@ namespace erp_salgados_e_cia
                     UnidadeDeTrabalho().Id,
                     abatimentosNovos);
 
-                CarregarVendas();
             }
             catch (RegraNegocioException ex)
             {
@@ -2095,7 +2088,6 @@ namespace erp_salgados_e_cia
                     autorizador.Id,
                     motivo.Trim());
 
-                CarregarVendas();
             }
             catch (RegraNegocioException ex)
             {
@@ -2703,10 +2695,6 @@ namespace erp_salgados_e_cia
 
             return relatorio;
         }
-        public static BindingList<movimentoestoque> movimentacoes =
-            new BindingList<movimentoestoque>();
-        public static BindingList<Venda> vendas =
-            new BindingList<Venda>();
         public static BindingList<Produto> produtos =
             new BindingList<Produto>();
 
@@ -2718,15 +2706,6 @@ namespace erp_salgados_e_cia
 
         public static BindingList<Cliente> clientes =
             new BindingList<Cliente>();
-
-        public static BindingList<Notinha> notinhas =
-            new BindingList<Notinha>();
-
-        public static BindingList<AbatimentoNotinha> abatimentos =
-            new BindingList<AbatimentoNotinha>();
-
-        public static BindingList<Caixa> caixas =
-            new BindingList<Caixa>();
 
         public static BindingList<Usuario> usuarios =
             new BindingList<Usuario>();
