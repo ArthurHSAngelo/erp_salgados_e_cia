@@ -82,6 +82,7 @@ var
   CxServidor, CxPorta, CxBanco, CxUsuario, CxSenha: String;
   UltimoLogBanco: String;
   BancoCriado: Boolean;
+  ConexaoLida: Boolean;
 
 const
   ServicoMariaDB = '{#NomeServico}';
@@ -263,6 +264,123 @@ begin
   PaginaConexao.Values[2] := ExpandConstant('{param:Banco|salgados_cia}');
   PaginaConexao.Values[3] := ExpandConstant('{param:Usuario|app_salgados}');
   PaginaConexao.Values[4] := ExpandConstant('{param:Senha|TROQUE_ESTA_SENHA_FORTE}');
+end;
+
+// ---------- conexão da instalação anterior (atualização) ----------
+
+function DecodificarXml(const Texto: String): String;
+begin
+  Result := Texto;
+  StringChangeEx(Result, '&lt;', '<', True);
+  StringChangeEx(Result, '&gt;', '>', True);
+  StringChangeEx(Result, '&quot;', '"', True);
+  StringChangeEx(Result, '&apos;', '''', True);
+  StringChangeEx(Result, '&amp;', '&', True);
+end;
+
+procedure AplicarPar(const Par: String; var Servidor, Porta, Banco, Usuario, Senha: String);
+var
+  P: Integer;
+  Chave, Valor: String;
+begin
+  P := Pos('=', Par);
+  if P = 0 then Exit;
+  Chave := Lowercase(Trim(Copy(Par, 1, P - 1)));
+  Valor := Trim(Copy(Par, P + 1, Length(Par)));
+  if (Chave = 'server') or (Chave = 'host') then Servidor := Valor
+  else if Chave = 'port' then Porta := Valor
+  else if (Chave = 'database') or (Chave = 'initial catalog') then Banco := Valor
+  else if (Chave = 'uid') or (Chave = 'user id') or (Chave = 'user') then Usuario := Valor
+  else if (Chave = 'pwd') or (Chave = 'password') then Senha := Valor;
+end;
+
+// Lê a string de conexão do arquivo .config da instalação anterior (se existir).
+function LerConexaoAnterior(var Servidor, Porta, Banco, Usuario, Senha: String): Boolean;
+var
+  Caminho, Texto, Cadeia, Atual: String;
+  Conteudo: AnsiString;
+  Inicio, Fim, I: Integer;
+  EntreAspas: Boolean;
+  C: Char;
+begin
+  Result := False;
+  Servidor := ''; Porta := ''; Banco := ''; Usuario := ''; Senha := '';
+  Caminho := AddBackslash(WizardDirValue) + 'erp_salgados_e_cia.exe.config';
+  if not FileExists(Caminho) then Exit;
+  if not LoadStringFromFile(Caminho, Conteudo) then Exit;
+  Texto := String(Conteudo);
+
+  Inicio := Pos('connectionString="', Texto);
+  if Inicio = 0 then Exit;
+  Inicio := Inicio + Length('connectionString="');
+  Fim := Inicio;
+  while (Fim <= Length(Texto)) and (Texto[Fim] <> '"') do
+    Fim := Fim + 1;
+  Cadeia := DecodificarXml(Copy(Texto, Inicio, Fim - Inicio));
+
+  // separa os pares chave=valor por ";" (a senha pode vir entre aspas simples)
+  Atual := '';
+  EntreAspas := False;
+  for I := 1 to Length(Cadeia) do
+  begin
+    C := Cadeia[I];
+    if C = '''' then
+      EntreAspas := not EntreAspas
+    else if (C = ';') and (not EntreAspas) then
+    begin
+      AplicarPar(Atual, Servidor, Porta, Banco, Usuario, Senha);
+      Atual := '';
+    end
+    else
+      Atual := Atual + C;
+  end;
+  if Atual <> '' then
+    AplicarPar(Atual, Servidor, Porta, Banco, Usuario, Senha);
+
+  Result := (Servidor <> '') and (Banco <> '') and (Usuario <> '');
+end;
+
+// Se o programa já estava instalado, usa a conexão dele como ponto de partida e sugere "só configurar".
+procedure CarregarConexaoAnterior;
+var
+  S, P, B, U, K: String;
+begin
+  if ConexaoLida then Exit;
+  ConexaoLida := True;
+  if not LerConexaoAnterior(S, P, B, U, K) then Exit;
+
+  if ExpandConstant('{param:Servidor|}') = '' then
+  begin
+    PaginaConexao.Values[0] := S;
+    PaginaExistente.Values[0] := S;
+  end;
+  if (ExpandConstant('{param:Porta|}') = '') and (P <> '') then
+  begin
+    PaginaConexao.Values[1] := P;
+    PaginaExistente.Values[1] := P;
+  end;
+  if ExpandConstant('{param:Banco|}') = '' then PaginaConexao.Values[2] := B;
+  if ExpandConstant('{param:Usuario|}') = '' then PaginaConexao.Values[3] := U;
+  if (ExpandConstant('{param:Senha|}') = '') and (K <> '') then PaginaConexao.Values[4] := K;
+  if ExpandConstant('{param:Modo|}') = '' then PaginaModo.SelectedValueIndex := 2;
+end;
+
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if (CurPageID = PaginaModo.ID) and (not ConexaoLida) then
+  begin
+    CarregarConexaoAnterior;
+    if PaginaModo.SelectedValueIndex = 2 then
+      WizardForm.PageDescriptionLabel.Caption :=
+        'O programa já está instalado: a conexão atual foi lida e a opção "só configurar" foi marcada.';
+  end;
+end;
+
+// Instalação silenciosa: lê a conexão anterior antes de os arquivos serem substituídos.
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+  CarregarConexaoAnterior;
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;

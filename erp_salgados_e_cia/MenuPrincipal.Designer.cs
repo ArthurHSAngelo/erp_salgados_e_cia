@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuPrincipal));
             this.bprodutos = new System.Windows.Forms.Button();
             this.bfornecedores = new System.Windows.Forms.Button();
             this.bunidades = new System.Windows.Forms.Button();
@@ -692,9 +693,10 @@
             this.ClientSize = new System.Drawing.Size(2415, 1119);
             this.Controls.Add(this.pnltelas);
             this.Controls.Add(this.pnlmenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MenuPrincipal";
-            this.Text = " ";
+            this.Text = "Salgados & Cia - ERP";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.pnlmenu.ResumeLayout(false);
             this.pnlmenu.PerformLayout();
