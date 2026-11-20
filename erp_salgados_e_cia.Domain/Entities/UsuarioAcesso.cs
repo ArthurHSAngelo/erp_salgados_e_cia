@@ -20,5 +20,11 @@ namespace erp_salgados_e_cia.Domain.Entities
         public uint? UnidadeId { get; set; }
 
         public string UnidadeNome { get; set; }
+
+        /// <summary>Senhas erradas seguidas, guardadas no banco.</summary>
+        public int TentativasFalhas { get; set; }
+
+        /// <summary>Minutos que faltam para o login ser liberado; 0 quando não está bloqueado.</summary>
+        public int MinutosBloqueio { get; set; }
     }
 }

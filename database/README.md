@@ -7,9 +7,11 @@ Scripts do ERP Salgados & Cia. Testados no **MariaDB 10.4** (XAMPP), no **MariaD
 | `01_schema.sql` | Cria o banco `salgados_cia`: tabelas, funcoes, triggers, procedures, views e o usuario de aplicacao `app_salgados` |
 | `02_dados_teste.sql` | Dados ficticios de teste (unidades, logins, funcionarios, produtos, estoque). Rodar **depois** do schema |
 | `03_acesso_rede.sql` | **Opcional.** Cria o usuario `app_salgados` para acesso pela rede (varias unidades no mesmo banco). Leia o cabecalho antes de rodar |
+| `04_atualizar_bloqueio_login.sql` | **Só para banco já existente** (criado antes de 20/11/2026): acrescenta o bloqueio de login por tentativas sem apagar dados. Pode rodar mais de uma vez. Banco novo não precisa, pois o `01_schema.sql` já traz isso |
 | `criar_banco.ps1` | Cria o banco sozinho num servidor (roda o 01 e o 02, define a senha do `app_salgados`, opcionalmente roda o 03 e confere a entrada do programa). E o que o instalador usa; tambem roda a mao: `.\criar_banco.ps1 -Interativo` |
 | `gerar_hash.ps1` | Gera o hash de uma senha (`sal:hash`) para a coluna `usuario.senha_hash` |
-| `testes_integracao.ps1` | Testes de integracao: chama o programa compilado contra o banco e confere as regras (68 verificacoes) |
+| `testes_integracao.ps1` | Testes de integracao: chama o programa compilado contra o banco e confere as regras (75 verificacoes) |
+| `testes_desempenho.ps1` | Testes de desempenho: enche o banco com 1.000 vendas e mede o tempo de registro, consultas e relatorios contra os limites de 2 e 3 segundos (16 medicoes) |
 
 ## Como criar o banco
 
@@ -76,7 +78,7 @@ Todos os dados e regras ficam no banco: o programa nao guarda vendas, estoque, c
 
 ## Testes de integracao
 
-O arquivo `testes_integracao.ps1` roda o programa compilado contra o banco e confere 68 pontos: login, cadastros (duplicidade, valor invalido, exclusao com historico), caixa (abrir, editar com autorizacao, fechar, um por dia), estoque (entrada, perda, inventario, extrato), comandas (pedido, pagamento parcial, cobranca com troco e Notinha, cancelamento), vendas no balcao, abatimento da Notinha, cancelamento de venda, fechamento do caixa e relatorios (vendas, DRE, painel e log).
+O arquivo `testes_integracao.ps1` roda o programa compilado contra o banco e confere 75 pontos: login e bloqueio por tentativas (5 senhas erradas bloqueiam por 15 minutos, guardado no banco), cadastros (duplicidade, valor invalido, exclusao com historico), caixa (abrir, editar com autorizacao, fechar, um por dia), estoque (entrada, perda, inventario, extrato), comandas (pedido, pagamento parcial, cobranca com troco e Notinha, cancelamento), vendas no balcao, abatimento da Notinha, cancelamento de venda, fechamento do caixa e relatorios (vendas, DRE, painel e log).
 
 1. Compile a solucao no Visual Studio.
 2. Recrie o banco de teste: execute `01_schema.sql` e depois `02_dados_teste.sql`.
@@ -86,8 +88,18 @@ O arquivo `testes_integracao.ps1` roda o programa compilado contra o banco e con
 .\testes_integracao.ps1 -Pasta "..\erp_salgados_e_cia\bin\Debug" -Porta 3306
 ```
 
-Se trocou a senha do usuario `app_salgados`, acrescente `-Senha "sua_senha"`. O resultado esperado e `PASSOU: 68   FALHOU: 0`. Como os testes gravam dados (vendas, caixa, estoque), so podem ser repetidos depois de recriar o banco.
+Se trocou a senha do usuario `app_salgados`, acrescente `-Senha "sua_senha"`. O resultado esperado e `PASSOU: 75   FALHOU: 0`. Como os testes gravam dados (vendas, caixa, estoque), so podem ser repetidos depois de recriar o banco.
 
-Resultado da ultima execucao (17/11/2026): 68 verificacoes, 0 falhas, tanto no MariaDB 10.4.32 quanto no MySQL 8.0.46.
+Resultado: em 17/11/2026 eram 68 verificacoes (0 falhas). Em 20/11/2026, com o bloqueio de login, sao 75 verificacoes, 0 falhas, no MariaDB 10.4.32, no MySQL 8.0.46 e no MariaDB 10.11.19.
+
+### Testes de desempenho
+
+O `testes_desempenho.ps1` confere os requisitos de tempo (cadastro, consulta e registro em ate 2 segundos; listagens e relatorios em ate 3 segundos). Ele registra 1.000 vendas no balcao, mede o tempo de cada uma e depois mede consultas e relatorios com o banco cheio. Como o `testes_integracao.ps1`, precisa de um banco de teste recem-criado (01 e 02) e grava dados:
+
+```powershell
+.\testes_desempenho.ps1 -Pasta "..\erp_salgados_e_cia\bin\Debug" -Porta 3306 -Saida desempenho.json
+```
+
+Termina com `DESEMPENHO: 16 de 16 operacoes dentro do limite`. Resultado de 20/11/2026 (MariaDB 10.11.19, banco no mesmo computador): o pior caso foi o login, com 167 ms; cada venda levou em media 5 ms.
 
 O modelo de dados esta descrito no documento de DER e dicionario de dados.

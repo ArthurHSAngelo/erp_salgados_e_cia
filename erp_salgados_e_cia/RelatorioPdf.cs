@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.Rendering;
 using PdfSharp.Pdf;
 
@@ -180,6 +181,26 @@ namespace erp_salgados_e_cia
             tabela.BottomPadding = Unit.FromPoint(3);
 
             return tabela;
+        }
+
+        /// <summary>Coloca uma imagem (PNG) no relatório, com um título, na largura indicada (cm).</summary>
+        public void AdicionarImagem(
+            string titulo,
+            byte[] png,
+            double larguraCentimetros)
+        {
+            if (!string.IsNullOrEmpty(titulo))
+            {
+                AdicionarTitulo(titulo);
+            }
+
+            Paragraph paragrafo = secao.AddParagraph();
+            paragrafo.Format.KeepTogether = true;
+            paragrafo.Format.SpaceAfter = Unit.FromPoint(6);
+
+            Image imagem = paragrafo.AddImage("base64:" + Convert.ToBase64String(png));
+            imagem.LockAspectRatio = true;
+            imagem.Width = Unit.FromCentimeter(Math.Min(larguraCentimetros, larguraUtil));
         }
 
         public void AdicionarResumo(

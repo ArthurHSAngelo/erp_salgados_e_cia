@@ -139,6 +139,25 @@ Ver "painel ultimas vendas" (($p.UltimasVendas | ForEach-Object { "#$($_.Venda) 
 $a=[object[]]@($null,$null,"gerente1",$null,$null); $lg=$ds.GetMethod("ConsultarLog").Invoke($null,$a); Ver "log do gerente1" (($lg | ForEach-Object { "$($_.OperacaoTexto) $($_.Registro)" }) -join "|") "Alteração Venda 2"
 Ver "log: tabelas" (($ds.GetMethod("TabelasDoLog").Invoke($null,@())) -join ",") "abatimento_notinha,caixa,cliente,comanda,entrada_estoque,fornecedor,inventario,perda,produto,usuario,venda"
 
+# ---------- 7. bloqueio de login por tentativas ----------
+$cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
+function SqlEscalar($q){ $c=$cnTeste.CreateCommand(); $c.CommandText=$q; "$($c.ExecuteScalar())" }
+function SqlExec($q){ $c=$cnTeste.CreateCommand(); $c.CommandText=$q; [void]$c.ExecuteNonQuery() }
+function Tentar($senha){ $a=[object[]]@("teste_bloqueio",$senha,$null,$null); $r=$ds.GetMethod("Autenticar").Invoke($null,$a); "$r | " + $a[3] }
+$hashBloq=$ds.GetMethod("GerarHashSenha").Invoke($null,@("abc123"))
+[void](Chama $usu "Inserir" @("teste_bloqueio",$hashBloq,"Gerente",$null))
+$estado="SELECT CONCAT(tentativas_falhas,'/',IF(bloqueado_ate IS NULL,'livre','bloqueado')) FROM usuario WHERE login='teste_bloqueio'"
+Ver "bloqueio: 1a senha errada" (Tentar "errada") "False | Login ou senha inválidos."
+1..3 | ForEach-Object { [void](Tentar "errada") }
+Ver "bloqueio: 4 senhas erradas, ainda sem bloqueio" (SqlEscalar $estado) "4/livre"
+Ver "bloqueio: 5a senha errada bloqueia o login" (Tentar "errada") "False | Acesso bloqueado por muitas tentativas incorretas. Tente novamente em 15 minutos."
+Ver "bloqueio: senha certa durante o bloqueio" (Tentar "abc123") "False | Acesso bloqueado por muitas tentativas incorretas. Tente novamente em 15 minutos."
+Ver "bloqueio: anotado no log" (SqlEscalar "SELECT COUNT(*) FROM log_operacao WHERE tabela='usuario' AND registro='teste_bloqueio' AND detalhes LIKE 'Acesso bloqueado%'") "1"
+SqlExec "UPDATE usuario SET bloqueado_ate = NOW() - INTERVAL 1 MINUTE WHERE login='teste_bloqueio'"
+Ver "bloqueio: depois do prazo, a senha certa entra" (Tentar "abc123") "True |"
+Ver "bloqueio: login certo zera a contagem" (SqlEscalar $estado) "0/livre"
+$cnTeste.Close()
+
 "PASSOU: $ok   FALHOU: $falha"
 
 

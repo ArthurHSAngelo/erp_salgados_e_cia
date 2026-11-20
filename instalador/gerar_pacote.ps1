@@ -89,7 +89,7 @@ foreach ($sub in "Instalador", "Portatil", "Banco de Dados") {
 }
 
 $pastaBancoOrigem = Join-Path $repo "database"
-$arquivosBanco = "01_schema.sql", "02_dados_teste.sql", "03_acesso_rede.sql", "criar_banco.ps1", "README.md", "gerar_hash.ps1"
+$arquivosBanco = "01_schema.sql", "02_dados_teste.sql", "03_acesso_rede.sql", "04_atualizar_bloqueio_login.sql", "criar_banco.ps1", "README.md", "gerar_hash.ps1"
 foreach ($a in $arquivosBanco) { Copy-Item (Join-Path $pastaBancoOrigem $a) (Join-Path $Saida "Banco de Dados") -Force }
 
 $leiame = Join-Path $pastaScript "LEIA-ME.txt"

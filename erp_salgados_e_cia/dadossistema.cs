@@ -361,6 +361,49 @@ namespace erp_salgados_e_cia
             };
         }
 
+        // Confere a senha do login e controla o bloqueio por tentativas (guardado no banco).
+        // Devolve false e a mensagem quando o acesso deve ser recusado.
+        private static bool ConferirSenhaComBloqueio(
+            UsuarioAcesso acesso,
+            string senha,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (acesso != null && acesso.MinutosBloqueio > 0)
+            {
+                mensagem = MensagemBloqueio(acesso.MinutosBloqueio);
+                return false;
+            }
+
+            if (acesso == null ||
+                !VerificarSenha(senha, acesso.SenhaHash))
+            {
+                int minutos = acesso == null
+                    ? 0
+                    : UsuarioRepositorio.RegistrarFalhaLogin(acesso.Login);
+
+                mensagem = minutos > 0
+                    ? MensagemBloqueio(minutos)
+                    : "Login ou senha inválidos.";
+
+                return false;
+            }
+
+            if (acesso.TentativasFalhas > 0)
+            {
+                UsuarioRepositorio.ZerarFalhasLogin(acesso.Login);
+            }
+
+            return true;
+        }
+
+        private static string MensagemBloqueio(int minutos)
+        {
+            return "Acesso bloqueado por muitas tentativas incorretas. Tente novamente em " +
+                   minutos + (minutos == 1 ? " minuto." : " minutos.");
+        }
+
         public static bool Autenticar(
             string login,
             string senha,
@@ -375,10 +418,8 @@ namespace erp_salgados_e_cia
                 UsuarioAcesso acesso =
                     UsuarioRepositorio.BuscarPorLogin(login);
 
-                if (acesso == null ||
-                    !VerificarSenha(senha, acesso.SenhaHash))
+                if (!ConferirSenhaComBloqueio(acesso, senha, out mensagem))
                 {
-                    mensagem = "Login ou senha inválidos.";
                     return false;
                 }
 
@@ -2019,10 +2060,16 @@ namespace erp_salgados_e_cia
                 return false;
             }
 
-            if (acesso == null ||
-                !VerificarSenha(senha, acesso.SenhaHash))
+            try
             {
-                mensagem = "Login ou senha inválidos.";
+                if (!ConferirSenhaComBloqueio(acesso, senha, out mensagem))
+                {
+                    return false;
+                }
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
                 return false;
             }
 

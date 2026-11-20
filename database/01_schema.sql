@@ -76,6 +76,8 @@ CREATE TABLE unidade (
    consegue ler a senha de ninguem. Login que sai e Inativado, para o
    historico nao se perder. Nao existem dois logins iguais.
    [PEND. B4] um unico Atendente por unidade; Atendente exige unidade.
+   BLOQUEIO POR TENTATIVAS: depois de 5 senhas erradas seguidas, o login fica
+   bloqueado por 15 minutos (tentativas_falhas e bloqueado_ate; veja sp_login_falhou).
    --------------------------------------------------------------------- */
 CREATE TABLE usuario (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -84,6 +86,8 @@ CREATE TABLE usuario (
     perfil     ENUM('Administrador','Gerente','Atendente') NOT NULL DEFAULT 'Atendente',
     unidade_id INT UNSIGNED NULL,                  -- Gerente/Administrador nao tem unidade fixa
     status     ENUM('Ativo','Inativo') NOT NULL DEFAULT 'Ativo',
+    tentativas_falhas INT UNSIGNED NOT NULL DEFAULT 0,   -- senhas erradas seguidas (zera no login certo)
+    bloqueado_ate     DATETIME NULL,                     -- enquanto for no futuro, o login esta bloqueado
     -- coluna auxiliar: garante no maximo 1 login de Atendente por unidade
     unidade_login_base INT UNSIGNED GENERATED ALWAYS AS (IF(perfil = 'Atendente', unidade_id, NULL)) STORED,
     UNIQUE KEY uq_login_base (unidade_login_base),
@@ -549,6 +553,66 @@ BEGIN
 END$$
 
 /* ---------------------------------------------------------------------
+   sp_login_falhou / sp_login_ok  (bloqueio por tentativas de login)
+   NO DIA A DIA: protege contra quem fica "chutando" senhas. Depois de 5 senhas
+   erradas seguidas para o mesmo login, o acesso fica bloqueado por 15 minutos,
+   mesmo que a senha certa seja digitada. Como a contagem fica guardada aqui no
+   banco, o bloqueio vale em qualquer computador da rede. Passado o prazo, o
+   login volta sozinho; um login certo zera a contagem; e trocar a senha do
+   login tambem desbloqueia (o programa faz isso).
+   sp_login_falhou(login): conta mais uma tentativa errada e devolve uma linha
+   com tentativas, bloqueado (0 ou 1) e minutos que faltam para liberar.
+   sp_login_ok(login): zera a contagem depois de um login certo.
+   --------------------------------------------------------------------- */
+CREATE PROCEDURE sp_login_falhou (IN p_login VARCHAR(40))
+BEGIN
+    DECLARE v_id INT UNSIGNED;
+    DECLARE v_tent INT UNSIGNED DEFAULT 0;
+    DECLARE v_ate DATETIME;
+    DECLARE v_limite INT DEFAULT 5;
+    DECLARE v_minutos INT DEFAULT 15;
+    DECLARE v_bloq TINYINT DEFAULT 0;
+    DECLARE v_resta INT DEFAULT 0;
+
+    START TRANSACTION;
+    SELECT id, tentativas_falhas, bloqueado_ate INTO v_id, v_tent, v_ate
+      FROM usuario WHERE login = p_login LIMIT 1 FOR UPDATE;
+
+    IF v_id IS NULL THEN
+        COMMIT;
+        SELECT 0 AS tentativas, 0 AS bloqueado, 0 AS minutos;
+    ELSE
+        IF v_ate IS NOT NULL AND v_ate > NOW() THEN
+            SET v_bloq = 1;                                   -- ja esta bloqueado: nao conta de novo
+        ELSE
+            IF v_ate IS NOT NULL THEN SET v_tent = 0; END IF; -- o prazo venceu: recomeca a contagem
+            SET v_tent = v_tent + 1;
+            IF v_tent >= v_limite THEN
+                SET v_ate = NOW() + INTERVAL v_minutos MINUTE;
+                SET v_bloq = 1;
+                UPDATE usuario SET tentativas_falhas = v_tent, bloqueado_ate = v_ate WHERE id = v_id;
+                INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
+                VALUES (NULL, 'UPDATE', 'usuario', v_id, p_login,
+                        CONCAT('Acesso bloqueado por ', v_minutos, ' minutos apos ', v_tent, ' tentativas erradas'), NULL);
+            ELSE
+                UPDATE usuario SET tentativas_falhas = v_tent, bloqueado_ate = NULL WHERE id = v_id;
+            END IF;
+        END IF;
+        IF v_bloq = 1 THEN
+            SET v_resta = CEIL(TIMESTAMPDIFF(SECOND, NOW(), v_ate) / 60);
+        END IF;
+        COMMIT;
+        SELECT v_tent AS tentativas, v_bloq AS bloqueado, v_resta AS minutos;
+    END IF;
+END$$
+
+CREATE PROCEDURE sp_login_ok (IN p_login VARCHAR(40))
+BEGIN
+    UPDATE usuario SET tentativas_falhas = 0, bloqueado_ate = NULL
+     WHERE login = p_login AND (tentativas_falhas <> 0 OR bloqueado_ate IS NOT NULL);
+END$$
+
+/* ---------------------------------------------------------------------
    trg_log_bu / trg_log_bd  (protecao do log)
    NO DIA A DIA: trava de seguranca. Se alguem tentar editar ou apagar uma
    linha do log para esconder o que fez, o banco recusa com uma mensagem.
@@ -641,12 +705,18 @@ CREATE TRIGGER trg_usuario_ai AFTER INSERT ON usuario FOR EACH ROW
     VALUES (@usuario_id, 'INSERT', 'usuario', NEW.id, NEW.login,
             LEFT(CONCAT('perfil=', NEW.perfil, '; unidade=', IFNULL((SELECT nome FROM unidade WHERE id = NEW.unidade_id), '(nenhuma)')), 255), @unidade_id)$$
 CREATE TRIGGER trg_usuario_au AFTER UPDATE ON usuario FOR EACH ROW
-    INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
-    VALUES (@usuario_id, 'UPDATE', 'usuario', NEW.id, NEW.login,
-            LEFT(CONCAT_WS('; ', fn_diff('login', OLD.login, NEW.login), fn_diff('perfil', OLD.perfil, NEW.perfil),
-                                 fn_diff('unidade', (SELECT nome FROM unidade WHERE id = OLD.unidade_id), (SELECT nome FROM unidade WHERE id = NEW.unidade_id)),
-                                 fn_diff('status', OLD.status, NEW.status),
-                                 IF(OLD.senha_hash <=> NEW.senha_hash, NULL, 'senha alterada')), 255), @unidade_id)$$
+BEGIN
+    -- so anota no log quando o cadastro mudou (nao anota a contagem de tentativas de login)
+    IF NOT (OLD.login <=> NEW.login AND OLD.perfil <=> NEW.perfil AND OLD.unidade_id <=> NEW.unidade_id
+            AND OLD.status <=> NEW.status AND OLD.senha_hash <=> NEW.senha_hash) THEN
+        INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
+        VALUES (@usuario_id, 'UPDATE', 'usuario', NEW.id, NEW.login,
+                LEFT(CONCAT_WS('; ', fn_diff('login', OLD.login, NEW.login), fn_diff('perfil', OLD.perfil, NEW.perfil),
+                                     fn_diff('unidade', (SELECT nome FROM unidade WHERE id = OLD.unidade_id), (SELECT nome FROM unidade WHERE id = NEW.unidade_id)),
+                                     fn_diff('status', OLD.status, NEW.status),
+                                     IF(OLD.senha_hash <=> NEW.senha_hash, NULL, 'senha alterada')), 255), @unidade_id);
+    END IF;
+END$$
 
 /* ---------------------------------------------------------------------
    trg_entrada_bi / trg_entrada_ai  (chegada de mercadoria)

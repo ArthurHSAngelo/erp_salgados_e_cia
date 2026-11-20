@@ -527,6 +527,8 @@ namespace erp_salgados_e_cia
                         Moeda(resumo.TicketMedio))
                 });
 
+            AdicionarGraficosAoPdf(relatorio);
+
             List<string[]> linhasFormas = new List<string[]>();
 
             foreach (LinhaFormaPagamento linha in ultimoRelatorio.Formas)
@@ -621,6 +623,155 @@ namespace erp_salgados_e_cia
                 });
 
             relatorio.Salvar(caminho);
+        }
+
+        // ---- Gráficos do PDF ----
+        // São desenhados fora da tela, em tamanho fixo e com os mesmos dados do relatório,
+        // então não dependem do tamanho da janela nem de a tela estar mostrando gráfico ou tabela.
+
+        private static readonly Color CorLaranjaGrafico = Color.FromArgb(255, 140, 0);
+
+        private void AdicionarGraficosAoPdf(RelatorioPdf relatorio)
+        {
+            if (ultimoRelatorio.Resumo.QuantidadeVendas == 0)
+            {
+                return;
+            }
+
+            relatorio.AdicionarImagem(
+                "Gráficos",
+                ImagemGraficoDia(),
+                16.5);
+
+            if (ultimoRelatorio.Produtos.Count > 0)
+            {
+                relatorio.AdicionarImagem(null, ImagemGraficoProdutos(), 16.5);
+            }
+
+            if (ultimoRelatorio.Formas.Any(f => f.Valor > 0))
+            {
+                relatorio.AdicionarImagem(null, ImagemGraficoFormas(), 16.5);
+            }
+        }
+
+        private Chart NovoGraficoParaPdf(string titulo, int largura, int altura)
+        {
+            Chart grafico = new Chart();
+
+            grafico.Width = largura;
+            grafico.Height = altura;
+            grafico.BackColor = Color.White;
+            grafico.AntiAliasing = AntiAliasingStyles.All;
+            grafico.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
+
+            Title tituloGrafico = grafico.Titles.Add(titulo);
+            tituloGrafico.Font = new Font("Segoe UI", 15f, FontStyle.Bold);
+            tituloGrafico.ForeColor = Color.FromArgb(40, 40, 40);
+
+            return grafico;
+        }
+
+        private ChartArea NovaAreaParaPdf(Chart grafico)
+        {
+            ChartArea area = grafico.ChartAreas.Add("area");
+
+            Font fonte = new Font("Segoe UI", 11f);
+
+            area.AxisX.LabelStyle.Font = fonte;
+            area.AxisY.LabelStyle.Font = fonte;
+            area.AxisX.MajorGrid.Enabled = false;
+            area.AxisY.MajorGrid.LineColor = Color.Gainsboro;
+
+            return area;
+        }
+
+        private byte[] GraficoParaPng(Chart grafico)
+        {
+            using (grafico)
+            using (System.IO.MemoryStream memoria = new System.IO.MemoryStream())
+            {
+                grafico.SaveImage(memoria, ChartImageFormat.Png);
+
+                return memoria.ToArray();
+            }
+        }
+
+        private byte[] ImagemGraficoDia()
+        {
+            Chart grafico = NovoGraficoParaPdf("Faturamento por dia (R$)", 1100, 480);
+            ChartArea area = NovaAreaParaPdf(grafico);
+            area.AxisY.LabelStyle.Format = "N0";
+
+            Series serie = grafico.Series.Add("Faturamento");
+            serie.ChartType = SeriesChartType.Column;
+            serie.Color = CorLaranjaGrafico;
+            serie.Font = new Font("Segoe UI", 10f);
+
+            foreach (LinhaFaturamentoDia linha in ultimoRelatorio.PorDia)
+            {
+                int indice = serie.Points.AddXY(linha.Dia.ToString("dd/MM"), (double)linha.Faturamento);
+
+                // o valor aparece só nas barras com venda (nos outros dias ficaria 0,00 repetido)
+                if (linha.Faturamento > 0)
+                {
+                    serie.Points[indice].Label = linha.Faturamento.ToString("N2", culturaBrasil);
+                }
+            }
+
+            return GraficoParaPng(grafico);
+        }
+
+        private byte[] ImagemGraficoProdutos()
+        {
+            Chart grafico = NovoGraficoParaPdf("Produtos mais vendidos (quantidade)", 1100, 480);
+            ChartArea area = NovaAreaParaPdf(grafico);
+            area.AxisY.LabelStyle.Format = "0.##";
+
+            Series serie = grafico.Series.Add("Quantidade");
+            serie.ChartType = SeriesChartType.Bar;
+            serie.Color = CorLaranjaGrafico;
+            serie.Font = new Font("Segoe UI", 10f);
+
+            foreach (LinhaProdutoVendido linha in ultimoRelatorio.Produtos.Take(10).Reverse())
+            {
+                int indice = serie.Points.AddXY(linha.Produto, (double)linha.Quantidade);
+
+                serie.Points[indice].Label = linha.Quantidade.ToString("0.##");
+            }
+
+            return GraficoParaPng(grafico);
+        }
+
+        private byte[] ImagemGraficoFormas()
+        {
+            Chart grafico = NovoGraficoParaPdf("Formas de pagamento", 1100, 480);
+
+            ChartArea area = grafico.ChartAreas.Add("area");
+            area.InnerPlotPosition.Auto = true;
+
+            Legend legenda = grafico.Legends.Add("legenda");
+            legenda.Docking = Docking.Right;
+            legenda.Font = new Font("Segoe UI", 12f);
+
+            Series serie = grafico.Series.Add("Formas");
+            serie.ChartType = SeriesChartType.Doughnut;
+            serie.Legend = "legenda";
+            serie.Font = new Font("Segoe UI", 11f);
+            serie["DoughnutRadius"] = "55";
+
+            decimal total = ultimoRelatorio.Formas.Where(f => f.Valor > 0).Sum(f => f.Valor);
+
+            foreach (LinhaFormaPagamento linha in ultimoRelatorio.Formas.Where(f => f.Valor > 0))
+            {
+                int indice = serie.Points.AddXY(linha.Forma, (double)linha.Valor);
+                DataPoint ponto = serie.Points[indice];
+                decimal percentual = linha.Valor / total;
+
+                ponto.Label = percentual >= 0.08m ? percentual.ToString("P0") : " ";
+                ponto.LegendText = linha.Forma + ": R$ " + linha.Valor.ToString("N2", culturaBrasil);
+            }
+
+            return GraficoParaPng(grafico);
         }
 
         private void GerarCsvVendas(string caminho)
