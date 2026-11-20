@@ -302,13 +302,25 @@ namespace erp_salgados_e_cia
         {
             SairDaConta();
         }
+        // Quando a janela muda de tamanho, a tela aberta é ajustada de novo (zoom para telas menores).
+        private void pnltelas_Resize(object sender, EventArgs e)
+        {
+            if (pnltelas.Controls.Count == 1 &&
+                pnltelas.Controls[0] is UserControl telaAberta)
+            {
+                EscalaDeTela.Ajustar(telaAberta, pnltelas);
+            }
+        }
+
         private void AbrirTela(UserControl tela)
         {
             pnltelas.Controls.Clear();
 
-            tela.Dock = DockStyle.Fill;
+            // o encaixe (Dock) e o zoom para telas menores ficam por conta do EscalaDeTela
 
             pnltelas.Controls.Add(tela);
+
+            EscalaDeTela.Ajustar(tela, pnltelas);
 
             tela.BringToFront();
         }
@@ -371,6 +383,9 @@ namespace erp_salgados_e_cia
             bdre.Click += bdre_Click;
 
             alturaPanelRelatorios = panelrelatorios.Height;
+
+            pnltelas.Resize += pnltelas_Resize;
+            Shown += pnltelas_Resize;
 
             AplicarPerfil();
 

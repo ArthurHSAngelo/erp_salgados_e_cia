@@ -233,6 +233,7 @@
     <Compile Include="RelatorioDre.cs" />
     <Compile Include="Inventario.cs" />
     <Compile Include="DadosPainel.cs" />
+    <Compile Include="EscalaDeTela.cs" />
     <Compile Include="RelatorioPdf.cs" />
     <Compile Include="ExportacaoRelatorio.cs" />
     <Compile Include="venda.cs" />
