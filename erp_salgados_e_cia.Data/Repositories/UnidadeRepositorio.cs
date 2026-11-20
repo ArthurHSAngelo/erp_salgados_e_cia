@@ -27,32 +27,34 @@ namespace erp_salgados_e_cia.Data.Repositories
         public static DataTable Listar()
         {
             return BancoDados.Consultar(
-                "SELECT id, nome, cnpj, endereco, numero, status FROM unidade ORDER BY nome");
+                "SELECT id, nome, cnpj, endereco, numero, aceita_vale_alimentacao, status FROM unidade ORDER BY nome");
         }
 
-        public static uint Inserir(string nome, string cnpj, string endereco, string numero)
+        public static uint Inserir(string nome, string cnpj, string endereco, string numero, bool aceitaVale)
         {
             object id = BancoDados.Escalar(
-                "INSERT INTO unidade (nome, cnpj, endereco, numero) " +
-                "VALUES (@nome, @cnpj, @endereco, @numero); " +
+                "INSERT INTO unidade (nome, cnpj, endereco, numero, aceita_vale_alimentacao) " +
+                "VALUES (@nome, @cnpj, @endereco, @numero, @vale); " +
                 "SELECT LAST_INSERT_ID();",
                 BancoDados.Parametro("@nome", nome),
                 BancoDados.Parametro("@cnpj", cnpj),
                 BancoDados.Parametro("@endereco", endereco),
-                BancoDados.Parametro("@numero", numero));
+                BancoDados.Parametro("@numero", numero),
+                BancoDados.Parametro("@vale", aceitaVale ? 1 : 0));
 
             return Convert.ToUInt32(id);
         }
 
-        public static void Atualizar(uint id, string nome, string cnpj, string endereco, string numero, bool ativo)
+        public static void Atualizar(uint id, string nome, string cnpj, string endereco, string numero, bool aceitaVale, bool ativo)
         {
             BancoDados.Executar(
                 "UPDATE unidade SET nome = @nome, cnpj = @cnpj, endereco = @endereco, numero = @numero, " +
-                "status = @status WHERE id = @id",
+                "aceita_vale_alimentacao = @vale, status = @status WHERE id = @id",
                 BancoDados.Parametro("@nome", nome),
                 BancoDados.Parametro("@cnpj", cnpj),
                 BancoDados.Parametro("@endereco", endereco),
                 BancoDados.Parametro("@numero", numero),
+                BancoDados.Parametro("@vale", aceitaVale ? 1 : 0),
                 BancoDados.Parametro("@status", ativo ? "Ativo" : "Inativo"),
                 BancoDados.Parametro("@id", id));
         }

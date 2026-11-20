@@ -273,6 +273,13 @@ namespace erp_salgados_e_cia
                 ldebito.Text =
                     $"Débito: R$ {caixa.RecebidoPorForma("Débito"):N2}";
 
+                // Só aparece na unidade que aceita vale alimentação.
+                lvalealimentacao.Visible =
+                    dadossistema.UnidadeAtualAceitaValeAlimentacao();
+
+                lvalealimentacao.Text =
+                    $"Vale Alimentação: R$ {caixa.RecebidoPorForma("Vale Alimentação"):N2}";
+
                 ltotalvendas.Text =
                     $"Total de vendas (sem Notinha): R$ {caixa.TotalVendas:N2}";
 
@@ -555,7 +562,7 @@ namespace erp_salgados_e_cia
                 if (caixa.MaquininhaEsperada != 0)
                 {
                     MessageBox.Show(
-                        "Informe o valor da maquininha (Crédito + Débito).",
+                        "Informe o valor da maquininha (Crédito + Débito + Vale Alimentação).",
                         "Atenção",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning

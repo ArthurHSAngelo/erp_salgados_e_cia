@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.labrircaixa = new System.Windows.Forms.Label();
             this.lvalorinicial = new System.Windows.Forms.Label();
             this.lresponsavel = new System.Windows.Forms.Label();
@@ -63,6 +63,7 @@
             this.ltotalvendas = new System.Windows.Forms.Label();
             this.lhistoricocaixas = new System.Windows.Forms.Label();
             this.dgvcaixas = new System.Windows.Forms.DataGridView();
+            this.lvalealimentacao = new System.Windows.Forms.Label();
             this.pabertura.SuspendLayout();
             this.presumo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvcaixas)).BeginInit();
@@ -180,6 +181,7 @@
             // 
             this.presumo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.presumo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.presumo.Controls.Add(this.lvalealimentacao);
             this.presumo.Controls.Add(this.beditarcaixa);
             this.presumo.Controls.Add(this.tbvalormaquininha);
             this.presumo.Controls.Add(this.ldiferencamaquininha);
@@ -204,7 +206,7 @@
             this.presumo.Location = new System.Drawing.Point(29, 38);
             this.presumo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.presumo.Name = "presumo";
-            this.presumo.Size = new System.Drawing.Size(721, 737);
+            this.presumo.Size = new System.Drawing.Size(721, 766);
             this.presumo.TabIndex = 5;
             // 
             // beditarcaixa
@@ -214,7 +216,7 @@
             this.beditarcaixa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.beditarcaixa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.beditarcaixa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.beditarcaixa.Location = new System.Drawing.Point(346, 671);
+            this.beditarcaixa.Location = new System.Drawing.Point(356, 695);
             this.beditarcaixa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.beditarcaixa.Name = "beditarcaixa";
             this.beditarcaixa.Size = new System.Drawing.Size(172, 52);
@@ -226,7 +228,7 @@
             // 
             this.tbvalormaquininha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.tbvalormaquininha.Location = new System.Drawing.Point(228, 553);
+            this.tbvalormaquininha.Location = new System.Drawing.Point(228, 574);
             this.tbvalormaquininha.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbvalormaquininha.Name = "tbvalormaquininha";
             this.tbvalormaquininha.Size = new System.Drawing.Size(141, 30);
@@ -236,7 +238,7 @@
             // 
             this.ldiferencamaquininha.AutoSize = true;
             this.ldiferencamaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldiferencamaquininha.Location = new System.Drawing.Point(20, 590);
+            this.ldiferencamaquininha.Location = new System.Drawing.Point(20, 611);
             this.ldiferencamaquininha.Name = "ldiferencamaquininha";
             this.ldiferencamaquininha.Size = new System.Drawing.Size(311, 25);
             this.ldiferencamaquininha.TabIndex = 25;
@@ -246,7 +248,7 @@
             // 
             this.lvalormaquininha.AutoSize = true;
             this.lvalormaquininha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lvalormaquininha.Location = new System.Drawing.Point(20, 553);
+            this.lvalormaquininha.Location = new System.Drawing.Point(20, 574);
             this.lvalormaquininha.Name = "lvalormaquininha";
             this.lvalormaquininha.Size = new System.Drawing.Size(202, 25);
             this.lvalormaquininha.TabIndex = 24;
@@ -256,7 +258,7 @@
             // 
             this.lmaquininhaesperada.AutoSize = true;
             this.lmaquininhaesperada.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lmaquininhaesperada.Location = new System.Drawing.Point(20, 518);
+            this.lmaquininhaesperada.Location = new System.Drawing.Point(20, 539);
             this.lmaquininhaesperada.Name = "lmaquininhaesperada";
             this.lmaquininhaesperada.Size = new System.Drawing.Size(280, 25);
             this.lmaquininhaesperada.TabIndex = 23;
@@ -266,7 +268,7 @@
             // 
             this.ldebito.AutoSize = true;
             this.ldebito.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldebito.Location = new System.Drawing.Point(20, 218);
+            this.ldebito.Location = new System.Drawing.Point(20, 209);
             this.ldebito.Name = "ldebito";
             this.ldebito.Size = new System.Drawing.Size(148, 25);
             this.ldebito.TabIndex = 22;
@@ -279,7 +281,7 @@
             this.bfecharcaixa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bfecharcaixa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.bfecharcaixa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.bfecharcaixa.Location = new System.Drawing.Point(534, 671);
+            this.bfecharcaixa.Location = new System.Drawing.Point(534, 695);
             this.bfecharcaixa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bfecharcaixa.Name = "bfecharcaixa";
             this.bfecharcaixa.Size = new System.Drawing.Size(172, 52);
@@ -292,7 +294,7 @@
             // 
             this.tbvalorcontado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbvalorcontado.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.tbvalorcontado.Location = new System.Drawing.Point(169, 446);
+            this.tbvalorcontado.Location = new System.Drawing.Point(169, 467);
             this.tbvalorcontado.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbvalorcontado.Name = "tbvalorcontado";
             this.tbvalorcontado.Size = new System.Drawing.Size(141, 30);
@@ -334,7 +336,7 @@
             // 
             this.ldiferenca.AutoSize = true;
             this.ldiferenca.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldiferenca.Location = new System.Drawing.Point(20, 481);
+            this.ldiferenca.Location = new System.Drawing.Point(20, 502);
             this.ldiferenca.Name = "ldiferenca";
             this.ldiferenca.Size = new System.Drawing.Size(173, 25);
             this.ldiferenca.TabIndex = 20;
@@ -344,7 +346,7 @@
             // 
             this.ltituloformas.AutoSize = true;
             this.ltituloformas.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ltituloformas.Location = new System.Drawing.Point(20, 110);
+            this.ltituloformas.Location = new System.Drawing.Point(20, 135);
             this.ltituloformas.Name = "ltituloformas";
             this.ltituloformas.Size = new System.Drawing.Size(543, 25);
             this.ltituloformas.TabIndex = 12;
@@ -354,7 +356,7 @@
             // 
             this.labatimentos.AutoSize = true;
             this.labatimentos.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.labatimentos.Location = new System.Drawing.Point(20, 370);
+            this.labatimentos.Location = new System.Drawing.Point(20, 365);
             this.labatimentos.Name = "labatimentos";
             this.labatimentos.Size = new System.Drawing.Size(396, 25);
             this.labatimentos.TabIndex = 18;
@@ -364,7 +366,7 @@
             // 
             this.ldinheiro.AutoSize = true;
             this.ldinheiro.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldinheiro.Location = new System.Drawing.Point(20, 145);
+            this.ldinheiro.Location = new System.Drawing.Point(223, 172);
             this.ldinheiro.Name = "ldinheiro";
             this.ldinheiro.Size = new System.Drawing.Size(165, 25);
             this.ldinheiro.TabIndex = 11;
@@ -374,7 +376,7 @@
             // 
             this.lpix.AutoSize = true;
             this.lpix.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lpix.Location = new System.Drawing.Point(20, 181);
+            this.lpix.Location = new System.Drawing.Point(20, 172);
             this.lpix.Name = "lpix";
             this.lpix.Size = new System.Drawing.Size(116, 25);
             this.lpix.TabIndex = 10;
@@ -384,7 +386,7 @@
             // 
             this.lvalorcontado.AutoSize = true;
             this.lvalorcontado.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lvalorcontado.Location = new System.Drawing.Point(20, 446);
+            this.lvalorcontado.Location = new System.Drawing.Point(20, 467);
             this.lvalorcontado.Name = "lvalorcontado";
             this.lvalorcontado.Size = new System.Drawing.Size(143, 25);
             this.lvalorcontado.TabIndex = 16;
@@ -394,7 +396,7 @@
             // 
             this.ldinheiroesperado.AutoSize = true;
             this.ldinheiroesperado.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ldinheiroesperado.Location = new System.Drawing.Point(20, 410);
+            this.ldinheiroesperado.Location = new System.Drawing.Point(20, 431);
             this.ldinheiroesperado.Name = "ldinheiroesperado";
             this.ldinheiroesperado.Size = new System.Drawing.Size(252, 25);
             this.ldinheiroesperado.TabIndex = 17;
@@ -404,7 +406,7 @@
             // 
             this.lcredito.AutoSize = true;
             this.lcredito.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lcredito.Location = new System.Drawing.Point(20, 254);
+            this.lcredito.Location = new System.Drawing.Point(20, 245);
             this.lcredito.Name = "lcredito";
             this.lcredito.Size = new System.Drawing.Size(154, 25);
             this.lcredito.TabIndex = 9;
@@ -414,7 +416,7 @@
             // 
             this.lnotinha.AutoSize = true;
             this.lnotinha.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lnotinha.Location = new System.Drawing.Point(20, 326);
+            this.lnotinha.Location = new System.Drawing.Point(20, 330);
             this.lnotinha.Name = "lnotinha";
             this.lnotinha.Size = new System.Drawing.Size(286, 25);
             this.lnotinha.TabIndex = 7;
@@ -424,7 +426,7 @@
             // 
             this.ltotalvendas.AutoSize = true;
             this.ltotalvendas.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.ltotalvendas.Location = new System.Drawing.Point(20, 289);
+            this.ltotalvendas.Location = new System.Drawing.Point(20, 295);
             this.ltotalvendas.Name = "ltotalvendas";
             this.ltotalvendas.Size = new System.Drawing.Size(356, 25);
             this.ltotalvendas.TabIndex = 8;
@@ -451,23 +453,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvcaixas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvcaixas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvcaixas.Location = new System.Drawing.Point(840, 50);
             this.dgvcaixas.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvcaixas.MultiSelect = false;
@@ -478,6 +480,16 @@
             this.dgvcaixas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvcaixas.Size = new System.Drawing.Size(1491, 1212);
             this.dgvcaixas.TabIndex = 23;
+            // 
+            // lvalealimentacao
+            // 
+            this.lvalealimentacao.AutoSize = true;
+            this.lvalealimentacao.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lvalealimentacao.Location = new System.Drawing.Point(223, 209);
+            this.lvalealimentacao.Name = "lvalealimentacao";
+            this.lvalealimentacao.Size = new System.Drawing.Size(240, 25);
+            this.lvalealimentacao.TabIndex = 28;
+            this.lvalealimentacao.Text = "Vale Alimentação: R$ 0,00";
             // 
             // uccaixa
             // 
@@ -535,5 +547,6 @@
         private System.Windows.Forms.TextBox tbvalormaquininha;
         private System.Windows.Forms.Label ldiferencamaquininha;
         private System.Windows.Forms.Label lvalormaquininha;
+        private System.Windows.Forms.Label lvalealimentacao;
     }
 }

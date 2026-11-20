@@ -9,5 +9,6 @@ public class Unidade
     public string Cnpj { get; set; }
     public string Endereco { get; set; }
     public string Numero { get; set; }
+    public bool AceitaValeAlimentacao { get; set; }
     public StatusCadastro Status { get; set; }
 }

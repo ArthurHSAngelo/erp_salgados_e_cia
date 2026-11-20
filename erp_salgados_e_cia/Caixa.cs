@@ -81,7 +81,8 @@ namespace erp_salgados_e_cia
             get
             {
                 return RecebidoPorForma("Crédito") +
-                    RecebidoPorForma("Débito");
+                    RecebidoPorForma("Débito") +
+                    RecebidoPorForma("Vale Alimentação");
             }
         }
 

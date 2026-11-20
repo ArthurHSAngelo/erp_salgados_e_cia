@@ -75,6 +75,12 @@ namespace erp_salgados_e_cia
             fonteUnidades.DataSource = unidades;
             dgvunidades.DataSource = fonteUnidades;
 
+            if (dgvunidades.Columns["AceitaValeAlimentacao"] != null)
+            {
+                dgvunidades.Columns["AceitaValeAlimentacao"].HeaderText =
+                    "Aceita vale alimentação";
+            }
+
             cbfiltrostatus.SelectedIndex = 0;
 
             AtualizarTabela();
@@ -110,6 +116,7 @@ namespace erp_salgados_e_cia
             tbcnpju.Clear();
             tbenderecou.Clear();
             tbnumerou.Clear();
+            cbaceitavale.Checked = false;
             cbativo.Checked = true;
             cbativo.Visible = false;
             ldicaedicao.Visible = false;
@@ -237,6 +244,7 @@ namespace erp_salgados_e_cia
                         tbcnpju.Text.Trim(),
                         tbenderecou.Text.Trim(),
                         tbnumerou.Text.Trim(),
+                        cbaceitavale.Checked,
                         cbativo.Checked);
 
                     dadossistema.CarregarUnidades();
@@ -268,7 +276,8 @@ namespace erp_salgados_e_cia
                     Nome = tbnomeu.Text.Trim(),
                     Cnpj = tbcnpju.Text.Trim(),
                     Endereco = tbenderecou.Text.Trim(),
-                    Numero = tbnumerou.Text.Trim()
+                    Numero = tbnumerou.Text.Trim(),
+                    AceitaValeAlimentacao = cbaceitavale.Checked
                 };
 
                 try
@@ -277,7 +286,8 @@ namespace erp_salgados_e_cia
                         unidade.Nome,
                         unidade.Cnpj,
                         unidade.Endereco,
-                        unidade.Numero);
+                        unidade.Numero,
+                        unidade.AceitaValeAlimentacao);
 
                     dadossistema.CarregarUnidades();
                 }
@@ -440,6 +450,9 @@ namespace erp_salgados_e_cia
 
             tbcnpju.Text =
                 unidadeSelecionada.Cnpj;
+
+            cbaceitavale.Checked =
+                unidadeSelecionada.AceitaValeAlimentacao;
 
             cbativo.Checked =
                 unidadeSelecionada.Status == StatusCadastro.Ativo;

@@ -105,6 +105,8 @@ namespace erp_salgados_e_cia
                 unidade.Cnpj = TextoOuNulo(linha["cnpj"]);
                 unidade.Endereco = System.Convert.ToString(linha["endereco"]);
                 unidade.Numero = TextoOuNulo(linha["numero"]);
+                unidade.AceitaValeAlimentacao =
+                    System.Convert.ToInt32(linha["aceita_vale_alimentacao"]) != 0;
                 unidade.Status = ParaStatus(linha["status"]);
 
                 doBanco.Add(unidade);
@@ -1377,6 +1379,9 @@ namespace erp_salgados_e_cia
                 case "Débito":
                     return "Debito";
 
+                case "Vale Alimentação":
+                    return "ValeAlimentacao";
+
                 default:
                     return forma;
             }
@@ -1391,6 +1396,9 @@ namespace erp_salgados_e_cia
 
                 case "Debito":
                     return "Débito";
+
+                case "ValeAlimentacao":
+                    return "Vale Alimentação";
 
                 default:
                     return forma;
@@ -2573,8 +2581,18 @@ namespace erp_salgados_e_cia
             "Pix",
             "Crédito",
             "Débito",
+            "Vale Alimentação",
             "Notinha"
         };
+
+        // True se a unidade de trabalho aceita Vale Alimentação (check na tela Unidades).
+        public static bool UnidadeAtualAceitaValeAlimentacao()
+        {
+            Unidade unidade =
+                unidades.FirstOrDefault(u => u.Nome == UnidadeAtual);
+
+            return unidade != null && unidade.AceitaValeAlimentacao;
+        }
 
         // Relatório de vendas calculado no banco. Com filtro de forma de pagamento ou de
         // produto, entram as vendas que têm aquela forma / aquele produto.

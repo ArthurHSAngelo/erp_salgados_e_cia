@@ -18,9 +18,9 @@
    ===================================================================== */
 USE salgados_cia;
 
-INSERT INTO unidade (nome, cnpj, endereco, numero) VALUES
-    ('Lanchonete Centro', '11.222.333/0001-44', 'Rua Principal',  '100'),
-    ('Lanchonete Norte',  '22.333.444/0001-55', 'Avenida Norte',  '200');
+INSERT INTO unidade (nome, cnpj, endereco, numero, aceita_vale_alimentacao) VALUES
+    ('Lanchonete Centro', '11.222.333/0001-44', 'Rua Principal',  '100', 1),
+    ('Lanchonete Norte',  '22.333.444/0001-55', 'Avenida Norte',  '200', 0);
 
 INSERT INTO usuario (login, senha_hash, perfil, unidade_id) VALUES
     ('admin',    'htKLj4yluy/Xlx5OIX1O9Q==:UtjSYy3Eh1ThIrqvNiKnbs8+ecKfAW5pX5Zavhm7qjU=', 'Administrador', NULL),

@@ -127,7 +127,7 @@ $a=[object[]]@("Ana Lima",[decimal]10,$null); Ver "reabrir no mesmo dia" (Msg ($
 # ---------- 6. relatorios, DRE, painel, log ----------
 function Rel($un,$forma,$pr){ $a=[object[]]@($null,$null,$un,$forma,$pr); $ds.GetMethod("GerarRelatorioVendas").Invoke($null,$a) }
 $r=Rel $null $null $null; Ver "relatorio (qtd/fat/recebido/notinha)" ("$($r.Resumo.QuantidadeVendas) $($r.Resumo.Faturamento) $($r.Resumo.Recebido) $($r.Resumo.EmNotinha)") "1 47.00 37.00 10.00"
-Ver "relatorio formas" (($r.Formas | ForEach-Object { "$($_.Forma)=$($_.Valor)" }) -join " ") "Dinheiro=37.00 Pix=0 Crédito=0 Débito=0 Notinha=10.00"
+Ver "relatorio formas" (($r.Formas | ForEach-Object { "$($_.Forma)=$($_.Valor)" }) -join " ") "Dinheiro=37.00 Pix=0 Crédito=0 Débito=0 Vale Alimentação=0 Notinha=10.00"
 Ver "relatorio filtro Pix" (Rel $null "Pix" $null).Resumo.QuantidadeVendas "0"
 Ver "relatorio unidade Norte" (Rel "Lanchonete Norte" $null $null).Resumo.QuantidadeVendas "0"
 $a=[object[]]@($null,$null,$null,$null); $dre=$ds.GetMethod("GerarDre").Invoke($null,$a)
@@ -156,6 +156,24 @@ Ver "bloqueio: anotado no log" (SqlEscalar "SELECT COUNT(*) FROM log_operacao WH
 SqlExec "UPDATE usuario SET bloqueado_ate = NOW() - INTERVAL 1 MINUTE WHERE login='teste_bloqueio'"
 Ver "bloqueio: depois do prazo, a senha certa entra" (Tentar "abc123") "True |"
 Ver "bloqueio: login certo zera a contagem" (SqlEscalar $estado) "0/livre"
+$cnTeste.Close()
+
+# ---------- 8. vale alimentacao por unidade ----------
+$cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
+function SqlTenta($q){ try { SqlExec $q; "ok" } catch { $m=$_.Exception.InnerException; if($m -eq $null){$m=$_.Exception}; $m.Message } }
+Ver "vale: Centro aceita e Norte nao" (SqlEscalar "SELECT GROUP_CONCAT(aceita_vale_alimentacao ORDER BY id SEPARATOR '/') FROM unidade") "1/0"
+SqlExec "INSERT INTO comanda (unidade_id, numero_mesa) VALUES (2, 0)"
+$cNorte = SqlEscalar "SELECT MAX(id) FROM comanda WHERE unidade_id = 2"
+Ver "vale: unidade que nao aceita recusa" (SqlTenta "INSERT INTO pagamento_comanda (comanda_id, forma_pagamento, valor) VALUES ($cNorte, 'ValeAlimentacao', 5)") "Esta unidade nao aceita vale alimentacao."
+SqlExec "INSERT INTO comanda (unidade_id, numero_mesa) VALUES (1, 0)"
+$cCentro = SqlEscalar "SELECT MAX(id) FROM comanda WHERE unidade_id = 1"
+Ver "vale: unidade que aceita grava" (SqlTenta "INSERT INTO pagamento_comanda (comanda_id, forma_pagamento, valor) VALUES ($cCentro, 'ValeAlimentacao', 5)") "ok"
+[void](Chama $uni "Atualizar" @([uint32]2,"Lanchonete Norte","22.333.444/0001-55","Avenida Norte","200",$true,$true))
+Ver "vale: Norte passa a aceitar e grava" (SqlTenta "INSERT INTO pagamento_comanda (comanda_id, forma_pagamento, valor) VALUES ($cNorte, 'ValeAlimentacao', 5)") "ok"
+Ver "vale: mudanca da unidade anotada no log" (SqlEscalar "SELECT COUNT(*) FROM log_operacao WHERE tabela='unidade' AND registro_id=2 AND detalhes LIKE '%vale alimentacao: nao aceita -> aceita%'") "1"
+$tCaixa=$app.GetType("erp_salgados_e_cia.Caixa"); $cx=[Activator]::CreateInstance($tCaixa)
+$cx.TotaisPorForma.Add("Crédito",[decimal]10); $cx.TotaisPorForma.Add("Débito",[decimal]5); $cx.TotaisPorForma.Add("Vale Alimentação",[decimal]7)
+Ver "vale: maquininha esperada soma o vale" $cx.MaquininhaEsperada "22"
 $cnTeste.Close()
 
 "PASSOU: $ok   FALHOU: $falha"

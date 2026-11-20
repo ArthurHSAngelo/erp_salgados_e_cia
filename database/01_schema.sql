@@ -60,6 +60,7 @@ CREATE TABLE unidade (
     endereco VARCHAR(150) NOT NULL,
     numero   VARCHAR(10),
     telefone VARCHAR(20),
+    aceita_vale_alimentacao TINYINT(1) NOT NULL DEFAULT 0,   -- 1 = a loja aceita Vale Alimentacao
     status   ENUM('Ativo','Inativo') NOT NULL DEFAULT 'Ativo'
 ) ENGINE=InnoDB;
 
@@ -328,7 +329,7 @@ CREATE TABLE item_comanda (
 CREATE TABLE pagamento_comanda (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     comanda_id      INT UNSIGNED NOT NULL,
-    forma_pagamento ENUM('Dinheiro','Pix','Credito','Debito','Notinha') NOT NULL,
+    forma_pagamento ENUM('Dinheiro','Pix','Credito','Debito','ValeAlimentacao','Notinha') NOT NULL,
     valor           DECIMAL(10,2) NOT NULL CHECK (valor > 0),
     data_hora       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY ix_pag_comanda (comanda_id),
@@ -393,14 +394,14 @@ CREATE TABLE item_venda (
    PAGAMENTO_VENDA
    NO DIA A DIA: como o cliente pagou. Uma venda pode ter varias linhas
    (ex.: R$ 20 em dinheiro + R$ 10 no Pix). Formas: Dinheiro, Pix, Credito,
-   Debito e Notinha (fiado). Em Dinheiro, o valor guardado e o que o cliente
+   Debito, ValeAlimentacao (so nas lojas que aceitam) e Notinha (fiado). Em Dinheiro, o valor guardado e o que o cliente
    ENTREGOU (o troco e calculado por sp_finalizar_venda). Nasce da
    sp_cobrar_comanda: o aplicativo nao insere aqui.
    --------------------------------------------------------------------- */
 CREATE TABLE pagamento_venda (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     venda_id        INT UNSIGNED NOT NULL,
-    forma_pagamento ENUM('Dinheiro','Pix','Credito','Debito','Notinha') NOT NULL,
+    forma_pagamento ENUM('Dinheiro','Pix','Credito','Debito','ValeAlimentacao','Notinha') NOT NULL,
     valor           DECIMAL(10,2) NOT NULL CHECK (valor > 0),
     FOREIGN KEY (venda_id) REFERENCES venda (id)
 ) ENGINE=InnoDB;
@@ -635,12 +636,13 @@ CREATE TRIGGER trg_log_bd BEFORE DELETE ON log_operacao FOR EACH ROW
 CREATE TRIGGER trg_unidade_ai AFTER INSERT ON unidade FOR EACH ROW
     INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
     VALUES (@usuario_id, 'INSERT', 'unidade', NEW.id, NEW.nome,
-            LEFT(CONCAT('cnpj=', IFNULL(NEW.cnpj, ''), '; endereco=', NEW.endereco, ', ', IFNULL(NEW.numero, '')), 255), @unidade_id)$$
+            LEFT(CONCAT('cnpj=', IFNULL(NEW.cnpj, ''), '; endereco=', NEW.endereco, ', ', IFNULL(NEW.numero, ''), '; vale alimentacao=', IF(NEW.aceita_vale_alimentacao = 1, 'aceita', 'nao aceita')), 255), @unidade_id)$$
 CREATE TRIGGER trg_unidade_au AFTER UPDATE ON unidade FOR EACH ROW
     INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
     VALUES (@usuario_id, 'UPDATE', 'unidade', NEW.id, NEW.nome,
             LEFT(CONCAT_WS('; ', fn_diff('nome', OLD.nome, NEW.nome), fn_diff('cnpj', OLD.cnpj, NEW.cnpj),
                                  fn_diff('endereco', OLD.endereco, NEW.endereco), fn_diff('numero', OLD.numero, NEW.numero),
+                                 fn_diff('vale alimentacao', IF(OLD.aceita_vale_alimentacao = 1, 'aceita', 'nao aceita'), IF(NEW.aceita_vale_alimentacao = 1, 'aceita', 'nao aceita')),
                                  fn_diff('status', OLD.status, NEW.status)), 255), @unidade_id)$$
 CREATE TRIGGER trg_unidade_ad AFTER DELETE ON unidade FOR EACH ROW
     INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
@@ -1021,7 +1023,7 @@ END$$
        diferenca = dinheiro contado - (troco inicial + dinheiro que entrou)
    Diferenca negativa = faltou dinheiro; positiva = sobrou.
    O valor da maquininha fica guardado para conferir com vw_caixa_totais
-   (Credito + Debito).
+   (Credito + Debito + ValeAlimentacao).
    Uso: CALL sp_fechar_caixa(id_caixa, dinheiro_contado, maquininha_contado);
    [PEND. A7]
    --------------------------------------------------------------------- */
@@ -1108,12 +1110,17 @@ CREATE TRIGGER trg_pag_comanda_bi BEFORE INSERT ON pagamento_comanda FOR EACH RO
 BEGIN
     DECLARE v_status VARCHAR(20);
     DECLARE v_cliente INT UNSIGNED;
-    SELECT status, cliente_id INTO v_status, v_cliente FROM comanda WHERE id = NEW.comanda_id;
+    DECLARE v_unidade INT UNSIGNED;
+    SELECT status, cliente_id, unidade_id INTO v_status, v_cliente, v_unidade FROM comanda WHERE id = NEW.comanda_id;
     IF v_status IS NULL OR v_status <> 'Aberta' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Comanda inexistente ou nao esta aberta.';
     END IF;
     IF NEW.forma_pagamento = 'Notinha' AND v_cliente IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Notinha exige cliente cadastrado na comanda.';
+    END IF;
+    IF NEW.forma_pagamento = 'ValeAlimentacao'
+       AND NOT EXISTS (SELECT 1 FROM unidade WHERE id = v_unidade AND aceita_vale_alimentacao = 1) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Esta unidade nao aceita vale alimentacao.';
     END IF;
 END$$
 
@@ -1223,12 +1230,17 @@ CREATE TRIGGER trg_pagamento_bi BEFORE INSERT ON pagamento_venda FOR EACH ROW
 BEGIN
     DECLARE v_status VARCHAR(20);
     DECLARE v_cliente INT UNSIGNED;
-    SELECT status, cliente_id INTO v_status, v_cliente FROM venda WHERE id = NEW.venda_id;
+    DECLARE v_unidade INT UNSIGNED;
+    SELECT status, cliente_id, unidade_id INTO v_status, v_cliente, v_unidade FROM venda WHERE id = NEW.venda_id;
     IF v_status IS NULL OR v_status <> 'Concluida' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Venda inexistente ou cancelada.';
     END IF;
     IF NEW.forma_pagamento = 'Notinha' AND v_cliente IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Notinha exige cliente cadastrado na venda.';
+    END IF;
+    IF NEW.forma_pagamento = 'ValeAlimentacao'
+       AND NOT EXISTS (SELECT 1 FROM unidade WHERE id = v_unidade AND aceita_vale_alimentacao = 1) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Esta unidade nao aceita vale alimentacao.';
     END IF;
 END$$
 CREATE TRIGGER trg_pagamento_ai AFTER INSERT ON pagamento_venda FOR EACH ROW
@@ -1565,7 +1577,7 @@ SELECT u.id AS unidade_id, p.id AS produto_id, p.nome AS produto, COALESCE(e.qua
    vw_vendas_diarias
    NO DIA A DIA: o relatorio de faturamento. Mostra, por loja e por dia, quantas
    vendas foram feitas e quanto entrou, separado por forma de pagamento
-   (Dinheiro, Pix, Credito, Debito e Notinha - esta ultima e "a receber").
+   (Dinheiro, Pix, Credito, Debito, ValeAlimentacao e Notinha - esta ultima e "a receber").
    Ignora vendas canceladas. Responde "quanto vendemos ontem no Centro?".
    Atencao: qtd_vendas conta cada venda uma vez POR FORMA de pagamento; para o
    total de vendas do dia, conte as linhas de venda.
@@ -1593,9 +1605,9 @@ SELECT v.unidade_id, DATE(v.data_hora) AS dia, p.nome AS produto,
 /* ---------------------------------------------------------------------
    vw_caixa_totais
    NO DIA A DIA: o resumo do fechamento do caixa: quanto entrou naquele caixa
-   em Dinheiro, Pix, Credito, Debito e Notinha, separando o que veio de
+   em Dinheiro, Pix, Credito, Debito, ValeAlimentacao e Notinha, separando o que veio de
    VENDAS e o que veio de ABATIMENTOS de notinha. Serve para conferir com a
-   maquininha (Credito + Debito) e com o extrato do Pix.
+   maquininha (Credito + Debito + ValeAlimentacao) e com o extrato do Pix.
    Uso: SELECT * FROM vw_caixa_totais WHERE caixa_id = 1;
    --------------------------------------------------------------------- */
 CREATE VIEW vw_caixa_totais AS

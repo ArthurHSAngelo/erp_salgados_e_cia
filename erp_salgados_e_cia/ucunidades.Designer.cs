@@ -47,6 +47,7 @@
             this.ldicaedicao = new System.Windows.Forms.Label();
             this.punidades = new System.Windows.Forms.Panel();
             this.lregistrodeunidades = new System.Windows.Forms.Label();
+            this.cbaceitavale = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvunidades)).BeginInit();
             this.punidades.SuspendLayout();
             this.SuspendLayout();
@@ -228,7 +229,7 @@
             this.cbativo.Checked = true;
             this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbativo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.cbativo.Location = new System.Drawing.Point(1353, 91);
+            this.cbativo.Location = new System.Drawing.Point(1380, 62);
             this.cbativo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbativo.Name = "cbativo";
             this.cbativo.Size = new System.Drawing.Size(73, 25);
@@ -265,8 +266,10 @@
             // punidades
             // 
             this.punidades.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
+            this.punidades.Controls.Add(this.cbaceitavale);
             this.punidades.Controls.Add(this.tbenderecou);
             this.punidades.Controls.Add(this.lenderecou);
+            this.punidades.Controls.Add(this.cbativo);
             this.punidades.Controls.Add(this.lnumerou);
             this.punidades.Controls.Add(this.tbnumerou);
             this.punidades.Controls.Add(this.beditaru);
@@ -288,6 +291,19 @@
             this.lregistrodeunidades.TabIndex = 32;
             this.lregistrodeunidades.Text = "Registro de unidades:";
             // 
+            // cbaceitavale
+            // 
+            this.cbaceitavale.AutoSize = true;
+            this.cbaceitavale.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.cbaceitavale.Location = new System.Drawing.Point(1322, 103);
+            this.cbaceitavale.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.cbaceitavale.Name = "cbaceitavale";
+            this.cbaceitavale.Size = new System.Drawing.Size(215, 25);
+            this.cbaceitavale.TabIndex = 30;
+            this.cbaceitavale.Text = "Aceita vale alimentação";
+            this.cbaceitavale.UseVisualStyleBackColor = true;
+            this.cbaceitavale.Visible = false;
+            // 
             // ucunidades
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -296,7 +312,6 @@
             this.Controls.Add(this.lregistrodeunidades);
             this.Controls.Add(this.ldicaedicao);
             this.Controls.Add(this.cbfiltrostatus);
-            this.Controls.Add(this.cbativo);
             this.Controls.Add(this.tbcnpju);
             this.Controls.Add(this.lcnpju);
             this.Controls.Add(this.dgvunidades);
@@ -334,5 +349,6 @@
         private System.Windows.Forms.Label ldicaedicao;
         private System.Windows.Forms.Panel punidades;
         private System.Windows.Forms.Label lregistrodeunidades;
+        private System.Windows.Forms.CheckBox cbaceitavale;
     }
 }

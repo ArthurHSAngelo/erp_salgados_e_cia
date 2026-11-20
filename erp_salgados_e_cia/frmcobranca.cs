@@ -94,6 +94,19 @@ namespace erp_salgados_e_cia
             }
             else
             {
+                // Vale Alimentação só aparece na unidade que marcou que aceita.
+                if (dadossistema.UnidadeAtualAceitaValeAlimentacao() &&
+                    !cbformapagamento.Items.Contains("Vale Alimentação"))
+                {
+                    int posicaoNotinha = cbformapagamento.Items.IndexOf("Notinha");
+
+                    cbformapagamento.Items.Insert(
+                        posicaoNotinha >= 0
+                            ? posicaoNotinha
+                            : cbformapagamento.Items.Count,
+                        "Vale Alimentação");
+                }
+
                 ltotalvenda.Text =
                     $"Total da venda: R$ {totalVenda:N2}";
             }
