@@ -12,7 +12,7 @@
 
 #define NomeApp "Salgados & Cia - ERP"
 #ifndef Versao
-  #define Versao "1.0.0"
+  #define Versao "1.1.0"
 #endif
 #define NomeServico "MariaDBSalgados"
 

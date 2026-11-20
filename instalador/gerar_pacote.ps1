@@ -5,13 +5,13 @@
 #
 # Uso (PowerShell, na pasta instalador):
 #   .\gerar_pacote.ps1
-#   .\gerar_pacote.ps1 -Versao "1.0.1" -Saida "D:\Entrega\Pacote_RC"
+#   .\gerar_pacote.ps1 -Versao "1.1.1" -Saida "D:\Entrega\Pacote_RC"
 #
 # Precisa do Visual Studio (MSBuild) e do Inno Setup 6
 # (instale com:  winget install JRSoftware.InnoSetup).
 # O pacote e gerado FORA do repositorio, para nao versionar arquivos compilados.
 param(
-    [string]$Versao = "1.0.0",
+    [string]$Versao = "1.1.0",
     [string]$Saida = "",
     [switch]$SemServidor   # gera um instalador menor, sem o servidor MariaDB embutido
 )
