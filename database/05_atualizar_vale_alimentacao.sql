@@ -1,4 +1,4 @@
-﻿/* =====================================================================
+/* =====================================================================
    ERP SALGADOS & CIA - Atualizacao: Vale Alimentacao por unidade
 
    Para quem JA TEM o banco "salgados_cia" criado com uma versao anterior do
