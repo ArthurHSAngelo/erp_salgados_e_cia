@@ -184,6 +184,9 @@ namespace erp_salgados_e_cia
 
         private void LimparCampos()
         {
+            tblogin.Enabled = true;
+            cbacesso.Enabled = true;
+
             tblogin.Clear();
             tbsenha.Clear();
             tbconfirmarsenha.Clear();
@@ -275,13 +278,72 @@ namespace erp_salgados_e_cia
             if (usuarioAtual != null &&
                 usuarioAtual.Perfil == PerfilUsuario.Administrador)
             {
+                // Só o próprio Administrador troca a senha dele; mais nada muda.
+                if (dadossistema.UsuarioLogado == null ||
+                    usuarioAtual.IdUsuario != dadossistema.UsuarioLogado.IdUsuario)
+                {
+                    MessageBox.Show(
+                        "A conta do Administrador não pode ser alterada.",
+                        "Alteração não permitida",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                if (tbsenha.Text.Length < 6)
+                {
+                    MessageBox.Show(
+                        "A senha deve ter pelo menos 6 caracteres.",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbsenha.Focus();
+                    return;
+                }
+
+                if (tbsenha.Text != tbconfirmarsenha.Text)
+                {
+                    MessageBox.Show(
+                        "A confirmação da senha não confere.",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbconfirmarsenha.Focus();
+                    return;
+                }
+
+                try
+                {
+                    UsuarioRepositorio.AlterarSenha(
+                        (uint)usuarioAtual.IdUsuario,
+                        dadossistema.GerarHashSenha(tbsenha.Text));
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
                 MessageBox.Show(
-                    "A conta do Administrador não pode ser alterada.",
-                    "Alteração não permitida",
+                    "Senha alterada com sucesso.",
+                    "Sucesso",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                    MessageBoxIcon.Information
                 );
 
+                CancelarEdicao();
                 return;
             }
 
@@ -537,7 +599,13 @@ namespace erp_salgados_e_cia
                 return;
             }
 
-            if (usuarioSelecionado.Perfil == PerfilUsuario.Administrador)
+            bool ehOProprioAdmin =
+                usuarioSelecionado.Perfil == PerfilUsuario.Administrador &&
+                dadossistema.UsuarioLogado != null &&
+                usuarioSelecionado.IdUsuario == dadossistema.UsuarioLogado.IdUsuario;
+
+            if (usuarioSelecionado.Perfil == PerfilUsuario.Administrador &&
+                !ehOProprioAdmin)
             {
                 MessageBox.Show(
                     "A conta do Administrador não pode ser alterada.",
@@ -583,6 +651,21 @@ namespace erp_salgados_e_cia
 
             bsalvarusuario.Text = "Atualizar";
             beditarusuario.Enabled = false;
+
+            if (ehOProprioAdmin)
+            {
+                // Administrador só troca a própria senha: o resto fica travado.
+                cbacesso.Items.Add("Administrador");
+                cbacesso.SelectedItem = "Administrador";
+
+                cbativo.Visible = false;
+
+                tblogin.Enabled = false;
+                cbacesso.Enabled = false;
+
+                tbsenha.Focus();
+                return;
+            }
 
             tblogin.Focus();
         }

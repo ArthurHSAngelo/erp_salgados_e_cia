@@ -50,6 +50,18 @@ namespace erp_salgados_e_cia.Data.Repositories
         }
 
         /// <summary>
+        /// Troca só a senha (login, perfil, unidade e status ficam como estão)
+        /// e desbloqueia o login. Usada na troca da senha do Administrador.
+        /// </summary>
+        public static void AlterarSenha(uint id, string novaSenhaHash)
+        {
+            BancoDados.Executar(
+                "UPDATE usuario SET senha_hash = @hash, tentativas_falhas = 0, bloqueado_ate = NULL WHERE id = @id",
+                BancoDados.Parametro("@hash", novaSenhaHash),
+                BancoDados.Parametro("@id", id));
+        }
+
+        /// <summary>
         /// Busca o login informado (sem diferenciar maiúsculas de minúsculas).
         /// Devolve null se não existir.
         /// </summary>
