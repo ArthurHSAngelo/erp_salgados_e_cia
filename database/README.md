@@ -100,6 +100,6 @@ O `testes_desempenho.ps1` confere os requisitos de tempo (cadastro, consulta e r
 .\testes_desempenho.ps1 -Pasta "..\erp_salgados_e_cia\bin\Debug" -Porta 3306 -Saida desempenho.json
 ```
 
-Termina com `DESEMPENHO: 16 de 16 operacoes dentro do limite`. Resultado de 20/11/2026 (MariaDB 10.11.19, banco no mesmo computador): o pior caso foi o login, com 167 ms; cada venda levou em media 5 ms.
+Termina com `DESEMPENHO: 16 de 16 operacoes dentro do limite`. Resultado de 20/11/2026 (MariaDB 10.11.19, banco no mesmo computador): o pior caso foi o login, com cerca de 140 ms; cada venda levou em média 5 ms.
 
 O modelo de dados esta descrito no documento de DER e dicionario de dados.
