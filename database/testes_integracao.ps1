@@ -176,6 +176,27 @@ $cx.TotaisPorForma.Add("Crédito",[decimal]10); $cx.TotaisPorForma.Add("Débito"
 Ver "vale: maquininha esperada soma o vale" $cx.MaquininhaEsperada "22"
 $cnTeste.Close()
 
+# ---------- 9. correcao de caixa fechado ----------
+$cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
+function EditaFechado($contado,$maq,$motivo,$login){ $c=($ds.GetMethod("CaixasDaUnidade").Invoke($null,@()))[0]; $a=[object[]]@($c.PSObject.BaseObject,[decimal]$contado,[decimal]$maq,$motivo,$login,$null); Msg ($ds.GetMethod("EditarCaixaFechado").Invoke($null,$a)) $a 5 }
+function CaixaFechado(){ $c=($ds.GetMethod("CaixasDaUnidade").Invoke($null,@()))[0]; "$($c.Status) $($c.ValorContado) $($c.ValorMaquininha) $($c.Diferenca)" }
+Ver "fechado: estado inicial (status/contado/maquininha/diferenca)" (CaixaFechado) "Fechado 167.00 0.00 0.00"
+Ver "fechado: atendente nao autoriza" (EditaFechado 150 5 "Contagem errada" "centro") "False | Apenas Administrador ou Gerente pode autorizar."
+Ver "fechado: autorizador inexistente" (EditaFechado 150 5 "Contagem errada" "fantasma") "False | Autorizador não encontrado."
+Ver "fechado: motivo obrigatorio" (EditaFechado 150 5 "  " "gerente1") "False | Informe o motivo da edição."
+Ver "fechado: sem alteracao" (EditaFechado 167 0 "Conferi de novo" "gerente1") "False | Nenhuma alteração foi feita."
+Ver "fechado: dinheiro negativo" (EditaFechado -1 0 "Erro" "gerente1") "False | Informe o valor contado em dinheiro (zero ou maior)."
+Ver "fechado: maquininha negativa" (EditaFechado 150 -1 "Erro" "gerente1") "False | O valor da maquininha não pode ser negativo."
+Ver "fechado: nada mudou com as recusas" (CaixaFechado) "Fechado 167.00 0.00 0.00"
+Ver "fechado: gerente corrige" (EditaFechado 150 5 "Contagem errada" "gerente1") "True | "
+Ver "fechado: diferenca recalculada" (CaixaFechado) "Fechado 150.00 5.00 -17.00"
+Ver "fechado: administrador corrige" (EditaFechado 160 5 "Segunda conferencia" "admin") "True | "
+Ver "fechado: diferenca apos 2a correcao" (CaixaFechado) "Fechado 160.00 5.00 -7.00"
+Ver "fechado: correcoes anotadas no log" (SqlEscalar "SELECT COUNT(*) FROM log_operacao WHERE tabela='caixa' AND detalhes LIKE 'correcao de caixa fechado%autorizado por: gerente1' OR (tabela='caixa' AND detalhes LIKE 'correcao de caixa fechado%autorizado por: admin')") "2"
+Ver "fechado: log guarda antes e depois" (SqlEscalar "SELECT COUNT(*) FROM log_operacao WHERE tabela='caixa' AND detalhes LIKE 'correcao de caixa fechado; dinheiro contado: 167.00 -> 150.00; maquininha: 0.00 -> 5.00; diferenca: 0.00 -> -17.00; motivo: Contagem errada; autorizado por: gerente1'") "1"
+Ver "fechado: usuario do programa nao altera a tabela direto" ((SqlTenta "UPDATE caixa SET valor_contado_dinheiro = 1 WHERE status = 'Fechado'") -like "UPDATE command denied*") "True"
+$cnTeste.Close()
+
 "PASSOU: $ok   FALHOU: $falha"
 
 

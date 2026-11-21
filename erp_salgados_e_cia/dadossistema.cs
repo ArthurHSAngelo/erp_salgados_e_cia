@@ -1367,6 +1367,88 @@ namespace erp_salgados_e_cia
             return true;
         }
 
+        // Qualquer usuário pede a correção, mas quem autoriza é sempre um
+        // Gerente ou Administrador (o banco confere o perfil do autorizador).
+        public static bool EditarCaixaFechado(
+            Caixa caixa,
+            decimal novoValorContado,
+            decimal novoValorMaquininha,
+            string motivo,
+            string autorizadoPor,
+            out string mensagem)
+        {
+            mensagem = "";
+
+            if (caixa == null)
+            {
+                mensagem = "Não há caixa fechado para editar.";
+                return false;
+            }
+
+            if (caixa.Status != "Fechado")
+            {
+                mensagem = "Somente um caixa fechado pode ser corrigido aqui.";
+                return false;
+            }
+
+            if (caixa.Unidade != UnidadeAtual)
+            {
+                mensagem = "Este caixa pertence a outra unidade.";
+                return false;
+            }
+
+            if (novoValorContado < 0)
+            {
+                mensagem = "Informe o valor contado em dinheiro (zero ou maior).";
+                return false;
+            }
+
+            if (novoValorMaquininha < 0)
+            {
+                mensagem = "O valor da maquininha não pode ser negativo.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo))
+            {
+                mensagem = "Informe o motivo da edição.";
+                return false;
+            }
+
+            if (novoValorContado == caixa.ValorContado &&
+                novoValorMaquininha == caixa.ValorMaquininha)
+            {
+                mensagem = "Nenhuma alteração foi feita.";
+                return false;
+            }
+
+            try
+            {
+                UsuarioAcesso autorizador =
+                    UsuarioRepositorio.BuscarPorLogin(autorizadoPor);
+
+                if (autorizador == null)
+                {
+                    mensagem = "Autorizador não encontrado.";
+                    return false;
+                }
+
+                CaixaRepositorio.EditarFechado(
+                    (uint)caixa.IdCaixa,
+                    novoValorContado,
+                    novoValorMaquininha,
+                    motivo.Trim(),
+                    autorizador.Id);
+            }
+            catch (RegraNegocioException ex)
+            {
+                mensagem = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
         // ---- Comandas, vendas e Notinha (lidas direto do banco) ----
 
         private static string FormaParaBanco(string forma)

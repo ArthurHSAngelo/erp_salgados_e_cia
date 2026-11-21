@@ -5,13 +5,13 @@
 #
 # Uso (PowerShell, na pasta instalador):
 #   .\gerar_pacote.ps1
-#   .\gerar_pacote.ps1 -Versao "1.1.1" -Saida "D:\Entrega\Pacote_RC"
+#   .\gerar_pacote.ps1 -Versao "1.1.2" -Saida "D:\Entrega\Pacote_RC"
 #
 # Precisa do Visual Studio (MSBuild) e do Inno Setup 6
 # (instale com:  winget install JRSoftware.InnoSetup).
 # O pacote e gerado FORA do repositorio, para nao versionar arquivos compilados.
 param(
-    [string]$Versao = "1.1.0",
+    [string]$Versao = "1.1.1",
     [string]$Saida = "",
     [switch]$SemServidor   # gera um instalador menor, sem o servidor MariaDB embutido
 )
@@ -89,7 +89,7 @@ foreach ($sub in "Instalador", "Portatil", "Banco de Dados") {
 }
 
 $pastaBancoOrigem = Join-Path $repo "database"
-$arquivosBanco = "01_schema.sql", "02_dados_teste.sql", "03_acesso_rede.sql", "04_atualizar_bloqueio_login.sql", "05_atualizar_vale_alimentacao.sql", "criar_banco.ps1", "README.md", "gerar_hash.ps1"
+$arquivosBanco = "01_schema.sql", "02_dados_teste.sql", "03_acesso_rede.sql", "04_atualizar_banco_existente.sql", "criar_banco.ps1", "README.md", "gerar_hash.ps1"
 foreach ($a in $arquivosBanco) { Copy-Item (Join-Path $pastaBancoOrigem $a) (Join-Path $Saida "Banco de Dados") -Force }
 
 $leiame = Join-Path $pastaScript "LEIA-ME.txt"

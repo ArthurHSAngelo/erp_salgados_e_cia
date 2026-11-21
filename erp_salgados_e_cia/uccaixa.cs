@@ -17,14 +17,22 @@ namespace erp_salgados_e_cia
 
         private bool editandoCaixa;
 
+        // Caixa já fechado que está sendo corrigido (null = fora desse modo).
+        private Caixa caixaFechadoEmEdicao;
+
+        private Point posicaoResumo;
+
         public uccaixa()
         {
             InitializeComponent();
+
+            posicaoResumo = presumo.Location;
 
             dgvcaixas.DataSource =
                 fonteCaixas;
 
             beditarcaixa.Click += beditarcaixa_Click;
+            beditarfechado.Click += beditarfechado_Click;
             tbvalormaquininha.TextChanged += tbvalormaquininha_TextChanged;
 
             AtualizarTela();
@@ -35,6 +43,12 @@ namespace erp_salgados_e_cia
             if (keyData == Keys.Escape && editandoCaixa)
             {
                 SairModoEdicao();
+                return true;
+            }
+
+            if (keyData == Keys.Escape && caixaFechadoEmEdicao != null)
+            {
+                SairModoEdicaoFechado();
                 return true;
             }
 
@@ -93,6 +107,253 @@ namespace erp_salgados_e_cia
         private void beditarcaixa_Click(object sender, EventArgs e)
         {
             EntrarModoEdicao();
+        }
+
+        private void beditarfechado_Click(object sender, EventArgs e)
+        {
+            Caixa selecionado =
+                fonteCaixas.Current as Caixa;
+
+            if (selecionado == null ||
+                selecionado.Status != "Fechado")
+            {
+                MessageBox.Show(
+                    "Selecione, no histórico, um caixa fechado para editar.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (editandoCaixa)
+            {
+                SairModoEdicao();
+            }
+
+            EntrarModoEdicaoFechado(selecionado);
+        }
+
+        // Reaproveita o resumo do caixa: o bloco de cima (motivo e botão
+        // Salvar) fica visível, o resumo desce para baixo dele e só o
+        // dinheiro contado e a maquininha ficam liberados.
+        private void EntrarModoEdicaoFechado(Caixa caixa)
+        {
+            if (editandoCaixa)
+            {
+                SairModoEdicao();
+            }
+
+            caixaFechadoEmEdicao = caixa;
+
+            CarregarResponsaveis();
+
+            if (!cbresponsavel.Items.Contains(caixa.Responsavel))
+            {
+                cbresponsavel.Items.Add(caixa.Responsavel);
+            }
+
+            cbresponsavel.SelectedItem = caixa.Responsavel;
+            tbvalorinicial.Text = caixa.ValorInicial.ToString("N2");
+            tbmotivoedicao.Clear();
+
+            cbresponsavel.Enabled = false;
+            tbvalorinicial.Enabled = false;
+
+            labrircaixa.Text = "Editando caixa fechado (ESC para cancelar)";
+            babrircaixa.Text = "Salvar edição";
+
+            lmotivoedicao.Visible = true;
+            tbmotivoedicao.Visible = true;
+
+            pabertura.Visible = true;
+
+            PreencherResumo(caixa);
+
+            lcaixaaberto.Text = "Caixa fechado";
+
+            linfocaixa.Text =
+                $"Aberto em {caixa.DataAbertura:dd/MM/yyyy HH:mm} por {caixa.Responsavel}";
+
+            tbvalorcontado.Text =
+                caixa.ValorContado.GetValueOrDefault().ToString("N2");
+
+            tbvalormaquininha.Text =
+                caixa.ValorMaquininha.GetValueOrDefault().ToString("N2");
+
+            bfecharcaixa.Visible = false;
+            beditarcaixa.Visible = false;
+            beditarfechado.Enabled = false;
+
+            presumo.Location =
+                new Point(posicaoResumo.X, pabertura.Bottom + 10);
+
+            presumo.Visible = true;
+
+            tbmotivoedicao.Focus();
+        }
+
+        private void SairModoEdicaoFechado()
+        {
+            caixaFechadoEmEdicao = null;
+
+            tbmotivoedicao.Clear();
+            tbvalorinicial.Clear();
+            tbvalorcontado.Clear();
+            tbvalormaquininha.Clear();
+            cbresponsavel.SelectedIndex = -1;
+
+            cbresponsavel.Enabled = true;
+            tbvalorinicial.Enabled = true;
+
+            labrircaixa.Text = "Abrir caixa";
+            babrircaixa.Text = "Abrir caixa";
+            lcaixaaberto.Text = "Caixa aberto";
+
+            bfecharcaixa.Visible = true;
+            beditarcaixa.Visible = true;
+            beditarfechado.Enabled = true;
+
+            presumo.Location = posicaoResumo;
+
+            AtualizarTela();
+        }
+
+        private void SalvarEdicaoCaixaFechado()
+        {
+            Caixa caixa =
+                caixaFechadoEmEdicao;
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbmotivoedicao.Text))
+            {
+                MessageBox.Show(
+                    "Informe o motivo da edição.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbmotivoedicao.Focus();
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorcontado.Text,
+                    out decimal novoValorContado)
+                || novoValorContado < 0)
+            {
+                MessageBox.Show(
+                    "Informe o valor contado em dinheiro.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorcontado.Focus();
+                return;
+            }
+
+            decimal novoValorMaquininha;
+
+            if (string.IsNullOrWhiteSpace(tbvalormaquininha.Text))
+            {
+                if (caixa.MaquininhaEsperada != 0)
+                {
+                    MessageBox.Show(
+                        "Informe o valor da maquininha (Crédito + Débito + Vale Alimentação).",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbvalormaquininha.Focus();
+                    return;
+                }
+
+                novoValorMaquininha = 0m;
+            }
+            else if (!decimal.TryParse(
+                         tbvalormaquininha.Text,
+                         out novoValorMaquininha)
+                     || novoValorMaquininha < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor válido para a maquininha.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalormaquininha.Focus();
+                return;
+            }
+
+            if (novoValorContado == caixa.ValorContado &&
+                novoValorMaquininha == caixa.ValorMaquininha)
+            {
+                MessageBox.Show(
+                    "Nenhuma alteração foi feita.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            string autorizadoPor;
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                using (frmlogin autorizacao = new frmlogin(true))
+                {
+                    if (autorizacao.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    autorizadoPor = autorizacao.LoginAutorizador;
+                }
+            }
+            else
+            {
+                autorizadoPor = dadossistema.UsuarioLogado.Login;
+            }
+
+            string mensagem;
+
+            if (!dadossistema.EditarCaixaFechado(
+                    caixa,
+                    novoValorContado,
+                    novoValorMaquininha,
+                    tbmotivoedicao.Text,
+                    autorizadoPor,
+                    out mensagem))
+            {
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            SairModoEdicaoFechado();
+
+            MessageBox.Show(
+                "Caixa fechado editado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void SalvarEdicaoCaixa()
@@ -235,8 +496,21 @@ namespace erp_salgados_e_cia
             }
         }
 
+        // Caixa que o resumo está mostrando: o fechado em edição ou o aberto.
+        private Caixa CaixaEmFoco()
+        {
+            return caixaFechadoEmEdicao ?? dadossistema.CaixaAberto();
+        }
+
         public void AtualizarTela()
         {
+            // Durante a edição de um caixa fechado, a tela não é refeita.
+            if (caixaFechadoEmEdicao != null)
+            {
+                AtualizarHistorico();
+                return;
+            }
+
             CarregarResponsaveis();
 
             Caixa caixa =
@@ -258,6 +532,15 @@ namespace erp_salgados_e_cia
                 linfocaixa.Text =
                     $"Aberto em {caixa.DataAbertura:dd/MM/yyyy HH:mm} por {caixa.Responsavel}";
 
+                PreencherResumo(caixa);
+            }
+
+            AtualizarHistorico();
+        }
+
+        private void PreencherResumo(Caixa caixa)
+        {
+            {
                 lvalorinicialresumo.Text =
                     $"Valor inicial: R$ {caixa.ValorInicial:N2}";
 
@@ -298,8 +581,6 @@ namespace erp_salgados_e_cia
                 AtualizarDiferenca();
                 AtualizarDiferencaMaquininha();
             }
-
-            AtualizarHistorico();
         }
 
         private void AtualizarHistorico()
@@ -351,7 +632,7 @@ namespace erp_salgados_e_cia
         private void AtualizarDiferenca()
         {
             Caixa caixa =
-                dadossistema.CaixaAberto();
+                CaixaEmFoco();
 
             if (caixa == null)
             {
@@ -380,7 +661,7 @@ namespace erp_salgados_e_cia
         private void AtualizarDiferencaMaquininha()
         {
             Caixa caixa =
-                dadossistema.CaixaAberto();
+                CaixaEmFoco();
 
             if (caixa == null)
             {
@@ -422,6 +703,12 @@ namespace erp_salgados_e_cia
 
         private void babrircaixa_Click(object sender, EventArgs e)
         {
+            if (caixaFechadoEmEdicao != null)
+            {
+                SalvarEdicaoCaixaFechado();
+                return;
+            }
+
             if (editandoCaixa)
             {
                 SalvarEdicaoCaixa();

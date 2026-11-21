@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.labrircaixa = new System.Windows.Forms.Label();
             this.lvalorinicial = new System.Windows.Forms.Label();
             this.lresponsavel = new System.Windows.Forms.Label();
@@ -40,6 +40,7 @@
             this.cbresponsavel = new System.Windows.Forms.ComboBox();
             this.tbvalorinicial = new System.Windows.Forms.TextBox();
             this.presumo = new System.Windows.Forms.Panel();
+            this.lvalealimentacao = new System.Windows.Forms.Label();
             this.beditarcaixa = new System.Windows.Forms.Button();
             this.tbvalormaquininha = new System.Windows.Forms.TextBox();
             this.ldiferencamaquininha = new System.Windows.Forms.Label();
@@ -63,7 +64,7 @@
             this.ltotalvendas = new System.Windows.Forms.Label();
             this.lhistoricocaixas = new System.Windows.Forms.Label();
             this.dgvcaixas = new System.Windows.Forms.DataGridView();
-            this.lvalealimentacao = new System.Windows.Forms.Label();
+            this.beditarfechado = new System.Windows.Forms.Button();
             this.pabertura.SuspendLayout();
             this.presumo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvcaixas)).BeginInit();
@@ -103,6 +104,7 @@
             // 
             this.pabertura.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
             this.pabertura.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pabertura.Controls.Add(this.beditarfechado);
             this.pabertura.Controls.Add(this.tbmotivoedicao);
             this.pabertura.Controls.Add(this.lmotivoedicao);
             this.pabertura.Controls.Add(this.babrircaixa);
@@ -114,7 +116,7 @@
             this.pabertura.Location = new System.Drawing.Point(29, 38);
             this.pabertura.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pabertura.Name = "pabertura";
-            this.pabertura.Size = new System.Drawing.Size(585, 280);
+            this.pabertura.Size = new System.Drawing.Size(585, 302);
             this.pabertura.TabIndex = 4;
             // 
             // tbmotivoedicao
@@ -123,8 +125,9 @@
             this.tbmotivoedicao.Font = new System.Drawing.Font("Segoe UI", 10.2F);
             this.tbmotivoedicao.Location = new System.Drawing.Point(102, 131);
             this.tbmotivoedicao.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbmotivoedicao.Multiline = true;
             this.tbmotivoedicao.Name = "tbmotivoedicao";
-            this.tbmotivoedicao.Size = new System.Drawing.Size(277, 30);
+            this.tbmotivoedicao.Size = new System.Drawing.Size(313, 59);
             this.tbmotivoedicao.TabIndex = 8;
             this.tbmotivoedicao.Visible = false;
             // 
@@ -146,7 +149,7 @@
             this.babrircaixa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.babrircaixa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.babrircaixa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
-            this.babrircaixa.Location = new System.Drawing.Point(395, 205);
+            this.babrircaixa.Location = new System.Drawing.Point(395, 231);
             this.babrircaixa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.babrircaixa.Name = "babrircaixa";
             this.babrircaixa.Size = new System.Drawing.Size(172, 52);
@@ -208,6 +211,16 @@
             this.presumo.Name = "presumo";
             this.presumo.Size = new System.Drawing.Size(721, 766);
             this.presumo.TabIndex = 5;
+            // 
+            // lvalealimentacao
+            // 
+            this.lvalealimentacao.AutoSize = true;
+            this.lvalealimentacao.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lvalealimentacao.Location = new System.Drawing.Point(223, 209);
+            this.lvalealimentacao.Name = "lvalealimentacao";
+            this.lvalealimentacao.Size = new System.Drawing.Size(240, 25);
+            this.lvalealimentacao.TabIndex = 28;
+            this.lvalealimentacao.Text = "Vale Alimentação: R$ 0,00";
             // 
             // beditarcaixa
             // 
@@ -453,23 +466,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvcaixas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvcaixas.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvcaixas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvcaixas.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvcaixas.Location = new System.Drawing.Point(840, 50);
             this.dgvcaixas.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvcaixas.MultiSelect = false;
@@ -481,15 +494,20 @@
             this.dgvcaixas.Size = new System.Drawing.Size(1491, 1212);
             this.dgvcaixas.TabIndex = 23;
             // 
-            // lvalealimentacao
+            // beditarfechado
             // 
-            this.lvalealimentacao.AutoSize = true;
-            this.lvalealimentacao.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lvalealimentacao.Location = new System.Drawing.Point(223, 209);
-            this.lvalealimentacao.Name = "lvalealimentacao";
-            this.lvalealimentacao.Size = new System.Drawing.Size(240, 25);
-            this.lvalealimentacao.TabIndex = 28;
-            this.lvalealimentacao.Text = "Vale Alimentação: R$ 0,00";
+            this.beditarfechado.BackColor = System.Drawing.Color.White;
+            this.beditarfechado.FlatAppearance.BorderSize = 2;
+            this.beditarfechado.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.beditarfechado.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.beditarfechado.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
+            this.beditarfechado.Location = new System.Drawing.Point(167, 231);
+            this.beditarfechado.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.beditarfechado.Name = "beditarfechado";
+            this.beditarfechado.Size = new System.Drawing.Size(222, 52);
+            this.beditarfechado.TabIndex = 28;
+            this.beditarfechado.Text = "Editar caixa fechado";
+            this.beditarfechado.UseVisualStyleBackColor = false;
             // 
             // uccaixa
             // 
@@ -548,5 +566,6 @@
         private System.Windows.Forms.Label ldiferencamaquininha;
         private System.Windows.Forms.Label lvalormaquininha;
         private System.Windows.Forms.Label lvalealimentacao;
+        private System.Windows.Forms.Button beditarfechado;
     }
 }

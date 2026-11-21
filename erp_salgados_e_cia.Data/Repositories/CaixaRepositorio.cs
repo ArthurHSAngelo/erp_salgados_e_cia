@@ -66,6 +66,26 @@ namespace erp_salgados_e_cia.Data.Repositories
                 BancoDados.Parametro("@autorizador", autorizadorId));
         }
 
+        /// <summary>
+        /// Corrige o dinheiro contado e a maquininha de um caixa já fechado (motivo e autorizador
+        /// obrigatórios). O banco recalcula a diferença e anota tudo no log.
+        /// </summary>
+        public static void EditarFechado(
+            uint caixaId,
+            decimal dinheiroContado,
+            decimal? maquininha,
+            string motivo,
+            uint autorizadorId)
+        {
+            BancoDados.Executar(
+                "CALL sp_editar_caixa_fechado(@caixa, @contado, @maquininha, @motivo, @autorizador)",
+                BancoDados.Parametro("@caixa", caixaId),
+                BancoDados.Parametro("@contado", dinheiroContado),
+                BancoDados.Parametro("@maquininha", maquininha.HasValue ? (object)maquininha.Value : null),
+                BancoDados.Parametro("@motivo", motivo),
+                BancoDados.Parametro("@autorizador", autorizadorId));
+        }
+
         /// <summary>Fecha o caixa com o dinheiro contado e o valor da maquininha.</summary>
         public static void Fechar(uint caixaId, decimal dinheiroContado, decimal? maquininha)
         {

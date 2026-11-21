@@ -55,8 +55,8 @@ Veja o passo a passo no [Guia de Build](docs/GUIA_DE_BUILD.md). Em resumo:
 
 ## Pacote de entrega
 
-O instalador e a versão portátil são gerados por `instalador/gerar_pacote.ps1`. A versão atual do pacote é a **1.1.0**.
+O instalador e a versão portátil são gerados por `instalador/gerar_pacote.ps1`. A versão atual do pacote é a **1.1.1**.
 
 ## Status
 
-Versão 1.1.0, pronta para a entrega final do Projeto Interdisciplinar IV (novembro de 2026). Os testes automáticos têm 81 verificações, todas passando.
+Versão 1.1.1, pronta para a entrega final do Projeto Interdisciplinar IV (novembro de 2026). Os testes automáticos têm 96 verificações, todas passando.

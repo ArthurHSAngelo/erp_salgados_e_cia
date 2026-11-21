@@ -57,11 +57,12 @@ Todos os dados que acompanham o pacote são fictícios.
     Depois troque a senha do usuário do programa:
       ALTER USER 'app_salgados'@'localhost' IDENTIFIED BY 'sua_senha_forte';
   - Se você JÁ TEM um banco criado com uma versão anterior e não quer apagá-lo, não rode o
-    01_schema.sql. Rode, nesta ordem e inteiros, como root:
-      04_atualizar_bloqueio_login.sql   (bloqueio do login depois de 5 senhas erradas)
-      05_atualizar_vale_alimentacao.sql (Vale Alimentação por unidade)
-    Eles não apagam nada e podem ser rodados mais de uma vez. Depois, na tela Unidades,
-    marque "Aceita vale alimentação" nas unidades que aceitam.
+    01_schema.sql. Rode, inteiro e como root:
+      04_atualizar_banco_existente.sql
+    Ele serve para qualquer versão antiga: acrescenta o bloqueio do login depois de 5 senhas
+    erradas, o Vale Alimentação por unidade e a correção do caixa já fechado (com autorização
+    de Gerente ou Administrador). Não apaga nada e pode ser rodado mais de uma vez. Depois, na
+    tela Unidades, marque "Aceita vale alimentação" nas unidades que aceitam.
 
 
 5. MUDAR A CONEXÃO DEPOIS DE INSTALAR

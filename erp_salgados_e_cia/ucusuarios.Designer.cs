@@ -140,7 +140,7 @@
             this.cbacesso.FormattingEnabled = true;
             this.cbacesso.Location = new System.Drawing.Point(942, 87);
             this.cbacesso.Name = "cbacesso";
-            this.cbacesso.Size = new System.Drawing.Size(259, 31);
+            this.cbacesso.Size = new System.Drawing.Size(352, 31);
             this.cbacesso.TabIndex = 27;
             // 
             // cbativo
@@ -149,7 +149,7 @@
             this.cbativo.Checked = true;
             this.cbativo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbativo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.cbativo.Location = new System.Drawing.Point(1244, 90);
+            this.cbativo.Location = new System.Drawing.Point(1360, 90);
             this.cbativo.Name = "cbativo";
             this.cbativo.Size = new System.Drawing.Size(73, 25);
             this.cbativo.TabIndex = 28;

@@ -52,7 +52,7 @@ Os scripts ficam na pasta `database/`. O `database/README.md` explica cada um.
 2. Execute, inteiros e nesta ordem, `01_schema.sql` (apaga e recria o banco `salgados_cia`) e `02_dados_teste.sql`.
 3. Troque a senha do usuário do programa, se quiser: `ALTER USER 'app_salgados'@'localhost' IDENTIFIED BY 'sua_senha_forte';`
 
-Se você já tem um banco criado com uma versão anterior, não apague: rode `04_atualizar_bloqueio_login.sql` e depois `05_atualizar_vale_alimentacao.sql`.
+Se você já tem um banco criado com uma versão anterior, não apague: rode apenas o `04_atualizar_banco_existente.sql`, que serve para qualquer versão antiga e não apaga dados.
 
 A conexão do programa fica no arquivo `erp_salgados_e_cia.exe.config` (servidor, porta, banco, usuário e senha).
 
@@ -89,7 +89,7 @@ Abre a tela de login. Com os dados de teste, os logins são `centro` e `norte` (
 
 Na pasta `database/`:
 
-- `testes_integracao.ps1`: 81 verificações das regras de negócio, chamando o programa compilado contra o banco.
+- `testes_integracao.ps1`: 96 verificações das regras de negócio, chamando o programa compilado contra o banco.
 - `testes_desempenho.ps1`: 16 medições de tempo, com 1.000 vendas no banco.
 
 O `database/README.md` explica como rodar cada um. Os testes gravam dados: use um banco de teste.
@@ -132,7 +132,7 @@ Convenções:
 | Erro de pacote NuGet ausente | Pacotes não restaurados | Compilar com `/restore` ou usar **Restaurar Pacotes NuGet** no Visual Studio |
 | "Não foi possível conectar ao banco de dados" | Servidor desligado, ou servidor/porta errados no `.config` | Ligar o servidor e conferir o arquivo `erp_salgados_e_cia.exe.config` |
 | "Usuário ou senha do banco de dados incorretos" | Senha do `.config` diferente da do usuário `app_salgados` | Acertar a senha no `.config` ou no banco |
-| Erro ao carregar unidades ou ao entrar | Banco criado antes das últimas atualizações | Rodar os scripts `04` e `05` |
+| Erro ao carregar unidades ou ao entrar | Banco criado antes das últimas atualizações | Rodar o `04_atualizar_banco_existente.sql` |
 | Erro de caminho muito longo ao compilar | Repositório em pasta com caminho extenso | Clonar em `C:\dev` |
 
 ## 11. Fluxo de trabalho com Git

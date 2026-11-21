@@ -12,7 +12,7 @@
 
 #define NomeApp "Salgados & Cia - ERP"
 #ifndef Versao
-  #define Versao "1.1.0"
+  #define Versao "1.1.1"
 #endif
 #define NomeServico "MariaDBSalgados"
 
@@ -50,8 +50,7 @@ Source: "{#PastaApp}\*"; DestDir: "{app}"; Excludes: "*.pdb,*.xml"; Flags: ignor
 Source: "{#PastaBanco}\01_schema.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
 Source: "{#PastaBanco}\02_dados_teste.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
 Source: "{#PastaBanco}\03_acesso_rede.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
-Source: "{#PastaBanco}\04_atualizar_bloqueio_login.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
-Source: "{#PastaBanco}\05_atualizar_vale_alimentacao.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
+Source: "{#PastaBanco}\04_atualizar_banco_existente.sql"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
 Source: "{#PastaBanco}\criar_banco.ps1"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
 Source: "{#PastaBanco}\README.md"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion
 Source: "{#PastaBanco}\gerar_hash.ps1"; DestDir: "{app}\Banco de Dados"; Flags: ignoreversion

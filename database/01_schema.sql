@@ -886,8 +886,10 @@ END$$
    trg_caixa_bi / trg_caixa_bu  (responsavel da loja; caixa fechado e "lacrado")
    NO DIA A DIA: ao abrir o caixa, o responsavel precisa ser funcionario da
    propria loja. Depois que o caixa do dia foi fechado e conferido, ninguem
-   consegue mudar os valores. Evita "acertar" o caixa depois para esconder
-   uma diferenca.
+   consegue mudar os valores diretamente. A unica saida e a correcao
+   autorizada, feita por sp_editar_caixa_fechado (so o dinheiro contado e a
+   maquininha contada), com motivo, autorizacao de Gerente ou Administrador
+   e registro no log.
    --------------------------------------------------------------------- */
 CREATE TRIGGER trg_caixa_bi BEFORE INSERT ON caixa FOR EACH ROW
 BEGIN
@@ -898,7 +900,17 @@ END$$
 CREATE TRIGGER trg_caixa_bu BEFORE UPDATE ON caixa FOR EACH ROW
 BEGIN
     IF OLD.status = 'Fechado' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Caixa fechado nao pode ser alterado.';
+        IF IFNULL(@corrigindo_caixa, 0) <> 1 THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Caixa fechado nao pode ser alterado.';
+        END IF;
+        IF NEW.status <> OLD.status
+           OR NEW.unidade_id <> OLD.unidade_id
+           OR NEW.responsavel_funcionario_id <> OLD.responsavel_funcionario_id
+           OR NEW.valor_inicial <> OLD.valor_inicial
+           OR NOT (NEW.data_abertura <=> OLD.data_abertura)
+           OR NOT (NEW.data_fechamento <=> OLD.data_fechamento) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Na correcao so podem mudar o dinheiro contado e a maquininha.';
+        END IF;
     END IF;
 END$$
 
@@ -1055,6 +1067,82 @@ BEGIN
     IF ROW_COUNT() = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Caixa inexistente ou ja fechado.';
     END IF;
+END$$
+
+/* ---------------------------------------------------------------------
+   sp_editar_caixa_fechado  (procedure: corrigir o caixa ja FECHADO)
+   NO DIA A DIA: na conferencia o responsavel digitou o dinheiro ou o valor
+   da maquininha errado. So um Gerente ou o Administrador autoriza a
+   correcao (o autorizador digita o login dele na tela), e e obrigatorio
+   dizer o motivo. Muda so o dinheiro contado e a maquininha contada; a
+   diferenca e recalculada com a mesma conta do fechamento. So vale para
+   caixa fechado, da loja de trabalho. O log guarda o antes e o depois, o
+   motivo e quem autorizou.
+   Uso: CALL sp_editar_caixa_fechado(id_caixa, dinheiro_contado, maquininha_contada, 'motivo', id_autorizador);
+   --------------------------------------------------------------------- */
+CREATE PROCEDURE sp_editar_caixa_fechado (IN p_caixa INT UNSIGNED, IN p_contado DECIMAL(10,2), IN p_maquininha DECIMAL(10,2), IN p_motivo VARCHAR(200), IN p_autorizador INT UNSIGNED)
+BEGIN
+    DECLARE v_status VARCHAR(10);
+    DECLARE v_unidade INT UNSIGNED;
+    DECLARE v_inicial DECIMAL(10,2);
+    DECLARE v_contado DECIMAL(10,2);
+    DECLARE v_maq DECIMAL(10,2);
+    DECLARE v_dif DECIMAL(10,2);
+    DECLARE v_din DECIMAL(10,2);
+    DECLARE v_perfil VARCHAR(20);
+    DECLARE v_login VARCHAR(40);
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN SET @corrigindo_caixa = 0; ROLLBACK; RESIGNAL; END;
+
+    SELECT status, unidade_id, valor_inicial, valor_contado_dinheiro, valor_contado_maquininha, diferenca
+      INTO v_status, v_unidade, v_inicial, v_contado, v_maq, v_dif
+      FROM caixa WHERE id = p_caixa;
+    IF v_status IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Caixa inexistente.';
+    END IF;
+    IF v_status <> 'Fechado' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Somente um caixa fechado pode ser corrigido aqui.';
+    END IF;
+    IF @unidade_id IS NOT NULL AND @unidade_id <> v_unidade THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Este caixa pertence a outra unidade.';
+    END IF;
+    IF p_contado IS NULL OR p_contado < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Informe o valor contado em dinheiro (zero ou maior).';
+    END IF;
+    IF p_maquininha IS NOT NULL AND p_maquininha < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'O valor da maquininha nao pode ser negativo.';
+    END IF;
+    IF p_motivo IS NULL OR TRIM(p_motivo) = '' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Informe o motivo da edicao.';
+    END IF;
+    SELECT perfil, login INTO v_perfil, v_login FROM usuario WHERE id = p_autorizador AND status = 'Ativo';
+    IF v_perfil IS NULL OR v_perfil = 'Atendente' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Apenas Administrador ou Gerente pode autorizar.';
+    END IF;
+    IF p_contado = v_contado AND p_maquininha <=> v_maq THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nenhuma alteracao foi feita.';
+    END IF;
+
+    SELECT COALESCE(SUM(total), 0) INTO v_din FROM vw_caixa_totais
+     WHERE caixa_id = p_caixa AND forma_pagamento = 'Dinheiro';
+
+    START TRANSACTION;
+    SET @corrigindo_caixa = 1;
+    UPDATE caixa
+       SET valor_contado_dinheiro = p_contado,
+           valor_contado_maquininha = p_maquininha,
+           diferenca = p_contado - (v_inicial + v_din)
+     WHERE id = p_caixa;
+    SET @corrigindo_caixa = 0;
+    INSERT INTO log_operacao (usuario_id, operacao, tabela, registro_id, registro, detalhes, unidade_id)
+    VALUES (@usuario_id, 'UPDATE', 'caixa', p_caixa, CONCAT('Caixa ', p_caixa),
+            LEFT(CONCAT_WS('; ',
+                 'correcao de caixa fechado',
+                 fn_diff('dinheiro contado', v_contado, p_contado),
+                 fn_diff('maquininha', v_maq, p_maquininha),
+                 fn_diff('diferenca', v_dif, p_contado - (v_inicial + v_din)),
+                 CONCAT('motivo: ', TRIM(p_motivo)),
+                 CONCAT('autorizado por: ', v_login)), 255), @unidade_id);
+    COMMIT;
 END$$
 
 /* ---------------------------------------------------------------------
