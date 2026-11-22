@@ -36,8 +36,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ItemContagemInventario.cs" />
+    <Compile Include="Entities\ItemEntradaEstoque.cs" />
+    <Compile Include="Entities\ItemPedido.cs" />
+    <Compile Include="Entities\PagamentoNovo.cs" />
+    <Compile Include="Entities\UnidadeResumo.cs" />
+    <Compile Include="Entities\UsuarioAcesso.cs" />
+    <Compile Include="Exceptions\RegraNegocioException.cs" />
     <Compile Include="InfoDominio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServicoSenha.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

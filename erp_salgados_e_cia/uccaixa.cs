@@ -1,0 +1,943 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace erp_salgados_e_cia
+{
+    public partial class uccaixa : UserControl
+    {
+        private BindingSource fonteCaixas =
+            new BindingSource();
+
+        private bool editandoCaixa;
+
+        // Caixa já fechado que está sendo corrigido (null = fora desse modo).
+        private Caixa caixaFechadoEmEdicao;
+
+        private Point posicaoResumo;
+
+        public uccaixa()
+        {
+            InitializeComponent();
+
+            posicaoResumo = presumo.Location;
+
+            dgvcaixas.DataSource =
+                fonteCaixas;
+
+            beditarcaixa.Click += beditarcaixa_Click;
+            beditarfechado.Click += beditarfechado_Click;
+            tbvalormaquininha.TextChanged += tbvalormaquininha_TextChanged;
+
+            AtualizarTela();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape && editandoCaixa)
+            {
+                SairModoEdicao();
+                return true;
+            }
+
+            if (keyData == Keys.Escape && caixaFechadoEmEdicao != null)
+            {
+                SairModoEdicaoFechado();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private Color CorDaDiferenca(decimal diferenca)
+        {
+            return diferenca == 0
+                ? Color.SeaGreen
+                : diferenca > 0
+                ? Color.RoyalBlue
+                : Color.Firebrick;
+        }
+
+        private void EntrarModoEdicao()
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            editandoCaixa = true;
+
+            CarregarResponsaveis();
+
+            cbresponsavel.SelectedItem = caixa.Responsavel;
+            tbvalorinicial.Text = caixa.ValorInicial.ToString("N2");
+            tbmotivoedicao.Clear();
+
+            labrircaixa.Text = "Editando abertura (ESC para cancelar)";
+            babrircaixa.Text = "Salvar edição";
+
+            AtualizarTela();
+
+            tbvalorinicial.Focus();
+        }
+
+        private void SairModoEdicao()
+        {
+            editandoCaixa = false;
+
+            tbmotivoedicao.Clear();
+            tbvalorinicial.Clear();
+            cbresponsavel.SelectedIndex = -1;
+
+            labrircaixa.Text = "Abrir caixa";
+            babrircaixa.Text = "Abrir caixa";
+
+            AtualizarTela();
+        }
+
+        private void beditarcaixa_Click(object sender, EventArgs e)
+        {
+            EntrarModoEdicao();
+        }
+
+        private void beditarfechado_Click(object sender, EventArgs e)
+        {
+            Caixa selecionado =
+                fonteCaixas.Current as Caixa;
+
+            if (selecionado == null ||
+                selecionado.Status != "Fechado")
+            {
+                MessageBox.Show(
+                    "Selecione, no histórico, um caixa fechado para editar.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (editandoCaixa)
+            {
+                SairModoEdicao();
+            }
+
+            EntrarModoEdicaoFechado(selecionado);
+        }
+
+        // Reaproveita o resumo do caixa: o bloco de cima (motivo e botão
+        // Salvar) fica visível, o resumo desce para baixo dele e só o
+        // dinheiro contado e a maquininha ficam liberados.
+        private void EntrarModoEdicaoFechado(Caixa caixa)
+        {
+            if (editandoCaixa)
+            {
+                SairModoEdicao();
+            }
+
+            caixaFechadoEmEdicao = caixa;
+
+            CarregarResponsaveis();
+
+            if (!cbresponsavel.Items.Contains(caixa.Responsavel))
+            {
+                cbresponsavel.Items.Add(caixa.Responsavel);
+            }
+
+            cbresponsavel.SelectedItem = caixa.Responsavel;
+            tbvalorinicial.Text = caixa.ValorInicial.ToString("N2");
+            tbmotivoedicao.Clear();
+
+            cbresponsavel.Enabled = false;
+            tbvalorinicial.Enabled = false;
+
+            labrircaixa.Text = "Editando caixa fechado (ESC para cancelar)";
+            babrircaixa.Text = "Salvar edição";
+
+            lmotivoedicao.Visible = true;
+            tbmotivoedicao.Visible = true;
+
+            pabertura.Visible = true;
+
+            PreencherResumo(caixa);
+
+            lcaixaaberto.Text = "Caixa fechado";
+
+            linfocaixa.Text =
+                $"Aberto em {caixa.DataAbertura:dd/MM/yyyy HH:mm} por {caixa.Responsavel}";
+
+            tbvalorcontado.Text =
+                caixa.ValorContado.GetValueOrDefault().ToString("N2");
+
+            tbvalormaquininha.Text =
+                caixa.ValorMaquininha.GetValueOrDefault().ToString("N2");
+
+            bfecharcaixa.Visible = false;
+            beditarcaixa.Visible = false;
+            beditarfechado.Enabled = false;
+
+            presumo.Location =
+                new Point(posicaoResumo.X, pabertura.Bottom + 10);
+
+            presumo.Visible = true;
+
+            tbmotivoedicao.Focus();
+        }
+
+        private void SairModoEdicaoFechado()
+        {
+            caixaFechadoEmEdicao = null;
+
+            tbmotivoedicao.Clear();
+            tbvalorinicial.Clear();
+            tbvalorcontado.Clear();
+            tbvalormaquininha.Clear();
+            cbresponsavel.SelectedIndex = -1;
+
+            cbresponsavel.Enabled = true;
+            tbvalorinicial.Enabled = true;
+
+            labrircaixa.Text = "Abrir caixa";
+            babrircaixa.Text = "Abrir caixa";
+            lcaixaaberto.Text = "Caixa aberto";
+
+            bfecharcaixa.Visible = true;
+            beditarcaixa.Visible = true;
+            beditarfechado.Enabled = true;
+
+            presumo.Location = posicaoResumo;
+
+            AtualizarTela();
+        }
+
+        private void SalvarEdicaoCaixaFechado()
+        {
+            Caixa caixa =
+                caixaFechadoEmEdicao;
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbmotivoedicao.Text))
+            {
+                MessageBox.Show(
+                    "Informe o motivo da edição.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbmotivoedicao.Focus();
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorcontado.Text,
+                    out decimal novoValorContado)
+                || novoValorContado < 0)
+            {
+                MessageBox.Show(
+                    "Informe o valor contado em dinheiro.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorcontado.Focus();
+                return;
+            }
+
+            decimal novoValorMaquininha;
+
+            if (string.IsNullOrWhiteSpace(tbvalormaquininha.Text))
+            {
+                if (caixa.MaquininhaEsperada != 0)
+                {
+                    MessageBox.Show(
+                        "Informe o valor da maquininha (Crédito + Débito + Vale Alimentação).",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbvalormaquininha.Focus();
+                    return;
+                }
+
+                novoValorMaquininha = 0m;
+            }
+            else if (!decimal.TryParse(
+                         tbvalormaquininha.Text,
+                         out novoValorMaquininha)
+                     || novoValorMaquininha < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor válido para a maquininha.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalormaquininha.Focus();
+                return;
+            }
+
+            if (novoValorContado == caixa.ValorContado &&
+                novoValorMaquininha == caixa.ValorMaquininha)
+            {
+                MessageBox.Show(
+                    "Nenhuma alteração foi feita.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            string autorizadoPor;
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                using (frmlogin autorizacao = new frmlogin(true))
+                {
+                    if (autorizacao.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    autorizadoPor = autorizacao.LoginAutorizador;
+                }
+            }
+            else
+            {
+                autorizadoPor = dadossistema.UsuarioLogado.Login;
+            }
+
+            string mensagem;
+
+            if (!dadossistema.EditarCaixaFechado(
+                    caixa,
+                    novoValorContado,
+                    novoValorMaquininha,
+                    tbmotivoedicao.Text,
+                    autorizadoPor,
+                    out mensagem))
+            {
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            SairModoEdicaoFechado();
+
+            MessageBox.Show(
+                "Caixa fechado editado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void SalvarEdicaoCaixa()
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                SairModoEdicao();
+                return;
+            }
+
+            if (cbresponsavel.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Selecione o responsável.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                cbresponsavel.Focus();
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorinicial.Text,
+                    out decimal novoValorInicial)
+                || novoValorInicial < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor inicial válido (zero ou maior).",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorinicial.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbmotivoedicao.Text))
+            {
+                MessageBox.Show(
+                    "Informe o motivo da edição.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbmotivoedicao.Focus();
+                return;
+            }
+
+            if (novoValorInicial == caixa.ValorInicial &&
+                cbresponsavel.Text == caixa.Responsavel)
+            {
+                MessageBox.Show(
+                    "Nenhuma alteração foi feita.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            string autorizadoPor;
+
+            if (dadossistema.LoginEhDeAtendente)
+            {
+                using (frmlogin autorizacao = new frmlogin(true))
+                {
+                    if (autorizacao.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    autorizadoPor = autorizacao.LoginAutorizador;
+                }
+            }
+            else
+            {
+                autorizadoPor = dadossistema.UsuarioLogado.Login;
+            }
+
+            string mensagem;
+
+            if (!dadossistema.EditarCaixa(
+                    caixa,
+                    novoValorInicial,
+                    cbresponsavel.Text,
+                    tbmotivoedicao.Text,
+                    autorizadoPor,
+                    out mensagem))
+            {
+                MessageBox.Show(
+                    mensagem,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            SairModoEdicao();
+
+            MessageBox.Show(
+                "Caixa editado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void CarregarResponsaveis()
+        {
+            string responsavelSelecionado =
+                cbresponsavel.SelectedItem as string;
+
+            cbresponsavel.Items.Clear();
+
+            foreach (string nome in
+                dadossistema.NomesFuncionariosAtivos(
+                    dadossistema.UnidadeAtual))
+            {
+                cbresponsavel.Items.Add(nome);
+            }
+
+            if (responsavelSelecionado != null &&
+                cbresponsavel.Items.Contains(responsavelSelecionado))
+            {
+                cbresponsavel.SelectedItem = responsavelSelecionado;
+            }
+            else
+            {
+                cbresponsavel.SelectedIndex = -1;
+            }
+        }
+
+        // Caixa que o resumo está mostrando: o fechado em edição ou o aberto.
+        private Caixa CaixaEmFoco()
+        {
+            return caixaFechadoEmEdicao ?? dadossistema.CaixaAberto();
+        }
+
+        public void AtualizarTela()
+        {
+            // Durante a edição de um caixa fechado, a tela não é refeita.
+            if (caixaFechadoEmEdicao != null)
+            {
+                AtualizarHistorico();
+                return;
+            }
+
+            CarregarResponsaveis();
+
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                editandoCaixa = false;
+            }
+
+            pabertura.Visible = caixa == null || editandoCaixa;
+            presumo.Visible = caixa != null && !editandoCaixa;
+
+            lmotivoedicao.Visible = editandoCaixa;
+            tbmotivoedicao.Visible = editandoCaixa;
+
+            if (caixa != null)
+            {
+                linfocaixa.Text =
+                    $"Aberto em {caixa.DataAbertura:dd/MM/yyyy HH:mm} por {caixa.Responsavel}";
+
+                PreencherResumo(caixa);
+            }
+
+            AtualizarHistorico();
+        }
+
+        private void PreencherResumo(Caixa caixa)
+        {
+            {
+                lvalorinicialresumo.Text =
+                    $"Valor inicial: R$ {caixa.ValorInicial:N2}";
+
+                ldinheiro.Text =
+                    $"Dinheiro: R$ {caixa.RecebidoPorForma("Dinheiro"):N2}";
+
+                lpix.Text =
+                    $"Pix: R$ {caixa.RecebidoPorForma("Pix"):N2}";
+
+                lcredito.Text =
+                    $"Crédito: R$ {caixa.RecebidoPorForma("Crédito"):N2}";
+
+                ldebito.Text =
+                    $"Débito: R$ {caixa.RecebidoPorForma("Débito"):N2}";
+
+                // Só aparece na unidade que aceita vale alimentação.
+                lvalealimentacao.Visible =
+                    dadossistema.UnidadeAtualAceitaValeAlimentacao();
+
+                lvalealimentacao.Text =
+                    $"Vale Alimentação: R$ {caixa.RecebidoPorForma("Vale Alimentação"):N2}";
+
+                ltotalvendas.Text =
+                    $"Total de vendas (sem Notinha): R$ {caixa.TotalVendas:N2}";
+
+                lnotinha.Text =
+                    $"Notinha do dia (fiado): R$ {caixa.TotalNotinha:N2}";
+
+                labatimentos.Text =
+                    $"Abatimentos de Notinha recebidos: R$ {caixa.TotalAbatimentos:N2}";
+
+                ldinheiroesperado.Text =
+                    $"Dinheiro esperado: R$ {caixa.DinheiroEsperado:N2}";
+
+                lmaquininhaesperada.Text =
+                    $"Maquininha esperada: R$ {caixa.MaquininhaEsperada:N2}";
+
+                AtualizarDiferenca();
+                AtualizarDiferencaMaquininha();
+            }
+        }
+
+        private void AtualizarHistorico()
+        {
+            fonteCaixas.DataSource =
+                dadossistema.CaixasDaUnidade();
+
+            if (dgvcaixas.Columns.Contains("DataAbertura"))
+            {
+                dgvcaixas.Columns["DataAbertura"].HeaderText = "Abertura";
+                dgvcaixas.Columns["ValorInicial"].HeaderText = "Valor inicial";
+                dgvcaixas.Columns["DataFechamento"].HeaderText = "Fechamento";
+                dgvcaixas.Columns["TotalVendas"].HeaderText = "Vendas";
+                dgvcaixas.Columns["TotalNotinha"].HeaderText = "Notinha";
+                dgvcaixas.Columns["TotalAbatimentos"].HeaderText = "Abatimentos";
+                dgvcaixas.Columns["DinheiroEsperado"].HeaderText = "Dinheiro esperado";
+                dgvcaixas.Columns["ValorContado"].HeaderText = "Contado";
+                dgvcaixas.Columns["Diferenca"].HeaderText = "Diferença";
+                dgvcaixas.Columns["MaquininhaEsperada"].HeaderText = "Maquininha esperada";
+                dgvcaixas.Columns["ValorMaquininha"].HeaderText = "Maquininha informada";
+                dgvcaixas.Columns["DiferencaMaquininha"].HeaderText = "Diferença maquininha";
+
+                dgvcaixas.Columns["DataAbertura"]
+                    .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
+                dgvcaixas.Columns["DataFechamento"]
+                    .DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
+                foreach (string coluna in new[]
+                {
+                    "ValorInicial",
+                    "TotalVendas",
+                    "TotalNotinha",
+                    "TotalAbatimentos",
+                    "DinheiroEsperado",
+                    "ValorContado",
+                    "Diferenca",
+                    "MaquininhaEsperada",
+                    "ValorMaquininha",
+                    "DiferencaMaquininha"
+                })
+                {
+                    dgvcaixas.Columns[coluna]
+                        .DefaultCellStyle.Format = "C2";
+                }
+            }
+        }
+
+        private void AtualizarDiferenca()
+        {
+            Caixa caixa =
+                CaixaEmFoco();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorcontado.Text,
+                    out decimal valorContado))
+            {
+                ldiferenca.Text = "Diferença: R$ 0,00";
+                ldiferenca.ForeColor = SystemColors.ControlText;
+                return;
+            }
+
+            decimal diferenca =
+                valorContado - caixa.DinheiroEsperado;
+
+            ldiferenca.Text =
+                $"Diferença: R$ {diferenca:N2}";
+
+            ldiferenca.ForeColor =
+                CorDaDiferenca(diferenca);
+        }
+
+        private void AtualizarDiferencaMaquininha()
+        {
+            Caixa caixa =
+                CaixaEmFoco();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalormaquininha.Text,
+                    out decimal valorMaquininha))
+            {
+                ldiferencamaquininha.Text =
+                    "Diferença da maquininha: R$ 0,00";
+
+                ldiferencamaquininha.ForeColor =
+                    SystemColors.ControlText;
+
+                return;
+            }
+
+            decimal diferenca =
+                valorMaquininha - caixa.MaquininhaEsperada;
+
+            ldiferencamaquininha.Text =
+                $"Diferença da maquininha: R$ {diferenca:N2}";
+
+            ldiferencamaquininha.ForeColor =
+                CorDaDiferenca(diferenca);
+        }
+
+        private void tbvalorcontado_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarDiferenca();
+        }
+
+        private void tbvalormaquininha_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarDiferencaMaquininha();
+        }
+
+        private void babrircaixa_Click(object sender, EventArgs e)
+        {
+            if (caixaFechadoEmEdicao != null)
+            {
+                SalvarEdicaoCaixaFechado();
+                return;
+            }
+
+            if (editandoCaixa)
+            {
+                SalvarEdicaoCaixa();
+                return;
+            }
+
+            if (dadossistema.CaixaAberto() != null)
+            {
+                AtualizarTela();
+                return;
+            }
+
+            if (dadossistema.CaixaDeHoje() != null)
+            {
+                MessageBox.Show(
+                    "O caixa de hoje já foi aberto e fechado. Um novo caixa só pode ser aberto amanhã.",
+                    "Abertura não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (cbresponsavel.Items.Count == 0)
+            {
+                MessageBox.Show(
+                    "Esta unidade não tem funcionário ativo. Cadastre um em Cadastros, Funcionários.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (cbresponsavel.SelectedIndex == -1)
+            {
+                MessageBox.Show(
+                    "Selecione o responsável.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                cbresponsavel.Focus();
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorinicial.Text,
+                    out decimal valorInicial)
+                || valorInicial < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor inicial válido (zero ou maior).",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorinicial.Focus();
+                return;
+            }
+
+            string mensagemAbertura;
+
+            if (!dadossistema.AbrirCaixa(
+                    cbresponsavel.Text,
+                    valorInicial,
+                    out mensagemAbertura))
+            {
+                MessageBox.Show(
+                    mensagemAbertura,
+                    "Abertura não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            cbresponsavel.SelectedIndex = -1;
+            tbvalorinicial.Clear();
+
+            AtualizarTela();
+
+            MessageBox.Show(
+                "Caixa aberto com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void bfecharcaixa_Click(object sender, EventArgs e)
+        {
+            Caixa caixa =
+                dadossistema.CaixaAberto();
+
+            if (caixa == null)
+            {
+                return;
+            }
+
+            if (dadossistema.ComandasDaUnidade().Count > 0)
+            {
+                MessageBox.Show(
+                    "Fechamento bloqueado: existem comandas abertas.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (!decimal.TryParse(
+                    tbvalorcontado.Text,
+                    out decimal valorContado)
+                || valorContado < 0)
+            {
+                MessageBox.Show(
+                    "Informe o valor contado em dinheiro.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalorcontado.Focus();
+                return;
+            }
+
+            decimal valorMaquininha;
+
+            if (string.IsNullOrWhiteSpace(tbvalormaquininha.Text))
+            {
+                if (caixa.MaquininhaEsperada != 0)
+                {
+                    MessageBox.Show(
+                        "Informe o valor da maquininha (Crédito + Débito + Vale Alimentação).",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    tbvalormaquininha.Focus();
+                    return;
+                }
+
+                valorMaquininha = 0m;
+            }
+            else if (!decimal.TryParse(
+                         tbvalormaquininha.Text,
+                         out valorMaquininha)
+                     || valorMaquininha < 0)
+            {
+                MessageBox.Show(
+                    "Informe um valor válido para a maquininha.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbvalormaquininha.Focus();
+                return;
+            }
+
+            decimal diferenca =
+                valorContado - caixa.DinheiroEsperado;
+
+            decimal diferencaMaquininha =
+                valorMaquininha - caixa.MaquininhaEsperada;
+
+            string aviso = "";
+
+            if (diferenca != 0)
+            {
+                aviso += $"Diferença no dinheiro: R$ {diferenca:N2}. ";
+            }
+
+            if (diferencaMaquininha != 0)
+            {
+                aviso += $"Diferença na maquininha: R$ {diferencaMaquininha:N2}. ";
+            }
+
+            DialogResult resposta = MessageBox.Show(
+                aviso == ""
+                ? "Deseja realmente fechar o caixa?"
+                : aviso + "(informado menos esperado). Fechar o caixa mesmo assim?",
+                "Confirmar fechamento",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            string mensagemFechamento;
+
+            if (!dadossistema.FecharCaixa(
+                    caixa,
+                    valorContado,
+                    valorMaquininha,
+                    out mensagemFechamento))
+            {
+                MessageBox.Show(
+                    mensagemFechamento,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            tbvalorcontado.Clear();
+            tbvalormaquininha.Clear();
+
+            AtualizarTela();
+
+            MessageBox.Show(
+                "Caixa fechado com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+    }
+}

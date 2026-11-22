@@ -1,0 +1,471 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using erp_salgados_e_cia.Data.Repositories;
+using erp_salgados_e_cia.Domain.Exceptions;
+using static erp_salgados_e_cia.dadossistema;
+
+namespace erp_salgados_e_cia
+{
+    public partial class ucunidades : UserControl
+    {
+        private bool modoEdicao = false;
+        private int indiceUnidadeEditando = -1;
+        private BindingList<Unidade> unidades =
+            dadossistema.unidades;
+        private BindingSource fonteUnidades 
+            = new BindingSource();
+        private void AtualizarTabela()
+        {
+            string filtro =
+                cbfiltrostatus.SelectedItem == null
+                ? "Ativos"
+                : cbfiltrostatus.SelectedItem.ToString();
+
+            IEnumerable<Unidade> unidadesFiltradas = unidades;
+
+            if (filtro == "Ativos")
+            {
+                unidadesFiltradas = unidades.Where(u =>
+                    u.Status == StatusCadastro.Ativo);
+            }
+            else if (filtro == "Inativos")
+            {
+                unidadesFiltradas = unidades.Where(u =>
+                    u.Status == StatusCadastro.Inativo);
+            }
+
+            fonteUnidades.DataSource =
+                unidadesFiltradas.ToList();
+        }
+
+        private void cbfiltrostatus_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            AtualizarTabela();
+        }
+        public ucunidades()
+        {
+            InitializeComponent();
+
+            dadossistema.AplicarMascara(
+                tbcnpju,
+                dadossistema.FormatarCnpj,
+                14);
+
+            cbfiltrostatus.Items.AddRange(
+                new object[]
+                {
+                    "Ativos",
+                    "Inativos",
+                    "Todos"
+                }
+            );
+
+            cbfiltrostatus.SelectedIndexChanged +=
+                cbfiltrostatus_SelectedIndexChanged;
+
+            fonteUnidades.DataSource = unidades;
+            dgvunidades.DataSource = fonteUnidades;
+
+            if (dgvunidades.Columns["AceitaValeAlimentacao"] != null)
+            {
+                dgvunidades.Columns["AceitaValeAlimentacao"].HeaderText =
+                    "Aceita vale alimentação";
+            }
+
+            cbfiltrostatus.SelectedIndex = 0;
+
+            AtualizarTabela();
+        }
+
+        protected override bool ProcessCmdKey(
+            ref Message msg,
+            Keys keyData)
+        {
+            if (keyData == Keys.Escape && modoEdicao)
+            {
+                CancelarEdicao();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void CancelarEdicao()
+        {
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
+
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
+
+            LimparCampos();
+        }
+
+        private void LimparCampos()
+        {
+            tbnomeu.Clear();
+            tbcnpju.Clear();
+            tbenderecou.Clear();
+            tbnumerou.Clear();
+            cbaceitavale.Checked = false;
+            cbativo.Checked = true;
+            cbativo.Visible = false;
+            ldicaedicao.Visible = false;
+
+            tbnomeu.Focus();
+        }
+
+        private void bsalvaru_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbnomeu.Text))
+            {
+                MessageBox.Show(
+                    "Informe o nome da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbnomeu.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbcnpju.Text))
+            {
+                MessageBox.Show(
+                    "Informe o CNPJ da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
+                return;
+            }
+
+            string cnpjDigitado =
+                dadossistema.SomenteDigitos(tbcnpju.Text);
+
+            if (cnpjDigitado.Length != 14)
+            {
+                MessageBox.Show(
+                    "Informe um CNPJ com 14 dígitos.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
+                return;
+            }
+
+            Unidade unidadeEmEdicao =
+                modoEdicao && indiceUnidadeEditando >= 0
+                ? unidades[indiceUnidadeEditando]
+                : null;
+
+            if (unidades.Any(u =>
+                u != unidadeEmEdicao &&
+                dadossistema.SomenteDigitos(u.Cnpj) == cnpjDigitado))
+            {
+                MessageBox.Show(
+                    "Esse CNPJ já está cadastrado.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbcnpju.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbenderecou.Text))
+            {
+                MessageBox.Show(
+                    "Informe o endereço da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbenderecou.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbnumerou.Text))
+            {
+                MessageBox.Show(
+                    "Informe o número da unidade.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                tbnumerou.Focus();
+                return;
+            }
+
+            if (modoEdicao)
+            {
+                Unidade unidadeAtual =
+                    unidades[indiceUnidadeEditando];
+
+                if (!cbativo.Checked &&
+                    unidadeAtual.Status == StatusCadastro.Ativo)
+                {
+                    DialogResult resposta = MessageBox.Show(
+                        "Deseja realmente inativar esta unidade?",
+                        "Confirmar inativação",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (resposta != DialogResult.Yes)
+                    {
+                        cbativo.Checked = true;
+                        return;
+                    }
+                }
+
+                try
+                {
+                    UnidadeRepositorio.Atualizar(
+                        unidadeAtual.Id,
+                        tbnomeu.Text.Trim(),
+                        tbcnpju.Text.Trim(),
+                        tbenderecou.Text.Trim(),
+                        tbnumerou.Text.Trim(),
+                        cbaceitavale.Checked,
+                        cbativo.Checked);
+
+                    dadossistema.CarregarUnidades();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                MessageBox.Show(
+                    "Unidade atualizada com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                Unidade unidade = new Unidade
+                {
+                    Status = StatusCadastro.Ativo,
+                    Nome = tbnomeu.Text.Trim(),
+                    Cnpj = tbcnpju.Text.Trim(),
+                    Endereco = tbenderecou.Text.Trim(),
+                    Numero = tbnumerou.Text.Trim(),
+                    AceitaValeAlimentacao = cbaceitavale.Checked
+                };
+
+                try
+                {
+                    UnidadeRepositorio.Inserir(
+                        unidade.Nome,
+                        unidade.Cnpj,
+                        unidade.Endereco,
+                        unidade.Numero,
+                        unidade.AceitaValeAlimentacao);
+
+                    dadossistema.CarregarUnidades();
+                }
+                catch (RegraNegocioException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                MessageBox.Show(
+                    "Unidade salva com sucesso.",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+
+            AtualizarTabela();
+            dgvunidades.Refresh();
+
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
+
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
+
+            LimparCampos();
+        }
+
+        private void bexcluiru_Click(object sender, EventArgs e)
+        {
+            if (dgvunidades.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Selecione uma unidade para excluir.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            Unidade unidadeSelecionada =
+                dgvunidades.SelectedRows[0]
+                .DataBoundItem as Unidade;
+
+            if (unidadeSelecionada == null)
+            {
+                return;
+            }
+
+            if (dadossistema.UnidadePossuiVinculos(
+                     unidadeSelecionada))
+            {
+                MessageBox.Show(
+                    "Exclusão bloqueada: esta unidade possui movimentações.",
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            DialogResult resposta = MessageBox.Show(
+                "Deseja excluir a unidade selecionada?",
+                "Confirmar exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                UnidadeRepositorio.Excluir(unidadeSelecionada.Id);
+
+                dadossistema.CarregarUnidades();
+            }
+            catch (RegraNegocioException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Exclusão não permitida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            AtualizarTabela();
+            dgvunidades.Refresh();
+
+            modoEdicao = false;
+            indiceUnidadeEditando = -1;
+
+            bsalvaru.Text = "Salvar unidade";
+            beditaru.Enabled = true;
+
+            LimparCampos();
+
+            MessageBox.Show(
+                "Unidade excluída com sucesso.",
+                "Sucesso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void beditaru_Click(object sender, EventArgs e)
+        {
+            if (dgvunidades.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Selecione uma unidade para editar.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            Unidade unidadeSelecionada =
+                dgvunidades.SelectedRows[0]
+                .DataBoundItem as Unidade;
+
+            if (unidadeSelecionada == null)
+            {
+                return;
+            }
+
+            indiceUnidadeEditando =
+                unidades.IndexOf(unidadeSelecionada);
+
+            if (indiceUnidadeEditando == -1)
+            {
+                return;
+            }
+
+            tbnomeu.Text =
+                unidadeSelecionada.Nome;
+
+            tbenderecou.Text =
+                unidadeSelecionada.Endereco;
+
+            tbnumerou.Text =
+                unidadeSelecionada.Numero;
+
+            tbcnpju.Text =
+                unidadeSelecionada.Cnpj;
+
+            cbaceitavale.Checked =
+                unidadeSelecionada.AceitaValeAlimentacao;
+
+            cbativo.Checked =
+                unidadeSelecionada.Status == StatusCadastro.Ativo;
+
+            cbativo.Visible = true;
+
+            modoEdicao = true;
+            ldicaedicao.Visible = true;
+
+            bsalvaru.Text = "Atualizar unidade";
+            beditaru.Enabled = false;
+
+            tbnomeu.Focus();
+        }
+    }
+}

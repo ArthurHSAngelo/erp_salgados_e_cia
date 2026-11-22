@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0A9E0971-87FF-44FB-B28D-CDD1FF3CBC0C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>erp_salgados_e_cia</RootNamespace>
     <AssemblyName>erp_salgados_e_cia</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <ApplicationIcon>Recursos\salgados.ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -32,11 +33,30 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MigraDoc.DocumentObjectModel-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.DocumentObjectModel-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.Rendering-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.Rendering-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.RtfRendering-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.RtfRendering-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\PdfSharp-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\PdfSharp.Charting-gdi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,70 +65,271 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CadastroUnidades.cs">
+    <Compile Include="botaoarredondado.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dadossistema.cs" />
+    <Compile Include="Caixa.cs" />
+    <Compile Include="Cliente.cs" />
+    <Compile Include="Comanda.cs" />
+    <Compile Include="frmcancelarvenda.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CadastroUnidades.Designer.cs">
-      <DependentUpon>CadastroUnidades.cs</DependentUpon>
+    <Compile Include="frmcancelarvenda.Designer.cs">
+      <DependentUpon>frmcancelarvenda.cs</DependentUpon>
     </Compile>
-    <Compile Include="EntradaEstoque.cs">
+    <Compile Include="frmlogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EntradaEstoque.Designer.cs">
-      <DependentUpon>EntradaEstoque.cs</DependentUpon>
+    <Compile Include="frmlogin.Designer.cs">
+      <DependentUpon>frmlogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="CadastroProdutos.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CadastroProdutos.Designer.cs">
-      <DependentUpon>CadastroProdutos.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CadastroFornecedores.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CadastroFornecedores.Designer.cs">
-      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
-    </Compile>
+    <Compile Include="HistoricoEstoque.cs" />
+    <Compile Include="LinhaEstoque.cs" />
+    <Compile Include="RelatorioVendas.cs" />
     <Compile Include="Fornecedor.cs" />
+    <Compile Include="frmcobranca.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmcobranca.Designer.cs">
+      <DependentUpon>frmcobranca.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmmesas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmmesas.Designer.cs">
+      <DependentUpon>frmmesas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="itemvenda.cs" />
+    <Compile Include="MovimentoNotinha.cs" />
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MenuPrincipal.Designer.cs">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>
     </Compile>
+    <Compile Include="movimentoestoque.cs" />
     <Compile Include="Produto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="uccaixa.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uccaixa.Designer.cs">
+      <DependentUpon>uccaixa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucclientes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucclientes.Designer.cs">
+      <DependentUpon>ucclientes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucdre.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucdre.Designer.cs">
+      <DependentUpon>ucdre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucestoquecompleto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucestoquecompleto.Designer.cs">
+      <DependentUpon>ucestoquecompleto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucfuncionarios.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucfuncionarios.Designer.cs">
+      <DependentUpon>ucfuncionarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uchistoricovendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uchistoricovendas.Designer.cs">
+      <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucinventario.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucinventario.Designer.cs">
+      <DependentUpon>ucinventario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uclogoperacoes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uclogoperacoes.Designer.cs">
+      <DependentUpon>uclogoperacoes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucmovimentacoes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucmovimentacoes.Designer.cs">
+      <DependentUpon>ucmovimentacoes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucmovimentoestoque..cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucmovimentoestoque..Designer.cs">
+      <DependentUpon>ucmovimentoestoque..cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucfornecedores.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucfornecedores.Designer.cs">
+      <DependentUpon>ucfornecedores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucpainel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucpainel.Designer.cs">
+      <DependentUpon>ucpainel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucperdas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucperdas.Designer.cs">
+      <DependentUpon>ucperdas.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucprodutos.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ucprodutos.Designer.cs">
       <DependentUpon>ucprodutos.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucrelatoriovendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrelatoriovendas.Designer.cs">
+      <DependentUpon>ucrelatoriovendas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucunidades.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucunidades.Designer.cs">
+      <DependentUpon>ucunidades.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucusuarios.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucusuarios.Designer.cs">
+      <DependentUpon>ucusuarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucvendas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucvendas.Designer.cs">
+      <DependentUpon>ucvendas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Unidade.cs" />
+    <Compile Include="Usuario.cs" />
+    <Compile Include="Funcionario.cs" />
+    <Compile Include="LogOperacao.cs" />
+    <Compile Include="Perda.cs" />
+    <Compile Include="RelatorioDre.cs" />
+    <Compile Include="Inventario.cs" />
+    <Compile Include="DadosPainel.cs" />
+    <Compile Include="EscalaDeTela.cs" />
+    <Compile Include="RelatorioPdf.cs" />
+    <Compile Include="ExportacaoRelatorio.cs" />
+    <Compile Include="venda.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CadastroUnidades.resx">
-      <DependentUpon>CadastroUnidades.cs</DependentUpon>
+    <EmbeddedResource Include="frmcancelarvenda.resx">
+      <DependentUpon>frmcancelarvenda.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EntradaEstoque.resx">
-      <DependentUpon>EntradaEstoque.cs</DependentUpon>
+    <EmbeddedResource Include="frmcobranca.resx">
+      <DependentUpon>frmcobranca.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CadastroProdutos.resx">
-      <DependentUpon>CadastroProdutos.cs</DependentUpon>
+    <EmbeddedResource Include="frmlogin.resx">
+      <DependentUpon>frmlogin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CadastroFornecedores.resx">
-      <DependentUpon>CadastroFornecedores.cs</DependentUpon>
+    <EmbeddedResource Include="frmmesas.resx">
+      <DependentUpon>frmmesas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MenuPrincipal.resx">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uccaixa.resx">
+      <DependentUpon>uccaixa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucclientes.resx">
+      <DependentUpon>ucclientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucdre.resx">
+      <DependentUpon>ucdre.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucestoquecompleto.resx">
+      <DependentUpon>ucestoquecompleto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucfuncionarios.resx">
+      <DependentUpon>ucfuncionarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uchistoricovendas.resx">
+      <DependentUpon>uchistoricovendas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucinventario.resx">
+      <DependentUpon>ucinventario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uclogoperacoes.resx">
+      <DependentUpon>uclogoperacoes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucmovimentacoes.resx">
+      <DependentUpon>ucmovimentacoes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucmovimentoestoque..resx">
+      <DependentUpon>ucmovimentoestoque..cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucfornecedores.resx">
+      <DependentUpon>ucfornecedores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucpainel.resx">
+      <DependentUpon>ucpainel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucperdas.resx">
+      <DependentUpon>ucperdas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ucprodutos.resx">
       <DependentUpon>ucprodutos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ucrelatoriovendas.resx">
+      <DependentUpon>ucrelatoriovendas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucunidades.resx">
+      <DependentUpon>ucunidades.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucusuarios.resx">
+      <DependentUpon>ucusuarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucvendas.resx">
+      <DependentUpon>ucvendas.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\erp_salgados_e_cia.Data\erp_salgados_e_cia.Data.csproj">
+      <Project>{0F09E13B-7DD2-4D95-B795-1D0588956FD3}</Project>
+      <Name>erp_salgados_e_cia.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\erp_salgados_e_cia.Domain\erp_salgados_e_cia.Domain.csproj">
+      <Project>{109C1E7C-748A-4E50-A184-A9895205761D}</Project>
+      <Name>erp_salgados_e_cia.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Content Include="Recursos\salgados.ico" />
+    <Content Include="Recursos\logo_salgados_e_cia.png" />
+  </ItemGroup>
 </Project>
