@@ -46,8 +46,8 @@ $a=[object[]]@("centro","123",$null,$null); Ver "login centro" ($ds.GetMethod("A
 $a=[object[]]@("admin","errada",$null,$null); Ver "login senha errada" ($ds.GetMethod("Autenticar").Invoke($null,$a)) "False"
 $a=[object[]]@("centro","123",$null,$null); [void]$ds.GetMethod("Autenticar").Invoke($null,$a)
 Ver "cadastros carregados (un/prod/forn/cli/func/usu)" ((("unidades","produtos","fornecedores","clientes","funcionarios","usuarios" | ForEach-Object { ($ds.GetField($_).GetValue($null)).Count }) -join "/")) "2/5/2/2/3/5"
-$id=Chama $prod "Inserir" @("Esfiha","Salgado",[decimal]6.5,"Unidade",[decimal]4); Ver "produto novo" ([int]$id -gt 5) "True"
-Ver "produto duplicado" (Chama $prod "Inserir" @("Esfiha","Salgado",[decimal]6.5,"Unidade",[decimal]4)) "ERRO: Já existe um registro com esses dados."
+$id=Chama $prod "Inserir" @("Empada","Salgado",[decimal]6.5,"Unidade",[decimal]4); Ver "produto novo" ([int]$id -gt 5) "True"
+Ver "produto duplicado" (Chama $prod "Inserir" @("Empada","Salgado",[decimal]6.5,"Unidade",[decimal]4)) "ERRO: Já existe um registro com esses dados."
 Ver "produto preco zero" (Chama $prod "Inserir" @("Zero","Salgado",[decimal]0,"Unidade",[decimal]1)) "ERRO: Algum valor informado não é permitido."
 [void](Chama $prod "Excluir" @([uint32]$id[0]))
 $f=Chama $forn "Inserir" @("Forn Teste","33.444.555/0001-66",""); Ver "fornecedor CNPJ duplicado" (Chama $forn "Inserir" @("Outro","33.444.555/0001-66","")) "ERRO: Já existe um registro com esses dados."; [void](Chama $forn "Excluir" @([uint32]$f[0]))
