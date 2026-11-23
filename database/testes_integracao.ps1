@@ -11,10 +11,13 @@
 #   .\testes_integracao.ps1 -Pasta "..\erp_salgados_e_cia\bin\Debug" -Porta 3306
 #   (se trocou a senha do usuario app_salgados, informe -Senha "sua_senha")
 # Termina com "PASSOU: N   FALHOU: 0" quando tudo esta certo.
+# Com -Detalhado, mostra cada teste numa linha (OK ou FALHOU), agrupado por modulo:
+#   .\testes_integracao.ps1 -Pasta "..\erp_salgados_e_cia\bin\Debug" -Porta 3306 -Detalhado
 param(
     [int]$Porta = 3306,
     [Parameter(Mandatory = $true)][string]$Pasta,
-    [string]$Senha = "TROQUE_ESTA_SENHA_FORTE"
+    [string]$Senha = "TROQUE_ESTA_SENHA_FORTE",
+    [switch]$Detalhado
 )
 $Port = $Porta
 $d = (Resolve-Path $Pasta).Path
@@ -31,7 +34,8 @@ $fun=$data.GetType($R+"FuncionarioRepositorio"); $uni=$data.GetType($R+"UnidadeR
 $tItem=$app.GetType("erp_salgados_e_cia.ItemVenda"); $tPag=$app.GetType("erp_salgados_e_cia.PagamentoVenda")
 $tmov=$app.GetType("erp_salgados_e_cia.movimentoestoque"); $tmot=$app.GetType("erp_salgados_e_cia.MotivoPerda"); $tipoOp=$app.GetType("erp_salgados_e_cia.TipoOperacaoLog")
 $ok=0; $falha=0
-function Ver($nome,$obtido,$esperado){ $o="$obtido".Trim(); $e="$esperado".Trim(); if($o -eq $e){ $script:ok++ } else { $script:falha++; "FALHOU  {0}: esperado '{1}' obtido '{2}'" -f $nome,$e,$o } }
+function Ver($nome,$obtido,$esperado){ $o="$obtido".Trim(); $e="$esperado".Trim(); if($o -eq $e){ $script:ok++; if($Detalhado){ "OK      {0}" -f $nome } } else { $script:falha++; "FALHOU  {0}: esperado '{1}' obtido '{2}'" -f $nome,$e,$o } }
+function Grupo($titulo){ if($Detalhado){ ""; "== $titulo ==" } }
 function Msg($r,$a,$i){ "$r | " + $a[$i] }
 function Itens($lista){ $l=New-Object "System.Collections.Generic.List[$($tItem.FullName)]"; foreach($x in $lista){ $i=[Activator]::CreateInstance($tItem); $i.Produto=$x[0]; $i.Quantidade=[decimal]$x[1]; $i.PrecoUnitario=[decimal]$x[2]; $l.Add($i) }; ,$l }
 function Pags($lista){ $l=New-Object "System.Collections.Generic.List[$($tPag.FullName)]"; foreach($x in $lista){ $p=[Activator]::CreateInstance($tPag); $p.FormaPagamento=$x[0]; $p.Valor=[decimal]$x[1]; $l.Add($p) }; ,$l }
@@ -42,6 +46,7 @@ function Cliente($id){ (($ds.GetField("clientes").GetValue($null)) | Where-Objec
 function Chama($tipo,$metodo,$args1){ try { return ,$tipo.GetMethod($metodo).Invoke($null,[object[]]$args1) } catch { $m=$_.Exception.InnerException; if($m -eq $null){$m=$_.Exception}; return "ERRO: " + $m.Message } }
 
 # ---------- 1. login e cadastros ----------
+Grupo "1. Login e cadastros"
 $a=[object[]]@("centro","123",$null,$null); Ver "login centro" ($ds.GetMethod("Autenticar").Invoke($null,$a)) "True"
 $a=[object[]]@("admin","errada",$null,$null); Ver "login senha errada" ($ds.GetMethod("Autenticar").Invoke($null,$a)) "False"
 $a=[object[]]@("centro","123",$null,$null); [void]$ds.GetMethod("Autenticar").Invoke($null,$a)
@@ -56,6 +61,7 @@ Ver "unidade Centro nao pode ser excluida" (Chama $uni "Excluir" @([uint32]1)) "
 Ver "2o login base na unidade" (Chama $usu "Inserir" @("centro2","x:y","Atendente",[uint32]1)) "ERRO: Já existe um registro com esses dados."
 
 # ---------- 2. caixa ----------
+Grupo "2. Caixa"
 Ver "sem caixa aberto" ($ds.GetMethod("CaixaAberto").Invoke($null,@()) -eq $null) "True"
 $a=[object[]]@("Ana Lima",[decimal]100,$null); Ver "abrir caixa" (Msg ($ds.GetMethod("AbrirCaixa").Invoke($null,$a)) $a 2) "True | "
 $a=[object[]]@("Ana Lima",[decimal]10,$null); Ver "abrir 2o caixa" (Msg ($ds.GetMethod("AbrirCaixa").Invoke($null,$a)) $a 2) "False | Ja existe um caixa aberto nesta unidade."
@@ -65,6 +71,7 @@ $a=[object[]]@($cx.PSObject.BaseObject,[decimal]120,"Carlos Souza","Troco errado
 $cx=$ds.GetMethod("CaixaAberto").Invoke($null,@()); Ver "caixa editado" ("$($cx.Responsavel) $($cx.ValorInicial)") "Carlos Souza 120.00"
 
 # ---------- 3. estoque ----------
+Grupo "3. Estoque"
 Ver "saldo inicial coxinha/refri" ("$(Saldo 'Coxinha')/$(Saldo 'Refrigerante')") "50.00/50.00"
 function NovoMov($p,$q,$c,$fo,$re){ $m=[Activator]::CreateInstance($tmov); $m.Produto=$p; $m.Quantidade=[decimal]$q; $m.CustoUnitario=[decimal]$c; $m.Fornecedor=$fo; $m.Responsavel=$re; $m.Unidade="Lanchonete Centro"; $m.DataEntrada=[DateTime]::Now; $m }
 $l=New-Object "System.Collections.Generic.List[$($tmov.FullName)]"; $l.Add((NovoMov "Coxinha" 10 2.5 "Distribuidora Central" "Ana Lima")); $l.Add((NovoMov "Refrigerante" 5.5 3.1 "Distribuidora Central" "Ana Lima"))
@@ -82,6 +89,7 @@ Ver "saldo coxinha apos inventario" (Saldo 'Coxinha') "50.00"
 $h=$ds.GetMethod("ConsultarHistoricoEstoque").Invoke($null,@($null,$null,$null,"Coxinha",$null)); Ver "extrato coxinha (entrada, perda, ajuste)" (($h | ForEach-Object { "$($_.Tipo):$($_.SaldoApos)" }) -join " ") "Ajuste:50.00 Perda:56.00 Entrada:60.00"
 
 # ---------- 4. comandas, vendas, notinha ----------
+Grupo "4. Comandas, vendas e Notinha"
 $a=[object[]]@([int]3,$null,(Itens @(@("Coxinha",5,5.00),@("Refrigerante",2,6.00))).PSObject.BaseObject,$null); Ver "pedido mesa 3" (Msg ($ds.GetMethod("EnviarPedidoParaComanda").Invoke($null,$a)) $a 3) "True | "
 $a=[object[]]@([int]3,$null,(Itens @(,@("Coxinha",2,5.00))).PSObject.BaseObject,$null); [void]$ds.GetMethod("EnviarPedidoParaComanda").Invoke($null,$a)
 $c=Comanda 3; Ver "comanda mesa 3 (itens/total)" ("$($c.Itens.Count) / $($c.Total)") "2 / 47.0000"
@@ -118,6 +126,7 @@ $a=[object[]]@((Comanda 5).PSObject.BaseObject,$null); Ver "cancelar comanda sem
 Ver "estoque coxinha apos cancelar comanda" (Saldo 'Coxinha') "43.00"
 
 # ---------- 5. fechamento do caixa ----------
+Grupo "5. Fechamento do caixa"
 $cx=$ds.GetMethod("CaixaAberto").Invoke($null,@())
 Ver "caixa: esperado dinheiro / vendas / notinha / abatimentos" ("$($cx.DinheiroEsperado) / $($cx.TotalVendas) / $($cx.TotalNotinha) / $($cx.TotalAbatimentos)") "167.00 / 37.00 / 10.00 / 10.00"
 $a=[object[]]@($cx.PSObject.BaseObject,[decimal]167,[decimal]0,$null); Ver "fechar caixa" (Msg ($ds.GetMethod("FecharCaixa").Invoke($null,$a)) $a 3) "True | "
@@ -125,6 +134,7 @@ $cxs=$ds.GetMethod("CaixasDaUnidade").Invoke($null,@()); Ver "caixa fechado (sta
 $a=[object[]]@("Ana Lima",[decimal]10,$null); Ver "reabrir no mesmo dia" (Msg ($ds.GetMethod("AbrirCaixa").Invoke($null,$a)) $a 2) "False | Esta unidade ja teve um caixa hoje (um caixa por dia)."
 
 # ---------- 6. relatorios, DRE, painel, log ----------
+Grupo "6. Relatorios, DRE, painel e log"
 function Rel($un,$forma,$pr){ $a=[object[]]@($null,$null,$un,$forma,$pr); $ds.GetMethod("GerarRelatorioVendas").Invoke($null,$a) }
 $r=Rel $null $null $null; Ver "relatorio (qtd/fat/recebido/notinha)" ("$($r.Resumo.QuantidadeVendas) $($r.Resumo.Faturamento) $($r.Resumo.Recebido) $($r.Resumo.EmNotinha)") "1 47.00 37.00 10.00"
 Ver "relatorio formas" (($r.Formas | ForEach-Object { "$($_.Forma)=$($_.Valor)" }) -join " ") "Dinheiro=37.00 Pix=0 Crédito=0 Débito=0 Vale Alimentação=0 Notinha=10.00"
@@ -140,6 +150,7 @@ $a=[object[]]@($null,$null,"gerente1",$null,$null); $lg=$ds.GetMethod("Consultar
 Ver "log: tabelas" (($ds.GetMethod("TabelasDoLog").Invoke($null,@())) -join ",") "abatimento_notinha,caixa,cliente,comanda,entrada_estoque,fornecedor,inventario,perda,produto,usuario,venda"
 
 # ---------- 7. bloqueio de login por tentativas ----------
+Grupo "7. Bloqueio de login por tentativas"
 $cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
 function SqlEscalar($q){ $c=$cnTeste.CreateCommand(); $c.CommandText=$q; "$($c.ExecuteScalar())" }
 function SqlExec($q){ $c=$cnTeste.CreateCommand(); $c.CommandText=$q; [void]$c.ExecuteNonQuery() }
@@ -159,6 +170,7 @@ Ver "bloqueio: login certo zera a contagem" (SqlEscalar $estado) "0/livre"
 $cnTeste.Close()
 
 # ---------- 8. vale alimentacao por unidade ----------
+Grupo "8. Vale Alimentacao por unidade"
 $cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
 function SqlTenta($q){ try { SqlExec $q; "ok" } catch { $m=$_.Exception.InnerException; if($m -eq $null){$m=$_.Exception}; $m.Message } }
 Ver "vale: Centro aceita e Norte nao" (SqlEscalar "SELECT GROUP_CONCAT(aceita_vale_alimentacao ORDER BY id SEPARATOR '/') FROM unidade") "1/0"
@@ -177,6 +189,7 @@ Ver "vale: maquininha esperada soma o vale" $cx.MaquininhaEsperada "22"
 $cnTeste.Close()
 
 # ---------- 9. correcao de caixa fechado ----------
+Grupo "9. Correcao de caixa fechado"
 $cnTeste = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Port=$Port;Database=salgados_cia;Uid=app_salgados;Pwd=$Senha;CharSet=utf8mb4;"); $cnTeste.Open()
 function EditaFechado($contado,$maq,$motivo,$login){ $c=($ds.GetMethod("CaixasDaUnidade").Invoke($null,@()))[0]; $a=[object[]]@($c.PSObject.BaseObject,[decimal]$contado,[decimal]$maq,$motivo,$login,$null); Msg ($ds.GetMethod("EditarCaixaFechado").Invoke($null,$a)) $a 5 }
 function CaixaFechado(){ $c=($ds.GetMethod("CaixasDaUnidade").Invoke($null,@()))[0]; "$($c.Status) $($c.ValorContado) $($c.ValorMaquininha) $($c.Diferenca)" }
@@ -197,6 +210,7 @@ Ver "fechado: log guarda antes e depois" (SqlEscalar "SELECT COUNT(*) FROM log_o
 Ver "fechado: usuario do programa nao altera a tabela direto" ((SqlTenta "UPDATE caixa SET valor_contado_dinheiro = 1 WHERE status = 'Fechado'") -like "UPDATE command denied*") "True"
 $cnTeste.Close()
 
+if($Detalhado){ "" }
 "PASSOU: $ok   FALHOU: $falha"
 
 
